@@ -197,13 +197,13 @@ export const FIGURES: Figure[] = [
     reference: 'none',
     caption: [
       'Every question carries one or more categories and a difficulty; each cell is the pass rate of an arm on the questions in that category (or at that difficulty), pooled over its models.',
-      'Darker is higher; the number in each cell is the pass rate and the table beneath carries the attempt counts.',
+      'The number in each cell is the pass rate; the color is that cell\'s difference from bare Claude Code in the same column — blue above, orange below, neutral at the baseline — so a row reads as where an arm beats or trails the null hypothesis.',
       'The categories where an index should matter most, structural questions such as callers, impact and cross-stack tracing, are where the separation is widest.',
     ],
     explanation: [
       'Definition. For an arm, model, exam, battery and question, the per-question record gives pass (attempts marked correct) and n (attempts). For a category c, the pass rate at one model is Σ pass / Σ n over the questions carrying c; the cell value is the equal-weight mean over the arm\'s models. Difficulty cells are formed the same way over the questions at that difficulty.',
       'Aggregation. One question may carry several categories and then contributes to each; category rates are therefore not additive across categories.',
-      'Reading it. Higher is better. Read a row to see an arm\'s profile and a column to see which arms handle a question class.',
+      'Reading it. Higher is better. Read a row to see an arm\'s profile and a column to see which arms handle a question class. Color encodes polarity, not magnitude: each cell is colored by its distance from bare Claude Code\'s pass rate in the same column (the column mean if that arm is absent from the selection), on a symmetric scale whose half-width is the largest difference in the figure and never less than ten points; the number is always the pass rate itself. A two-hue diverging scale with a neutral midpoint was chosen over a green-to-red one because the latter is unreadable under red–green color vision deficiency.',
     ],
   },
 ]
