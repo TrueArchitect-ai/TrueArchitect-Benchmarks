@@ -2,7 +2,7 @@
 // one exam and one battery (or both), the pass rate over the questions
 // carrying a category (or at a difficulty), pooled with equal weight over the
 // arm's models.
-import { armOrder, modelOrder } from './roster'
+import { armOrder, modelOrder, vendorOf } from './roster'
 import { mean } from './stats'
 import type { PerQuestion, Question } from './types'
 import type { HeatData, HeatCell } from '../charts/Heatmap'
@@ -10,19 +10,23 @@ import type { HeatData, HeatCell } from '../charts/Heatmap'
 const DIFF = ['', 'difficulty 1', 'difficulty 2', 'difficulty 3', 'difficulty 4', 'difficulty 5']
 
 /**
- * One heat variant per exam × battery × model ('all' = every model the arm
- * ran, pooled with equal weight). The model axis matters here more than
+ * One heat variant per exam × battery × model selection. The selection is
+ * 'all' (every model the arm ran), a vendor roster ('anthropic' | 'openai':
+ * the arm's models of that vendor), or one model id — pooled with equal
+ * weight over the models it admits. The model axis matters here more than
  * anywhere: pooled cells span each ARM'S OWN roster, and TrueArchitect's
- * includes GPT models no comparison arm ran — a single model is the only
- * like-for-like read.
+ * includes GPT models no comparison arm ran, so 'all' is not like for like;
+ * a vendor roster or a single model is.
  */
+export const HEAT_ROSTERS = ['anthropic', 'openai'] as const
 export function buildHeat(pq: PerQuestion[], questions: Record<string, Question[]>, exam: string, battery: 'memos' | 'memos-hard' | 'both', model: string = 'all'): HeatData {
   const batteries = battery === 'both' ? ['memos', 'memos-hard'] : [battery]
   const meta = new Map<string, Question>()
   for (const b of batteries) for (const q of questions[b] ?? []) meta.set(b + '|' + q.qid, q)
   const cats = [...new Set([...meta.values()].flatMap(q => q.categories))].sort()
   const diffs = [...new Set([...meta.values()].map(q => q.difficulty))].sort((a, b) => a - b).map(d => DIFF[d] ?? `difficulty ${d}`)
-  const rows = pq.filter(r => r.exam === exam && batteries.includes(r.battery) && (model === 'all' || r.model === model))
+  const admits = (m: string) => model === 'all' || m === model || ((HEAT_ROSTERS as readonly string[]).includes(model) && vendorOf(m) === model)
+  const rows = pq.filter(r => r.exam === exam && batteries.includes(r.battery) && admits(r.model))
   const arms = [...new Set(rows.map(r => r.arm))].sort(armOrder)
   const cells: HeatCell[] = []
   const colKeys = [...cats.map(c => ({ col: c, test: (q: Question) => q.categories.includes(c) })),

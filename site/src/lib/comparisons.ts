@@ -15,8 +15,10 @@ export type Comparison = {
   note?: string
 }
 
-// The six figures every comparison page shows, in order.
-export const COMPARISON_FIGURES = ['context-tokens', 'cost-per-correct', 'outcomes', 'accuracy', 'cost-variance', 'tool-result-tokens']
+// The seven figures every comparison page shows, in order: the six owner-
+// ordered figures, then the category grid restricted to the page's arms and
+// models (which is what makes its pooled cells like for like).
+export const COMPARISON_FIGURES = ['context-tokens', 'cost-per-correct', 'outcomes', 'accuracy', 'cost-variance', 'tool-result-tokens', 'categories']
 
 export const COMPARISONS: Comparison[] = [
   {

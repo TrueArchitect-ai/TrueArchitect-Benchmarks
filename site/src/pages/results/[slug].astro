@@ -4,7 +4,7 @@ import FigureIsland from '../../charts/FigureIsland'
 import { FIGURES } from '../../lib/figures'
 import { loadRuns, loadManifest, loadPerQuestion, loadQuestions, latestEpoch } from '../../lib/data'
 import { packRows } from '../../lib/measures'
-import { buildHeat, packHeat } from '../../lib/heat'
+import { buildHeat, packHeat, HEAT_ROSTERS } from '../../lib/heat'
 import { EXAMS } from '../../lib/roster'
 
 export function getStaticPaths() {
@@ -23,7 +23,7 @@ if (fig.kind === 'heatmap') {
   const qs: Record<string, any[]> = {}
   for (const b of manifest.repositories[repo].batteries) qs[b.battery_key] = loadQuestions(repo, b.battery_key)
   heat = []
-  const heatModels = ['all', ...new Set(pq.map(r => r.model))]
+  const heatModels = ['all', ...HEAT_ROSTERS, ...new Set(pq.map(r => r.model))]
   for (const e of EXAMS) for (const b of ['memos-hard', 'memos', 'both'] as const) for (const m of heatModels) heat.push(packHeat(buildHeat(pq, qs, e, b, m)))
 }
 const prev = FIGURES.find(f => f.number === fig.number - 1)

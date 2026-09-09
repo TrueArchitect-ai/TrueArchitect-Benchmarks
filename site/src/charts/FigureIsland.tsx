@@ -7,7 +7,7 @@ import Columns from './Columns'
 import Dots from './Dots'
 import Stack from './Stack'
 import Heatmap from './Heatmap'
-import { unpackHeat, type PackedHeat } from '../lib/heat'
+import { unpackHeat, HEAT_ROSTERS, type PackedHeat } from '../lib/heat'
 
 function useTheme(): boolean {
   const [dark, setDark] = useState(false)
@@ -99,8 +99,12 @@ export default function FigureIsland({ fig, data, heat, compact, controls, table
   const sel: Selection = { ...local, columns }
   const setSel = (f: (s: Selection) => Selection) => setLocal(s => { const n = f({ ...s, columns }); return { exams: n.exams, battery: n.battery, model: n.model } })
   const models = useMemo(() => (fig.kind === 'heatmap'
-    ? [...new Set((heat ?? []).map(h => h.model).filter(m => m !== 'all'))]
+    ? [...new Set((heat ?? []).map(h => h.model).filter(m => m !== 'all' && !(HEAT_ROSTERS as readonly string[]).includes(m)))]
     : [...new Set(rows.filter(r => r.ok && r.score != null).map(r => r.model))]).sort(modelOrder), [rows, heat, fig.kind])
+  // vendor rosters offered by the heatmap (only those present in the data)
+  const rosters = useMemo(() => (fig.kind === 'heatmap' ? HEAT_ROSTERS.filter(v => (heat ?? []).some(h => h.model === v)) : []), [heat, fig.kind])
+  const ROSTER_LABEL: Record<string, string> = { anthropic: 'Anthropic models', openai: 'OpenAI models' }
+  const modelChoiceLabel = (m: string) => (m === 'all' ? 'all models' : ROSTER_LABEL[m] ?? modelLabel(m))
   const groups = useMemo(() => (fig.kind === 'heatmap' ? [] : buildGroups(fig, rows, sel, dark)), [fig, rows, local, columns, dark])
   const refs = useMemo(() => referenceLines(fig, groups), [fig, groups])
   // the heatmap is per protocol: it follows the first selected protocol
@@ -134,7 +138,7 @@ export default function FigureIsland({ fig, data, heat, compact, controls, table
   const nColumns = groups.reduce((a, g) => a + g.columns.length, 0)
   const busy = columns === 'per-model' && !fig.lockColumns && !pooledBlocked && nColumns >= 12
   const examsLabel = fig.kind === 'heatmap' ? EXAM_LABEL[sel.exams[0]] : sel.exams.map(e => EXAM_LABEL[e]).join(' + ')
-  const slice = `${examsLabel} · ${sel.battery === 'both' ? 'both batteries' : BATTERY_LABEL[sel.battery]}${sel.model !== 'all' ? ' · ' + modelLabel(sel.model) : ''}`
+  const slice = `${examsLabel} · ${sel.battery === 'both' ? 'both batteries' : BATTERY_LABEL[sel.battery]}${sel.model !== 'all' ? ' · ' + modelChoiceLabel(sel.model) : ''}`
 
   return (
     <div className="figure" ref={ref}>
@@ -154,11 +158,16 @@ export default function FigureIsland({ fig, data, heat, compact, controls, table
           <Seg<BatteryChoice> name="battery" value={sel.battery}
             options={[{ v: 'memos-hard', label: 'hard (20 q)' }, { v: 'memos', label: 'base (30 q)' }, { v: 'both', label: 'both' }]}
             onChange={battery => setSel(s => ({ ...s, battery }))} />
-          <Seg name="model" value={sel.model} options={[{ v: 'all', label: 'all' }, ...models.map(m => ({ v: m, label: modelLabel(m) }))]} onChange={model => setSel(s => ({ ...s, model }))} />
-          {fig.kind === 'heatmap' && sel.model === 'all' && (
+          <Seg name="model" value={sel.model}
+            options={[{ v: 'all', label: 'all' }, ...rosters.map(v => ({ v, label: ROSTER_LABEL[v] })), ...models.map(m => ({ v: m, label: modelLabel(m) }))]}
+            onChange={model => setSel(s => ({ ...s, model }))} />
+          {fig.kind === 'heatmap' && (
             <p className="seg-help">
-              With <b>all</b> models, each cell pools the arm's own roster — and TrueArchitect's roster includes GPT models no comparison arm ran,
-              so its pooled cells are not like for like. Pick one model to compare arms at a fixed model.
+              {sel.model === 'all'
+                ? <>With <b>all</b> models each cell pools the arm's own roster, and TrueArchitect's roster includes GPT models no comparison arm ran, so its pooled cells are not like for like. A vendor roster or a single model compares arms over the same models.</>
+                : rosters.includes(sel.model as any)
+                  ? <>Each cell pools the arm's <b>{modelChoiceLabel(sel.model)}</b> with equal weight per model, so every arm is compared over the same vendor's models; an arm that ran none of them shows a gap.</>
+                  : <>Each cell is the arm's pass rate at <b>{modelChoiceLabel(sel.model)}</b> alone.</>}
             </p>
           )}
           {fig.kind !== 'heatmap' && fig.kind !== 'stack' && !fig.lockColumns && (
