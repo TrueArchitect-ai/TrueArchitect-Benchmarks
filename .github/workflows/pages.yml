@@ -34,9 +34,17 @@ jobs:
           cache-dependency-path: site/package-lock.json
       - run: npm ci
         working-directory: site
+      # configure-pages reports where Pages will actually serve the site: the
+      # custom domain at its root once a CNAME exists, the project path
+      # (/TrueArchitect-Benchmarks) before that. The build takes both from it
+      # so the links are right in either state.
+      - id: pages
+        uses: actions/configure-pages@v5
       - run: npm run build
         working-directory: site
-      - uses: actions/configure-pages@v5
+        env:
+          SITE_URL: ${{ steps.pages.outputs.origin }}
+          SITE_BASE: ${{ steps.pages.outputs.base_path || '/' }}
       - uses: actions/upload-pages-artifact@v3
         with:
           path: site/dist
