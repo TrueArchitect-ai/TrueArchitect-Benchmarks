@@ -1,0 +1,19 @@
+---
+// The owner's essay: why the benchmark exists, what it set out to find, what
+// it found. Authored by hand in src/content/overview.md (plain Markdown);
+// everything else on the site is generated from the data.
+import Base from '../layouts/Base.astro'
+import { marked } from 'marked'
+import overview from '../content/overview.md?raw'
+const base = import.meta.env.BASE_URL.replace(/\/$/, '')
+// site-relative links in the essay get the base path when the site serves under one
+const html = (marked.parse(overview, { gfm: true }) as string).replace(/href="\/(?!\/)/g, `href="${base}/`)
+const title = (overview.match(/^#\s+(.+)$/m)?.[1] ?? 'Overview').trim()
+const description = 'Why the TrueArchitect benchmark exists, what it set out to find out, and what it found — in the author\'s own words.'
+---
+<Base title={title} description={description}>
+  <div class="prose essay">
+    <div class="kicker">Overview · by Jasdeep Jaitla</div>
+    <div class="md" set:html={html} />
+  </div>
+</Base>

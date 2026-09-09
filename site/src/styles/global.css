@@ -136,6 +136,14 @@ details.data summary { cursor: pointer; font-size: 13px; font-weight: 600; margi
 .fig-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 10px; margin: 12px 0; }
 .cmp-figure { margin-top: 28px; padding-top: 8px; border-top: 1px solid var(--grid); }
 .fig-no-inline { color: var(--faint); font-size: 12px; font-family: var(--sans); font-weight: 500; letter-spacing: 0.04em; margin-right: 8px; }
+/* the essay reads at book width, in the serif, a touch larger */
+.essay { max-width: 76ch; }
+.essay .md { font-family: var(--serif); font-size: 17px; line-height: 1.6; }
+.essay .md h1 { font-size: 34px; margin: 6px 0 18px; }
+.essay .md h2 { font-size: 23px; margin-top: 34px; }
+.essay .md p { max-width: none; margin-bottom: 16px; }
+.essay .md code, .essay .md pre { font-family: var(--mono); }
+.essay .md blockquote { margin: 18px 0; padding: 2px 0 2px 18px; border-left: 3px solid var(--grid); color: var(--muted); }
 .md h1 { font-size: 26px; }
 .md h2 { font-size: 19px; }
 .md table { font-size: 12px; margin: 10px 0 18px; }
