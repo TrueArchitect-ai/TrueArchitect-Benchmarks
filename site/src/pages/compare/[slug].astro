@@ -27,8 +27,9 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '')
     {cmp.intro.map(p => <p class="lede">{p}</p>)}
     <p class="muted" style="font-size:13px">
       Arms: {arms.map(a => a.short).join(' · ')}. Models: {models.map(modelLabel).join(' · ')}.
-      {runs.filter(r => r.validity_ok && r.score != null).length} valid scored runs. One column per model on every figure; the defaults pool the
-      ZeroShot and MultiTurn protocols over both batteries (each protocol × battery × model cell one vote) — the controls on each figure change that.
+      {runs.filter(r => r.validity_ok && r.score != null).length} valid scored runs. Figures open with one column per arm (pooled models); the
+      Columns control switches every figure to one column per model, for like-for-like reads at a fixed model, and the choice is remembered site-wide.
+      The defaults pool the ZeroShot and MultiTurn protocols over both batteries (each protocol × battery × model cell one vote).
       The arm and model set is fixed to this comparison.
       {cmp.note && <span> {cmp.note}</span>}
     </p>
@@ -39,7 +40,7 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '')
       <div class="prose">
         <h2 id={fig.slug}><span class="fig-no-inline">Figure {fig.number}</span> {fig.title}</h2>
       </div>
-      <FigureIsland client:load fig={{ ...fig, defaults: { ...fig.defaults, columns: 'per-model' } }} data={packRows(runs, fig.measure.key)} controls table />
+      <FigureIsland client:load fig={fig} data={packRows(runs, fig.measure.key)} controls table />
       <div class="prose">
         <p class="caption">{fig.caption[0]} {fig.caption[1]} <a href={`${base}/results/${fig.slug}/`}>Full figure, definition and disclosures →</a></p>
       </div>

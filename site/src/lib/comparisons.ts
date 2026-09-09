@@ -1,6 +1,6 @@
 // One-click comparisons: a fixed set of arms and models with the key figures
-// stacked, one column per model on every figure so each read is like for
-// like at a fixed model. Every figure on a comparison page is the same island
+// stacked; the site-wide columns choice (pooled first, per model for like-for-
+// like reads at a fixed model) applies. Every figure on a comparison page is the same island
 // as its full figure page, restricted to the comparison's arms and models.
 import { vendorOf, armInfo } from './roster'
 
@@ -23,7 +23,7 @@ export const COMPARISONS: Comparison[] = [
     slug: 'anthropic', title: 'TrueArchitect & Anthropic', short: 'TrueArchitect & Anthropic',
     intro: [
       'Every arm that ran at an Anthropic model — bare Claude Code, Cursor Agent at Claude models, and the five indexing tools installed on Claude Code — beside TrueArchitect at the same models.',
-      'One column per model on every figure, so each comparison is like for like: Haiku against Haiku, Sonnet against Sonnet, Opus against Opus.',
+      'Switch the columns to per model and each comparison is like for like: Haiku against Haiku, Sonnet against Sonnet, Opus against Opus.',
     ],
     arms: () => true,
     models: m => vendorOf(m) === 'anthropic',
@@ -43,7 +43,7 @@ export const COMPARISONS: Comparison[] = [
     slug: 'indexers', title: 'TrueArchitect vs Indexers', short: 'TrueArchitect vs Indexers',
     intro: [
       'The five tools people install on Claude Code to give it a code graph — Graphify, GitNexus, CodeGraph, CodebaseMemory and Serena — each installed as shipped, beside TrueArchitect and bare Claude Code as the baseline they were installed on.',
-      'The indexing tools ran at Anthropic models only, so this comparison is restricted to those models, one column per model for every arm.',
+      'The indexing tools ran at Anthropic models only, so this comparison is restricted to those models; switch the columns to per model for one column per model for every arm.',
     ],
     arms: id => armInfo(id).role !== 'bare' || id === 'cold',
     models: m => vendorOf(m) === 'anthropic',

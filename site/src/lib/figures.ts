@@ -26,6 +26,9 @@ export type Figure = {
     vendorBound?: boolean // raw token counts: never pooled across vendors (tokenizers differ)
   }
   defaults: { exams: string[]; battery: BatteryChoice; columns: ColumnsMode; model?: string }
+  // The columns choice is SITE-WIDE (remembered, synced across every figure);
+  // a figure whose meaning is one mode declares it here and hides the control.
+  lockColumns?: ColumnsMode
   reference: 'bare' | 'none'   // dashed lines at TrueArchitect's and the bare harnesses' pooled values
   caption: [string, string, string]
   explanation: string[]        // formal paragraphs
@@ -36,7 +39,7 @@ export const FIGURES: Figure[] = [
   {
     slug: 'context-tokens', number: 1, title: 'Context tokens per run', short: 'Context tokens', kind: 'columns',
     measure: { key: 'ctx', cell: 'mean', label: 'context tokens per run (input + cache read)', unit: 'tokens', better: 'low', vendorBound: true },
-    defaults: { exams: ['ZeroShotExam', 'MultiTurnExam'], battery: 'both', columns: 'per-model' },
+    defaults: { exams: ['ZeroShotExam', 'MultiTurnExam'], battery: 'both', columns: 'pooled' },
     reference: 'bare',
     caption: [
       'Context tokens are the tokens the model read to answer a whole run: the uncached input plus every cache read, summed over every API call in the run, all threads included.',
@@ -46,7 +49,7 @@ export const FIGURES: Figure[] = [
     explanation: [
       'Definition. For run r, context(r) = tokens_input(r) + tokens_cache_read(r), where tokens_input is the uncached tail of every request and tokens_cache_read the cached prefix re-read on each call. Both are summed over all API calls of the run, including sub-agent threads, from the per-call record named by token_source in the run record (a gateway ledger for TrueArchitect; the harness session logs or the harness\'s own per-call usage for the comparison group). Cache writes and output tokens are excluded here and reported in the run records.',
       'Aggregation. A column is the arithmetic mean of context(r) over the valid, scored runs of one arm at one model, for the selected exam and battery. When both batteries are selected, each battery forms its own cell and the column is the mean of the two cell means, so the longer battery does not dominate.',
-      'Why per model. Token counts are tokenizer facts: a Sonnet token and a GPT token are not the same unit. The site therefore never pools raw token counts across vendors. The default shows one column per model for every arm; the pooled-models view pools an arm over its roster only where the roster is a single vendor, and an arm spanning two vendors stays split, which the table discloses.',
+      'Why per model. Token counts are tokenizer facts: a Sonnet token and a GPT token are not the same unit. The site therefore never pools raw token counts across vendors. The pooled-models view (the default) pools an arm over its roster only where the roster is a single vendor; an arm spanning two vendors stays split into one column per model whatever the columns choice, which the table discloses.',
       'Reading it. Lower is better. The like-for-like comparison is column to column at the same model: TrueArchitect at Sonnet 5 against bare Claude Code at Sonnet 5, TrueArchitect at GPT 5.6 Sol against Codex at GPT 5.6 Sol. The dashed reference lines are TrueArchitect\'s and the bare harnesses\' pooled means, drawn only where a pooled value is licensed (a single-vendor roster), so the indexing tools have both TrueArchitect and their baseline in the same picture.',
     ],
     disclosures: [
@@ -73,7 +76,7 @@ export const FIGURES: Figure[] = [
   {
     slug: 'pass-rate', number: 3, title: 'Reliability: runs scoring at least 90 percent', short: 'Reliability', kind: 'columns',
     measure: { key: 'pct', cell: 'passrate90', label: 'share of runs at or above 90 % accuracy', unit: 'pct', better: 'high' },
-    defaults: { exams: ['ZeroShotExam', 'MultiTurnExam'], battery: 'both', columns: 'per-model' },
+    defaults: { exams: ['ZeroShotExam', 'MultiTurnExam'], battery: 'both', columns: 'pooled' },
     reference: 'bare',
     caption: [
       'Reliability asks a stricter question than accuracy: of all the runs an arm made, what share reached 90 percent or better?',
@@ -122,7 +125,7 @@ export const FIGURES: Figure[] = [
   {
     slug: 'tokens-per-correct', number: 6, title: 'Context tokens per correct answer', short: 'Tokens per correct', kind: 'columns',
     measure: { key: 'ctx_per_correct', cell: 'mean', label: 'context tokens per correct answer', unit: 'tokens', better: 'low', vendorBound: true },
-    defaults: { exams: ['ZeroShotExam', 'MultiTurnExam'], battery: 'both', columns: 'per-model' },
+    defaults: { exams: ['ZeroShotExam', 'MultiTurnExam'], battery: 'both', columns: 'pooled' },
     reference: 'bare',
     caption: [
       'This divides a run\'s context tokens (Figure 1) by the number of questions it answered correctly, so an arm that reads less but also answers less is not rewarded.',
@@ -138,7 +141,7 @@ export const FIGURES: Figure[] = [
   {
     slug: 'tool-calls', number: 7, title: 'Tool calls per run', short: 'Tool calls', kind: 'columns',
     measure: { key: 'tool_calls', cell: 'mean', label: 'tool calls per run', unit: 'count', better: 'low' },
-    defaults: { exams: ['ZeroShotExam', 'MultiTurnExam'], battery: 'both', columns: 'per-model' },
+    defaults: { exams: ['ZeroShotExam', 'MultiTurnExam'], battery: 'both', columns: 'pooled' },
     reference: 'bare',
     caption: [
       'A tool call is one invocation of any tool the arm offered its model: file reads, searches, shell commands, sub-agents, an indexing tool\'s query surface, or the TrueArchitect index.',
@@ -175,6 +178,7 @@ export const FIGURES: Figure[] = [
     slug: 'model-tiers', number: 9, title: 'Accuracy by model', short: 'Accuracy by model', kind: 'columns',
     measure: { key: 'pct', cell: 'mean', label: 'accuracy (% of questions correct)', unit: 'pct', better: 'high' },
     defaults: { exams: ['ZeroShotExam', 'MultiTurnExam'], battery: 'both', columns: 'per-model' },
+    lockColumns: 'per-model',
     reference: 'none',
     caption: [
       'The same accuracy as Figure 2, split into one column per model for every arm, so the cross-tier comparison is readable directly.',
@@ -208,7 +212,7 @@ FIGURES.push(
   {
     slug: 'cost-per-correct', number: 11, title: 'Cost per correct answer', short: 'Cost per correct', kind: 'columns',
     measure: { key: 'cost_per_correct', cell: 'mean', label: 'USD per correct answer', unit: 'usd', better: 'low' },
-    defaults: { exams: ['ZeroShotExam', 'MultiTurnExam'], battery: 'both', columns: 'per-model' },
+    defaults: { exams: ['ZeroShotExam', 'MultiTurnExam'], battery: 'both', columns: 'pooled' },
     reference: 'bare',
     caption: [
       'Cost per correct answer divides what a run cost by the number of questions it answered correctly: the vendor-reported figure where the harness reported one, otherwise the benchmark\'s estimate from the published rate tables over the run\'s four token columns.',
@@ -225,7 +229,7 @@ FIGURES.push(
   {
     slug: 'cost-variance', number: 12, title: 'Cost per run', short: 'Cost per run', kind: 'dots',
     measure: { key: 'cost', cell: 'mean', label: 'USD per run', unit: 'usd', better: 'low' },
-    defaults: { exams: ['ZeroShotExam', 'MultiTurnExam'], battery: 'both', columns: 'per-model' },
+    defaults: { exams: ['ZeroShotExam', 'MultiTurnExam'], battery: 'both', columns: 'pooled' },
     reference: 'bare',
     caption: [
       'Every dot is what one run cost (vendor-reported where available, otherwise estimated from the rate tables), so the spread of an arm\'s price is visible, not just its mean.',
@@ -241,7 +245,7 @@ FIGURES.push(
   {
     slug: 'tool-result-tokens', number: 13, title: 'Tool result tokens per run', short: 'Tool result tokens', kind: 'dots',
     measure: { key: 'tool_result_tokens', cell: 'mean', label: 'tool result tokens per run (estimated)', unit: 'tokens', better: 'low', vendorBound: true },
-    defaults: { exams: ['ZeroShotExam', 'MultiTurnExam'], battery: 'both', columns: 'per-model' },
+    defaults: { exams: ['ZeroShotExam', 'MultiTurnExam'], battery: 'both', columns: 'pooled' },
     reference: 'bare',
     caption: [
       'Tool result tokens are the volume of text the arm\'s tools pushed back into the model\'s context over a run — file contents, search hits, shell output, or an index query\'s result — estimated per call from the result size.',

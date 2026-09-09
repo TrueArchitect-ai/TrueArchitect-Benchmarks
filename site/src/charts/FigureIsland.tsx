@@ -21,6 +21,31 @@ function useTheme(): boolean {
   return dark
 }
 
+/**
+ * A site-wide, remembered preference: read from localStorage after mount
+ * (the server render uses the fallback), written on change, and broadcast to
+ * every other island on the page so one control moves every figure.
+ */
+function useSitePref<T extends string>(key: string, fallback: T, valid: readonly T[]): [T, (v: T) => void] {
+  const [v, setV] = useState<T>(fallback)
+  const storeKey = 'ta-pref:' + key
+  useEffect(() => {
+    const read = () => { try { const s = localStorage.getItem(storeKey); if (s && (valid as readonly string[]).includes(s)) setV(s as T) } catch {} }
+    read()
+    const onLocal = (e: Event) => { const d = (e as CustomEvent).detail; if (d?.key === key) setV(d.value as T) }
+    const onStorage = (e: StorageEvent) => { if (e.key === storeKey) read() }
+    window.addEventListener('ta-pref', onLocal)
+    window.addEventListener('storage', onStorage)
+    return () => { window.removeEventListener('ta-pref', onLocal); window.removeEventListener('storage', onStorage) }
+  }, [key])
+  const set = (nv: T) => {
+    setV(nv)
+    try { localStorage.setItem(storeKey, nv) } catch {}
+    window.dispatchEvent(new CustomEvent('ta-pref', { detail: { key, value: nv } }))
+  }
+  return [v, set]
+}
+
 function useWidth<T extends HTMLElement>(): [React.RefObject<T | null>, number] {
   const ref = useRef<T>(null)
   const [w, setW] = useState(960)
@@ -66,9 +91,14 @@ export default function FigureIsland({ fig, data, heat, compact, controls, table
   const dark = useTheme()
   const [ref, panelW] = useWidth<HTMLDivElement>()
   const rows = useMemo(() => unpackRows(data), [data])
-  const [sel, setSel] = useState<Selection>({ exams: fig.defaults.exams, battery: fig.defaults.battery, columns: fig.defaults.columns, model: fig.defaults.model ?? 'all' })
+  const [local, setLocal] = useState<Omit<Selection, 'columns'>>({ exams: fig.defaults.exams, battery: fig.defaults.battery, model: fig.defaults.model ?? 'all' })
+  // the columns choice is site-wide (pooled first); a locked figure ignores it
+  const [columnsPref, setColumnsPref] = useSitePref<ColumnsMode>('columns', 'pooled', ['pooled', 'per-model'])
+  const columns: ColumnsMode = fig.lockColumns ?? columnsPref
+  const sel: Selection = { ...local, columns }
+  const setSel = (f: (s: Selection) => Selection) => setLocal(s => { const n = f({ ...s, columns }); return { exams: n.exams, battery: n.battery, model: n.model } })
   const models = useMemo(() => [...new Set(rows.filter(r => r.ok && r.score != null).map(r => r.model))].sort(modelOrder), [rows])
-  const groups = useMemo(() => (fig.kind === 'heatmap' ? [] : buildGroups(fig, rows, sel, dark)), [fig, rows, sel, dark])
+  const groups = useMemo(() => (fig.kind === 'heatmap' ? [] : buildGroups(fig, rows, sel, dark)), [fig, rows, local, columns, dark])
   const refs = useMemo(() => referenceLines(fig, groups), [fig, groups])
   // the heatmap is per protocol: it follows the first selected protocol
   const heatNow = heat?.find(h => h.exam === sel.exams[0] && h.battery === (sel.battery === 'both' ? 'both' : sel.battery)) ?? heat?.[0]
@@ -97,6 +127,8 @@ export default function FigureIsland({ fig, data, heat, compact, controls, table
   }
 
   const rankTotal = groups.filter(g => g.rank != null).length
+  const nColumns = groups.reduce((a, g) => a + g.columns.length, 0)
+  const busy = columns === 'per-model' && !fig.lockColumns && !pooledBlocked && nColumns >= 12
   const examsLabel = fig.kind === 'heatmap' ? EXAM_LABEL[sel.exams[0]] : sel.exams.map(e => EXAM_LABEL[e]).join(' + ')
   const slice = `${examsLabel} · ${sel.battery === 'both' ? 'both batteries' : BATTERY_LABEL[sel.battery]}${sel.model !== 'all' ? ' · ' + modelLabel(sel.model) : ''}`
 
@@ -121,13 +153,30 @@ export default function FigureIsland({ fig, data, heat, compact, controls, table
           {fig.kind !== 'heatmap' && (
             <Seg name="model" value={sel.model} options={[{ v: 'all', label: 'all' }, ...models.map(m => ({ v: m, label: modelLabel(m) }))]} onChange={model => setSel(s => ({ ...s, model }))} />
           )}
-          {fig.kind !== 'heatmap' && fig.kind !== 'stack' && (
-            <Seg<ColumnsMode> name="columns" value={sel.columns}
-              options={[
-                { v: 'per-model', label: 'per model' },
-                { v: 'pooled', label: 'pooled models', disabled: pooledBlocked },
-              ]}
-              onChange={columns => setSel(s => ({ ...s, columns }))} />
+          {fig.kind !== 'heatmap' && fig.kind !== 'stack' && !fig.lockColumns && (
+            <>
+              <Seg<ColumnsMode> name="columns" value={columns}
+                options={[
+                  { v: 'pooled', label: 'pooled models', disabled: pooledBlocked },
+                  { v: 'per-model', label: 'per model' },
+                ]}
+                onChange={setColumnsPref} />
+              <p className="seg-help">
+                <b>Pooled models</b> shows one column per arm, its models averaged with equal weight — the readable overview.
+                <b> Per model</b> shows one column per model for every arm, for like-for-like reads at a fixed model.
+                This choice applies to every figure on the site and is remembered.
+              </p>
+              {busy && (
+                <p className="seg-nudge" role="status">
+                  This figure has {nColumns} columns in the per-model view.
+                  <button type="button" onClick={() => setColumnsPref('pooled')}>Show pooled models</button>
+                  for one column per arm.
+                </p>
+              )}
+            </>
+          )}
+          {fig.lockColumns && fig.kind !== 'heatmap' && fig.kind !== 'stack' && (
+            <p className="seg-help">This figure is always {fig.lockColumns === 'per-model' ? 'one column per model' : 'one column per arm'}; the site-wide columns choice does not apply to it.</p>
           )}
         </div>
       )}
