@@ -9,13 +9,20 @@ import type { HeatData, HeatCell } from '../charts/Heatmap'
 
 const DIFF = ['', 'difficulty 1', 'difficulty 2', 'difficulty 3', 'difficulty 4', 'difficulty 5']
 
-export function buildHeat(pq: PerQuestion[], questions: Record<string, Question[]>, exam: string, battery: 'memos' | 'memos-hard' | 'both'): HeatData {
+/**
+ * One heat variant per exam × battery × model ('all' = every model the arm
+ * ran, pooled with equal weight). The model axis matters here more than
+ * anywhere: pooled cells span each ARM'S OWN roster, and TrueArchitect's
+ * includes GPT models no comparison arm ran — a single model is the only
+ * like-for-like read.
+ */
+export function buildHeat(pq: PerQuestion[], questions: Record<string, Question[]>, exam: string, battery: 'memos' | 'memos-hard' | 'both', model: string = 'all'): HeatData {
   const batteries = battery === 'both' ? ['memos', 'memos-hard'] : [battery]
   const meta = new Map<string, Question>()
   for (const b of batteries) for (const q of questions[b] ?? []) meta.set(b + '|' + q.qid, q)
   const cats = [...new Set([...meta.values()].flatMap(q => q.categories))].sort()
   const diffs = [...new Set([...meta.values()].map(q => q.difficulty))].sort((a, b) => a - b).map(d => DIFF[d] ?? `difficulty ${d}`)
-  const rows = pq.filter(r => r.exam === exam && batteries.includes(r.battery))
+  const rows = pq.filter(r => r.exam === exam && batteries.includes(r.battery) && (model === 'all' || r.model === model))
   const arms = [...new Set(rows.map(r => r.arm))].sort(armOrder)
   const cells: HeatCell[] = []
   const colKeys = [...cats.map(c => ({ col: c, test: (q: Question) => q.categories.includes(c) })),
@@ -36,8 +43,29 @@ export function buildHeat(pq: PerQuestion[], questions: Record<string, Question[
         }
         if (mn > 0) { perModel.push((100 * mp) / mn); pass += mp; n += mn }
       }
-      cells.push({ arm, col, rate: perModel.length ? mean(perModel) : null, pass, n, models: perModel.length })
+      // an arm that never ran this model has no cell (the chart draws the gap); keeps the page small
+      if (perModel.length) cells.push({ arm, col, rate: mean(perModel), pass, n, models: perModel.length })
     }
   }
-  return { exam, battery, columns: cats, difficulty: diffs, cells }
+  return { exam, battery, model, columns: cats, difficulty: diffs, cells }
+}
+
+// Packed form for the island props: cells as [arm index, column index, rate,
+// pass, n, models] tuples over shared arm/column tables (~4× smaller than the
+// object form across the 80-odd exam × battery × model variants).
+export type PackedHeat = { exam: string; battery: string; model: string; columns: string[]; difficulty: string[]; arms: string[]; cells: [number, number, number, number, number, number][] }
+
+export function packHeat(h: HeatData): PackedHeat {
+  const arms = [...new Set(h.cells.map(c => c.arm))]
+  const cols = [...h.columns, ...h.difficulty]
+  return {
+    exam: h.exam, battery: h.battery, model: h.model, columns: h.columns, difficulty: h.difficulty, arms,
+    cells: h.cells.filter(c => c.rate != null).map(c => [arms.indexOf(c.arm), cols.indexOf(c.col), Math.round(c.rate! * 100) / 100, c.pass, c.n, c.models]),
+  }
+}
+
+export function unpackHeat(p: PackedHeat): HeatData {
+  const cols = [...p.columns, ...p.difficulty]
+  return { exam: p.exam, battery: p.battery, model: p.model, columns: p.columns, difficulty: p.difficulty,
+    cells: p.cells.map(([a, c, rate, pass, n, models]) => ({ arm: p.arms[a], col: cols[c], rate, pass, n, models })) }
 }

@@ -6,7 +6,8 @@ import { unpackRows, type Packed } from '../lib/measures'
 import Columns from './Columns'
 import Dots from './Dots'
 import Stack from './Stack'
-import Heatmap, { type HeatData } from './Heatmap'
+import Heatmap from './Heatmap'
+import { unpackHeat, type PackedHeat } from '../lib/heat'
 
 function useTheme(): boolean {
   const [dark, setDark] = useState(false)
@@ -81,7 +82,7 @@ function csvOf(fig: Figure, groups: Group[]): string {
 }
 
 export default function FigureIsland({ fig, data, heat, compact, controls, table }: {
-  fig: Figure; data: Packed[]; heat?: HeatData[]
+  fig: Figure; data: Packed[]; heat?: PackedHeat[]
   compact?: boolean        // summary use: no controls, no table
   controls?: boolean       // explicit overrides
   table?: boolean
@@ -97,11 +98,14 @@ export default function FigureIsland({ fig, data, heat, compact, controls, table
   const columns: ColumnsMode = fig.lockColumns ?? columnsPref
   const sel: Selection = { ...local, columns }
   const setSel = (f: (s: Selection) => Selection) => setLocal(s => { const n = f({ ...s, columns }); return { exams: n.exams, battery: n.battery, model: n.model } })
-  const models = useMemo(() => [...new Set(rows.filter(r => r.ok && r.score != null).map(r => r.model))].sort(modelOrder), [rows])
+  const models = useMemo(() => (fig.kind === 'heatmap'
+    ? [...new Set((heat ?? []).map(h => h.model).filter(m => m !== 'all'))]
+    : [...new Set(rows.filter(r => r.ok && r.score != null).map(r => r.model))]).sort(modelOrder), [rows, heat, fig.kind])
   const groups = useMemo(() => (fig.kind === 'heatmap' ? [] : buildGroups(fig, rows, sel, dark)), [fig, rows, local, columns, dark])
   const refs = useMemo(() => referenceLines(fig, groups), [fig, groups])
   // the heatmap is per protocol: it follows the first selected protocol
-  const heatNow = heat?.find(h => h.exam === sel.exams[0] && h.battery === (sel.battery === 'both' ? 'both' : sel.battery)) ?? heat?.[0]
+  const heatPacked = heat?.find(h => h.exam === sel.exams[0] && h.battery === (sel.battery === 'both' ? 'both' : sel.battery) && h.model === sel.model) ?? heat?.[0]
+  const heatNow = useMemo(() => (heatPacked ? unpackHeat(heatPacked) : undefined), [heatPacked])
   const toggleExam = (e: string) => setSel(s => ({ ...s, exams: s.exams.includes(e) ? (s.exams.length > 1 ? s.exams.filter(x => x !== e) : s.exams) : EXAMS.filter(x => x === e || s.exams.includes(x)) }))
   const vendorsSel = sel.model === 'all' ? new Set(models.map(vendorOf)) : new Set([vendorOf(sel.model)])
   const pooledBlocked = !!fig.measure.vendorBound && vendorsSel.size > 1
@@ -150,8 +154,12 @@ export default function FigureIsland({ fig, data, heat, compact, controls, table
           <Seg<BatteryChoice> name="battery" value={sel.battery}
             options={[{ v: 'memos-hard', label: 'hard (20 q)' }, { v: 'memos', label: 'base (30 q)' }, { v: 'both', label: 'both' }]}
             onChange={battery => setSel(s => ({ ...s, battery }))} />
-          {fig.kind !== 'heatmap' && (
-            <Seg name="model" value={sel.model} options={[{ v: 'all', label: 'all' }, ...models.map(m => ({ v: m, label: modelLabel(m) }))]} onChange={model => setSel(s => ({ ...s, model }))} />
+          <Seg name="model" value={sel.model} options={[{ v: 'all', label: 'all' }, ...models.map(m => ({ v: m, label: modelLabel(m) }))]} onChange={model => setSel(s => ({ ...s, model }))} />
+          {fig.kind === 'heatmap' && sel.model === 'all' && (
+            <p className="seg-help">
+              With <b>all</b> models, each cell pools the arm's own roster — and TrueArchitect's roster includes GPT models no comparison arm ran,
+              so its pooled cells are not like for like. Pick one model to compare arms at a fixed model.
+            </p>
           )}
           {fig.kind !== 'heatmap' && fig.kind !== 'stack' && !fig.lockColumns && (
             <>

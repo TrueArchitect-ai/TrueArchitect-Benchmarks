@@ -4,7 +4,7 @@ import { T, FONT_SANS, FONT_SERIF } from './theme'
 import { Tooltip, type Tip } from './Columns'
 
 export type HeatCell = { arm: string; col: string; rate: number | null; pass: number; n: number; models: number }
-export type HeatData = { exam: string; battery: string; columns: string[]; difficulty: string[]; cells: HeatCell[] }
+export type HeatData = { exam: string; battery: string; model: string; columns: string[]; difficulty: string[]; cells: HeatCell[] }
 
 // Diverging color: which side of the baseline a cell sits on. The baseline is
 // bare Claude Code's pass rate in the same column (the null hypothesis; the
