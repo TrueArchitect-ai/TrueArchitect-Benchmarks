@@ -1,4 +1,4 @@
-/* The report's chrome. Light is the default (figures paste into light
+/* The report's chrome. The theme follows the OS by default (figures paste into light
    documents); dark is a toggle. Data colors (the arms) never change with
    the theme — only chrome does. */
 :root {
@@ -70,7 +70,7 @@ td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; }
 :root[data-theme-mode="light"] .theme-fab .ico-light { display: block; }
 :root[data-theme-mode="dark"] .theme-fab .ico-dark { display: block; }
 :root[data-theme-mode="system"] .theme-fab .ico-system { display: block; }
-:root:not([data-theme-mode]) .theme-fab .ico-light { display: block; }
+:root:not([data-theme-mode]) .theme-fab .ico-system { display: block; }
 /* The main column is full width (minus the nav); PROSE is held to a reading
    column, FIGURES stretch to the full width so a wide chart shrinks into the
    panel instead of scrolling. */
