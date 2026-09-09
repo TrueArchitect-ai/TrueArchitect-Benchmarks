@@ -1,0 +1,19 @@
+{
+  "artifact_sources": {
+    "blobs": 300,
+    "tree": 2392
+  },
+  "capture_gaps_disclosed": 1,
+  "comparison_side_review_items": 18,
+  "epoch": 4,
+  "redaction_totals": {
+    "fences": 2,
+    "envelope_lines": 0,
+    "selectors": 555,
+    "macros": 2748,
+    "attrs": 149,
+    "names": 61039,
+    "paths": 51
+  },
+  "runs": 2692
+}

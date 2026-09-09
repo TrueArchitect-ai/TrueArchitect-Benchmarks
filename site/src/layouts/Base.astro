@@ -1,0 +1,124 @@
+---
+import '../styles/global.css'
+import { FIGURES } from '../lib/figures'
+import { COMPARISONS } from '../lib/comparisons'
+import { loadManifest } from '../lib/data'
+const { title, description = 'The public proof package behind the TrueArchitect benchmark numbers: every question, answer, verdict, transcript and figure, reproducible from one export.' } = Astro.props
+const manifest = loadManifest()
+const base = import.meta.env.BASE_URL.replace(/\/$/, '')
+const here = Astro.url.pathname.replace(base, '').replace(/\/$/, '') || '/'
+const is = (p: string) => (p === '/' ? here === '/' : here.startsWith(p))
+---
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title} — TrueArchitect Benchmarks</title>
+    <meta name="description" content={description} />
+    <link rel="icon" href={`${base}/favicon.svg`} type="image/svg+xml" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&display=swap" rel="stylesheet" />
+    <script is:inline>
+      // theme before first paint: light | dark | system (light default; the choice persists)
+      (function () {
+        var mode = 'light'
+        try { mode = localStorage.getItem('theme') || 'light' } catch (e) {}
+        if (mode !== 'dark' && mode !== 'system') mode = 'light'
+        var dark = mode === 'dark' || (mode === 'system' && window.matchMedia('(prefers-color-scheme: dark)').matches)
+        if (dark) document.documentElement.dataset.theme = 'dark'
+        document.documentElement.dataset.themeMode = mode
+      })()
+    </script>
+  </head>
+  <body>
+    <div class="shell">
+      <nav class="nav" aria-label="site">
+        <a class="brand" href={`${base}/`}>TrueArchitect Benchmarks</a>
+        <div class="brand-sub">{manifest.epoch.id} · the public proof package</div>
+        <a class={is('/') ? 'on' : ''} href={`${base}/`}>Summary</a>
+        <h4>Comparisons</h4>
+        {COMPARISONS.map(c => (
+          <>
+            <a class={is(`/compare/${c.slug}`) ? 'on' : ''} href={`${base}/compare/${c.slug}/`}>{c.short}</a>
+            {is(`/compare/${c.slug}`) && (
+              <div class="subnav" data-subnav>
+                {c.figures.map(s => { const f = FIGURES.find(x => x.slug === s)!; return (
+                  <a class="sub" href={`#${f.slug}`} data-target={f.slug}><span class="fig-no">{f.number}</span>{f.short}</a>
+                ) })}
+              </div>
+            )}
+          </>
+        ))}
+        <h4>Figures</h4>
+        {FIGURES.map(f => (
+          <a class={is(`/results/${f.slug}`) ? 'on' : ''} href={`${base}/results/${f.slug}/`}><span class="fig-no">{f.number}</span>{f.short}</a>
+        ))}
+        <h4>Report</h4>
+        <a class={is('/method') ? 'on' : ''} href={`${base}/method/`}>Method</a>
+        <a class={is('/limitations') ? 'on' : ''} href={`${base}/limitations/`}>Limitations</a>
+        <a class={is('/data') ? 'on' : ''} href={`${base}/data/`}>Data &amp; reproducibility</a>
+        <a href="https://github.com/TrueArchitect-ai/TrueArchitect-Benchmarks" target="_blank" rel="noopener">Repository ↗</a>
+        <div class="nav-foot">
+          Every number links to the run that produced it.
+        </div>
+      </nav>
+      <main class="main">
+        <slot />
+      </main>
+    </div>
+    <button class="theme-fab" type="button" id="theme-toggle" aria-label="Theme: light, dark or system" title="Theme: light">
+      <svg class="ico ico-light" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <circle cx="12" cy="12" r="4" /><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4" />
+      </svg>
+      <svg class="ico ico-dark" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z" />
+      </svg>
+      <svg class="ico ico-system" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <circle cx="12" cy="12" r="9" /><path d="M12 3a9 9 0 0 1 0 18z" fill="currentColor" stroke="none" />
+      </svg>
+    </button>
+    <script is:inline>
+      // theme cycle: light → dark → system; system follows the OS and tracks changes live
+      ;(function () {
+        var el = document.documentElement
+        var btn = document.getElementById('theme-toggle')
+        var mq = window.matchMedia('(prefers-color-scheme: dark)')
+        var LABEL = { light: 'light', dark: 'dark', system: 'system (follows the OS)' }
+        function apply(mode) {
+          var dark = mode === 'dark' || (mode === 'system' && mq.matches)
+          if (dark) { el.dataset.theme = 'dark' } else { delete el.dataset.theme }
+          el.dataset.themeMode = mode
+          btn.title = 'Theme: ' + LABEL[mode]
+        }
+        apply(el.dataset.themeMode || 'light')
+        btn.addEventListener('click', function () {
+          var cur = el.dataset.themeMode || 'light'
+          var next = cur === 'light' ? 'dark' : cur === 'dark' ? 'system' : 'light'
+          apply(next)
+          try { localStorage.setItem('theme', next) } catch (e) {}
+        })
+        var onChange = function () { if (el.dataset.themeMode === 'system') apply('system') }
+        if (mq.addEventListener) mq.addEventListener('change', onChange); else mq.addListener(onChange)
+      })()
+      // subnav scroll-spy: the section nearest the top of the viewport is the current one
+      ;(function () {
+        var sub = document.querySelector('[data-subnav]')
+        if (!sub) return
+        var links = Array.prototype.slice.call(sub.querySelectorAll('a[data-target]'))
+        var heads = links.map(function (a) { return document.getElementById(a.dataset.target) }).filter(Boolean)
+        if (!heads.length) return
+        var ticking = false
+        function update() {
+          ticking = false
+          var cur = heads[0]
+          for (var i = 0; i < heads.length; i++) if (heads[i].getBoundingClientRect().top <= 120) cur = heads[i]
+          links.forEach(function (a) { a.classList.toggle('on', a.dataset.target === cur.id) })
+        }
+        window.addEventListener('scroll', function () { if (!ticking) { ticking = true; requestAnimationFrame(update) } }, { passive: true })
+        update()
+      })()
+    </script>
+  </body>
+</html>

@@ -1,0 +1,267 @@
+{
+  "economics": {
+    "completed_at": "2026-08-07T04:46:22Z",
+    "cost_basis": "not_reported",
+    "cost_reported_usd": null,
+    "duration_ms": null,
+    "history_replay_delta": null,
+    "llm_calls_main_thread": 8,
+    "llm_calls_recorded": 0,
+    "main_turns": null,
+    "per_question": [
+      {
+        "cost_reported": null,
+        "duration_ms": 17462,
+        "main_turns": 2,
+        "qid": "q01",
+        "separable": true,
+        "subagent_threads": 0,
+        "subagent_turns": 0,
+        "tokens_cache_read": 14134,
+        "tokens_cache_write": 8452,
+        "tokens_input": 4,
+        "tokens_output": 339
+      },
+      {
+        "cost_reported": null,
+        "duration_ms": 9342,
+        "main_turns": 2,
+        "qid": "q02",
+        "separable": true,
+        "subagent_threads": 0,
+        "subagent_turns": 0,
+        "tokens_cache_read": 14301,
+        "tokens_cache_write": 0,
+        "tokens_input": 4,
+        "tokens_output": 218
+      },
+      {
+        "cost_reported": null,
+        "duration_ms": 9958,
+        "main_turns": 2,
+        "qid": "q03",
+        "separable": true,
+        "subagent_threads": 0,
+        "subagent_turns": 0,
+        "tokens_cache_read": 14126,
+        "tokens_cache_write": 2257,
+        "tokens_input": 4,
+        "tokens_output": 280
+      },
+      {
+        "cost_reported": null,
+        "duration_ms": 12830,
+        "main_turns": 2,
+        "qid": "q04",
+        "separable": true,
+        "subagent_threads": 0,
+        "subagent_turns": 0,
+        "tokens_cache_read": 14120,
+        "tokens_cache_write": 3071,
+        "tokens_input": 4,
+        "tokens_output": 352
+      }
+    ],
+    "rate_table_version": null,
+    "started_at": "2026-08-07T04:42:53Z",
+    "token_source": "ledger_all_calls",
+    "tokens_cache_read": 56681,
+    "tokens_cache_write": 13780,
+    "tokens_input": 16,
+    "tokens_output": 1189,
+    "tool_calls": {
+      "by_class": {
+        "product_builtin": 1,
+        "product_semantic": 4
+      },
+      "by_tool": {
+        "archmap_query": 4,
+        "grep_content": 1
+      },
+      "total": 5
+    }
+  },
+  "files": {
+    "answers/q01.md": "85b3ffc8fa824ca0b7fbcdf28caf16fbbee38606b9afa417dc7964715b3f3e79",
+    "answers/q02.md": "fb0e0ac1aeec3fa288fce7be6128aa9bf8c2bd6ef881c35edb0991296d34cd67",
+    "answers/q03.md": "ef2da020495d252473ca9d42a412642d40e208faa8ea5edb43b730a61714e20c",
+    "answers/q04.md": "28be109a8f113f5a5337f22f8f277c1c7ca1b930a63da4cbc961d18dc7e7fb13",
+    "transcript/q01.jsonl": "794b21037e2f64bc4138974ad1f56665be194ceeba733cfd8266f2ca374c627e",
+    "transcript/q02.jsonl": "0a26aa64027ee94d64a4475de8ef2fc67a3ee89e7b5e338338b0de571543f322",
+    "transcript/q03.jsonl": "d7f76e7a3880a7b3f95f23fd7eed13861391830cd642abc2ffe0bf859cedf0ab",
+    "transcript/q04.jsonl": "125af57042bcbfc6ddb1c47171dd5797b680751c0d63f3217765027b857ad8e2",
+    "verdicts.json": "df77fe0846ce884ba4fb3ac13a56668d053f30527d943371411ed8c425f45086"
+  },
+  "identity": {
+    "arm": "ta-ask-fz-009",
+    "arm_label": "TA Ask (Ask) @ fz-009",
+    "battery": "memos",
+    "commit_sha": "2d01420c23372d5708904ec78e03485edb44d49b",
+    "denominator": 30,
+    "exam": "ZeroShotExam",
+    "exam_epoch": 4,
+    "family": "product",
+    "model": "claude-fable-5",
+    "rep": 3,
+    "repo": "memos",
+    "repo_public": "usememos-memos",
+    "run_key": "ef773dfc921e2e957e945faf5ffc8679|ta-ask-fz-009|claude-fable-5|ZeroShotExam|33ee333a178d3d40bd6a3f99f45d4162|3",
+    "side": "ta"
+  },
+  "provenance": {
+    "captured_first": "2026-08-07T04:42:53Z",
+    "captured_last": "2026-08-07T04:46:22Z",
+    "cell_records": 4,
+    "exam_queue": "exq-20260807-042424-bd4619",
+    "examiner_version_live": {
+      "ArchMap": {
+        "engine_version": "0.11.8",
+        "module": "v0.11.8",
+        "replace": "../ta-indexer/pkg/ArchMap",
+        "surface_content_hash": "dc074c6eb47fc8f6",
+        "surface_min_engine": "0.11.8",
+        "surface_source": "embedded",
+        "surface_version": "2.4.2"
+      },
+      "examiner": {
+        "commit": "994aec27df526222bc53da219a819e2d1c083a37",
+        "go": "go1.26.1",
+        "version": "0.1.13"
+      },
+      "indexer": {
+        "ir_meta_version": "1.0",
+        "ir_schema_version": "1.0",
+        "module": "v1.4.74",
+        "replace": "../ta-indexer",
+        "version": "1.4.74"
+      },
+      "modules": {
+        "connectrpc.com/connect": "v1.19.1",
+        "github.com/TrueArchitect-ai/ta-dev": "v0.0.0 =\u003e ../ta-dev",
+        "github.com/TrueArchitect-ai/ta-indexer": "v1.4.74 =\u003e ../ta-indexer",
+        "github.com/TrueArchitect-ai/ta-indexer/pkg/ArchMap": "v0.11.8 =\u003e ../ta-indexer/pkg/ArchMap",
+        "github.com/TrueArchitect-ai/ta-proto": "v0.0.7 =\u003e ../ta-proto",
+        "github.com/google/uuid": "v1.6.0",
+        "github.com/scip-code/scip/bindings/go/scip": "v0.7.1",
+        "github.com/sourcegraph/beaut": "v0.0.0-20240611013027-627e4c25335a",
+        "golang.org/x/mod": "v0.35.0",
+        "golang.org/x/net": "v0.53.0",
+        "golang.org/x/sync": "v0.20.0",
+        "golang.org/x/text": "v0.36.0",
+        "golang.org/x/tools": "v0.44.0",
+        "google.golang.org/protobuf": "v1.36.11"
+      },
+      "ta_dev": {
+        "module": "v0.0.0",
+        "replace": "../ta-dev",
+        "version": "0.4.17"
+      },
+      "ta_proto": {
+        "module": "v0.0.7",
+        "replace": "../ta-proto"
+      }
+    },
+    "freeze_id": "fz-009",
+    "gateway_launch_folder": "gateway-0.9.57",
+    "hostname": "Mini-M4-48GB",
+    "record_shape": "gateway_ledger",
+    "surface_dirs": "AGENT-Surface=0.9.54--rev02 · DEV-Surface=0.4.17 · ArchMap-Surface=ArchMap-v0.11.x-surface-v2.4.2",
+    "tuple": "idx-1.4.74-ArchMap-0.11.8-dev-0.4.17",
+    "units": 4
+  },
+  "redaction": {
+    "fences": 0,
+    "envelope_lines": 0,
+    "selectors": 0,
+    "macros": 0,
+    "attrs": 0,
+    "names": 4,
+    "paths": 0
+  },
+  "schema_version": "public-run/1",
+  "scoring": {
+    "adjudications": [],
+    "note": "no score — the run is DNF or unscored; never a mean contributor",
+    "total": null
+  },
+  "transcript": {
+    "lane": "gateway",
+    "source": "tree",
+    "units": [
+      {
+        "chars_source": "result_chars",
+        "path": "transcript/q01.jsonl",
+        "query_calls": 1,
+        "redaction": {
+          "fences": 0,
+          "envelope_lines": 0,
+          "selectors": 0,
+          "macros": 0,
+          "attrs": 0,
+          "names": 1,
+          "paths": 0
+        },
+        "tool_calls": 2,
+        "turns": 1,
+        "unit": "q01"
+      },
+      {
+        "chars_source": "result_chars",
+        "path": "transcript/q02.jsonl",
+        "query_calls": 1,
+        "redaction": {
+          "fences": 0,
+          "envelope_lines": 0,
+          "selectors": 0,
+          "macros": 0,
+          "attrs": 0,
+          "names": 1,
+          "paths": 0
+        },
+        "tool_calls": 1,
+        "turns": 1,
+        "unit": "q02"
+      },
+      {
+        "chars_source": "result_chars",
+        "path": "transcript/q03.jsonl",
+        "query_calls": 1,
+        "redaction": {
+          "fences": 0,
+          "envelope_lines": 0,
+          "selectors": 0,
+          "macros": 0,
+          "attrs": 0,
+          "names": 1,
+          "paths": 0
+        },
+        "tool_calls": 1,
+        "turns": 1,
+        "unit": "q03"
+      },
+      {
+        "chars_source": "result_chars",
+        "path": "transcript/q04.jsonl",
+        "query_calls": 1,
+        "redaction": {
+          "fences": 0,
+          "envelope_lines": 0,
+          "selectors": 0,
+          "macros": 0,
+          "attrs": 0,
+          "names": 1,
+          "paths": 0
+        },
+        "tool_calls": 1,
+        "turns": 1,
+        "unit": "q04"
+      }
+    ]
+  },
+  "validity": {
+    "detail": "missing/failed: q05,q06,q07,q08,q09,q10,q11,q12,q13,q14,q15,q16,q17,q18,q19,q20,q21,q22,q23,q24,q25,q26,q27,q28,q29,q30",
+    "ok": false,
+    "reason": "partial_exam",
+    "status": "captured"
+  }
+}

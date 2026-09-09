@@ -1,0 +1,1114 @@
+{
+  "economics": {
+    "completed_at": "2026-08-26T19:33:55Z",
+    "cost_basis": "not_reported",
+    "cost_reported_usd": null,
+    "duration_ms": null,
+    "history_replay_delta": null,
+    "llm_calls_main_thread": 147,
+    "llm_calls_recorded": 0,
+    "main_turns": null,
+    "per_question": [
+      {
+        "cost_reported": null,
+        "duration_ms": 6493,
+        "main_turns": 2,
+        "qid": "q01",
+        "separable": true,
+        "subagent_threads": 0,
+        "subagent_turns": 0,
+        "tokens_cache_read": 10733,
+        "tokens_cache_write": 0,
+        "tokens_input": 6,
+        "tokens_output": 79
+      },
+      {
+        "cost_reported": null,
+        "duration_ms": 3519,
+        "main_turns": 2,
+        "qid": "q02",
+        "separable": true,
+        "subagent_threads": 0,
+        "subagent_turns": 0,
+        "tokens_cache_read": 7245,
+        "tokens_cache_write": 0,
+        "tokens_input": 6,
+        "tokens_output": 86
+      },
+      {
+        "cost_reported": null,
+        "duration_ms": 11899,
+        "main_turns": 4,
+        "qid": "q03",
+        "separable": true,
+        "subagent_threads": 0,
+        "subagent_turns": 0,
+        "tokens_cache_read": 19747,
+        "tokens_cache_write": 5759,
+        "tokens_input": 12,
+        "tokens_output": 347
+      },
+      {
+        "cost_reported": null,
+        "duration_ms": 6488,
+        "main_turns": 2,
+        "qid": "q04",
+        "separable": true,
+        "subagent_threads": 0,
+        "subagent_turns": 0,
+        "tokens_cache_read": 7114,
+        "tokens_cache_write": 1673,
+        "tokens_input": 6,
+        "tokens_output": 153
+      },
+      {
+        "cost_reported": null,
+        "duration_ms": 9561,
+        "main_turns": 3,
+        "qid": "q05",
+        "separable": true,
+        "subagent_threads": 0,
+        "subagent_turns": 0,
+        "tokens_cache_read": 7246,
+        "tokens_cache_write": 3880,
+        "tokens_input": 9,
+        "tokens_output": 191
+      },
+      {
+        "cost_reported": null,
+        "duration_ms": 6956,
+        "main_turns": 3,
+        "qid": "q06",
+        "separable": true,
+        "subagent_threads": 0,
+        "subagent_turns": 0,
+        "tokens_cache_read": 10808,
+        "tokens_cache_write": 444,
+        "tokens_input": 9,
+        "tokens_output": 152
+      },
+      {
+        "cost_reported": null,
+        "duration_ms": 9285,
+        "main_turns": 4,
+        "qid": "q07",
+        "separable": true,
+        "subagent_threads": 0,
+        "subagent_turns": 0,
+        "tokens_cache_read": 17801,
+        "tokens_cache_write": 5463,
+        "tokens_input": 12,
+        "tokens_output": 280
+      },
+      {
+        "cost_reported": null,
+        "duration_ms": 7838,
+        "main_turns": 3,
+        "qid": "q08",
+        "separable": true,
+        "subagent_threads": 0,
+        "subagent_turns": 0,
+        "tokens_cache_read": 12658,
+        "tokens_cache_write": 269,
+        "tokens_input": 9,
+        "tokens_output": 141
+      },
+      {
+        "cost_reported": null,
+        "duration_ms": 5258,
+        "main_turns": 2,
+        "qid": "q09",
+        "separable": true,
+        "subagent_threads": 0,
+        "subagent_turns": 0,
+        "tokens_cache_read": 7036,
+        "tokens_cache_write": 1610,
+        "tokens_input": 6,
+        "tokens_output": 79
+      },
+      {
+        "cost_reported": null,
+        "duration_ms": 5912,
+        "main_turns": 2,
+        "qid": "q10",
+        "separable": true,
+        "subagent_threads": 0,
+        "subagent_turns": 0,
+        "tokens_cache_read": 7041,
+        "tokens_cache_write": 217,
+        "tokens_input": 6,
+        "tokens_output": 125
+      },
+      {
+        "cost_reported": null,
+        "duration_ms": 8048,
+        "main_turns": 3,
+        "qid": "q11",
+        "separable": true,
+        "subagent_threads": 0,
+        "subagent_turns": 0,
+        "tokens_cache_read": 11016,
+        "tokens_cache_write": 675,
+        "tokens_input": 9,
+        "tokens_output": 147
+      },
+      {
+        "cost_reported": null,
+        "duration_ms": 23642,
+        "main_turns": 7,
+        "qid": "q12",
+        "separable": true,
+        "subagent_threads": 0,
+        "subagent_turns": 0,
+        "tokens_cache_read": 107652,
+        "tokens_cache_write": 39291,
+        "tokens_input": 21,
+        "tokens_output": 1219
+      },
+      {
+        "cost_reported": null,
+        "duration_ms": 18903,
+        "main_turns": 7,
+        "qid": "q13",
+        "separable": true,
+        "subagent_threads": 0,
+        "subagent_turns": 0,
+        "tokens_cache_read": 27257,
+        "tokens_cache_write": 8051,
+        "tokens_input": 21,
+        "tokens_output": 611
+      },
+      {
+        "cost_reported": null,
+        "duration_ms": 16951,
+        "main_turns": 6,
+        "qid": "q14",
+        "separable": true,
+        "subagent_threads": 0,
+        "subagent_turns": 0,
+        "tokens_cache_read": 35875,
+        "tokens_cache_write": 11695,
+        "tokens_input": 18,
+        "tokens_output": 499
+      },
+      {
+        "cost_reported": null,
+        "duration_ms": 12840,
+        "main_turns": 5,
+        "qid": "q15",
+        "separable": true,
+        "subagent_threads": 0,
+        "subagent_turns": 0,
+        "tokens_cache_read": 20729,
+        "tokens_cache_write": 6500,
+        "tokens_input": 15,
+        "tokens_output": 402
+      },
+      {
+        "cost_reported": null,
+        "duration_ms": 13247,
+        "main_turns": 5,
+        "qid": "q16",
+        "separable": true,
+        "subagent_threads": 0,
+        "subagent_turns": 0,
+        "tokens_cache_read": 27908,
+        "tokens_cache_write": 5341,
+        "tokens_input": 15,
+        "tokens_output": 441
+      },
+      {
+        "cost_reported": null,
+        "duration_ms": 12865,
+        "main_turns": 4,
+        "qid": "q17",
+        "separable": true,
+        "subagent_threads": 0,
+        "subagent_turns": 0,
+        "tokens_cache_read": 16902,
+        "tokens_cache_write": 12444,
+        "tokens_input": 12,
+        "tokens_output": 525
+      },
+      {
+        "cost_reported": null,
+        "duration_ms": 41742,
+        "main_turns": 5,
+        "qid": "q18",
+        "separable": true,
+        "subagent_threads": 0,
+        "subagent_turns": 0,
+        "tokens_cache_read": 20368,
+        "tokens_cache_write": 1726,
+        "tokens_input": 15,
+        "tokens_output": 263
+      },
+      {
+        "cost_reported": null,
+        "duration_ms": 20633,
+        "main_turns": 7,
+        "qid": "q19",
+        "separable": true,
+        "subagent_threads": 0,
+        "subagent_turns": 0,
+        "tokens_cache_read": 66913,
+        "tokens_cache_write": 15285,
+        "tokens_input": 21,
+        "tokens_output": 678
+      },
+      {
+        "cost_reported": null,
+        "duration_ms": 18527,
+        "main_turns": 5,
+        "qid": "q20",
+        "separable": true,
+        "subagent_threads": 0,
+        "subagent_turns": 0,
+        "tokens_cache_read": 27859,
+        "tokens_cache_write": 15822,
+        "tokens_input": 15,
+        "tokens_output": 825
+      },
+      {
+        "cost_reported": null,
+        "duration_ms": 5609,
+        "main_turns": 2,
+        "qid": "q21",
+        "separable": true,
+        "subagent_threads": 0,
+        "subagent_turns": 0,
+        "tokens_cache_read": 7053,
+        "tokens_cache_write": 522,
+        "tokens_input": 6,
+        "tokens_output": 321
+      },
+      {
+        "cost_reported": null,
+        "duration_ms": 24682,
+        "main_turns": 8,
+        "qid": "q22",
+        "separable": true,
+        "subagent_threads": 0,
+        "subagent_turns": 0,
+        "tokens_cache_read": 60188,
+        "tokens_cache_write": 16886,
+        "tokens_input": 24,
+        "tokens_output": 844
+      },
+      {
+        "cost_reported": null,
+        "duration_ms": 13730,
+        "main_turns": 3,
+        "qid": "q23",
+        "separable": true,
+        "subagent_threads": 0,
+        "subagent_turns": 0,
+        "tokens_cache_read": 11892,
+        "tokens_cache_write": 4822,
+        "tokens_input": 9,
+        "tokens_output": 704
+      },
+      {
+        "cost_reported": null,
+        "duration_ms": 51471,
+        "main_turns": 14,
+        "qid": "q24",
+        "separable": true,
+        "subagent_threads": 0,
+        "subagent_turns": 0,
+        "tokens_cache_read": 117378,
+        "tokens_cache_write": 13368,
+        "tokens_input": 42,
+        "tokens_output": 1316
+      },
+      {
+        "cost_reported": null,
+        "duration_ms": 22831,
+        "main_turns": 6,
+        "qid": "q25",
+        "separable": true,
+        "subagent_threads": 0,
+        "subagent_turns": 0,
+        "tokens_cache_read": 51099,
+        "tokens_cache_write": 12790,
+        "tokens_input": 18,
+        "tokens_output": 644
+      },
+      {
+        "cost_reported": null,
+        "duration_ms": 40798,
+        "main_turns": 9,
+        "qid": "q26",
+        "separable": true,
+        "subagent_threads": 0,
+        "subagent_turns": 0,
+        "tokens_cache_read": 221572,
+        "tokens_cache_write": 43785,
+        "tokens_input": 27,
+        "tokens_output": 1311
+      },
+      {
+        "cost_reported": null,
+        "duration_ms": 19985,
+        "main_turns": 5,
+        "qid": "q27",
+        "separable": true,
+        "subagent_threads": 0,
+        "subagent_turns": 0,
+        "tokens_cache_read": 67240,
+        "tokens_cache_write": 21869,
+        "tokens_input": 15,
+        "tokens_output": 865
+      },
+      {
+        "cost_reported": null,
+        "duration_ms": 22666,
+        "main_turns": 7,
+        "qid": "q28",
+        "separable": true,
+        "subagent_threads": 0,
+        "subagent_turns": 0,
+        "tokens_cache_read": 65131,
+        "tokens_cache_write": 19140,
+        "tokens_input": 21,
+        "tokens_output": 806
+      },
+      {
+        "cost_reported": null,
+        "duration_ms": 14334,
+        "main_turns": 4,
+        "qid": "q29",
+        "separable": true,
+        "subagent_threads": 0,
+        "subagent_turns": 0,
+        "tokens_cache_read": 20345,
+        "tokens_cache_write": 18470,
+        "tokens_input": 12,
+        "tokens_output": 621
+      },
+      {
+        "cost_reported": null,
+        "duration_ms": 29513,
+        "main_turns": 8,
+        "qid": "q30",
+        "separable": true,
+        "subagent_threads": 0,
+        "subagent_turns": 0,
+        "tokens_cache_read": 79074,
+        "tokens_cache_write": 24514,
+        "tokens_input": 24,
+        "tokens_output": 913
+      }
+    ],
+    "rate_table_version": null,
+    "started_at": "2026-08-26T19:16:35Z",
+    "token_source": "ledger_all_calls",
+    "tokens_cache_read": 1170880,
+    "tokens_cache_write": 312311,
+    "tokens_input": 441,
+    "tokens_output": 15588,
+    "tool_calls": {
+      "by_class": {
+        "product_builtin": 117,
+        "product_semantic": 80
+      },
+      "by_tool": {
+        "archmap_query": 80,
+        "detect_project": 1,
+        "glob_files": 8,
+        "grep_content": 40,
+        "list_directory": 1,
+        "project_tree": 3,
+        "read_file": 64
+      },
+      "total": 197
+    }
+  },
+  "files": {
+    "answers/q01.md": "0594f59b064b235bbb386fe08f34e46a0e0323e939cef2500ab7617470a2c0ab",
+    "answers/q02.md": "304c990eeeae416fcddc70dca03a660423c03a5fd2dd2b69ca1aee7a8504f3a3",
+    "answers/q03.md": "b252e07ebc2f1b703edc2dfeb29537b0c779f0c8afbe814d8faff8458ed9edd3",
+    "answers/q04.md": "ecb6513c6bccdaba6917bc9bfe5f709fe004a33d43c726f5081fd4f32f4abcb8",
+    "answers/q05.md": "a704f232973391779db18f403c5f751bf3921484d7977a1fca221bc4d61bb3bb",
+    "answers/q06.md": "d67a36061a4a2f454ac2bb47723fd2397af4b856404005d9d5bf4cceaeacf9c2",
+    "answers/q07.md": "cb54ab38bf72bf46549c9dce52979f3f42c8cb83fb799f9b970ce383a6936927",
+    "answers/q08.md": "e28ced55f0fcd80a8b9a34db7ce6f1a6a14557bdac679b01b505edbc541017e7",
+    "answers/q09.md": "63a07f14b2f30b54dcb2cd8cd086060120e55e37cc742b207e64bdf0b3b4873e",
+    "answers/q10.md": "4090dc45f17f7c40b0aea8842e668e75276ac5acf98a112cec3cd1bc358fb163",
+    "answers/q11.md": "e72691c3a6ded085d49a63e06953734c1daf860a2a691cfa19afb343d0467155",
+    "answers/q12.md": "201eb37e16863a025f20adcd3ea5fa3ef68da903cdb83310e8f115db4f72b794",
+    "answers/q13.md": "045cd60bfff8e17fea96a367a24020f8bcca0650e5db1e30ae3a71d17be0fa7e",
+    "answers/q14.md": "ef0b285935e09ab9098248d41d307cff577fbe2fdc82bd25b13f618ba8962b95",
+    "answers/q15.md": "dc71f3b6fa32fa46900a1cd0835fdbaac882201285d6648d0ce8a740d8f48039",
+    "answers/q16.md": "50b59ca553cc79015bcc75c755421a01c7a1fe01f62ff349c85312ee8d98e109",
+    "answers/q17.md": "1bab12c43e9f63208e2ca275dc08294230f99efc866be8eeda2fbdf57587e2c4",
+    "answers/q18.md": "e4c376f1fba3ad5d46f884b97d56eef90989272d2e9c8be3ad97700e01d14fb1",
+    "answers/q19.md": "28ff9cde05c8e4099780597ee997f6fae10fd1bf48859bd3fb9844325aaeebb9",
+    "answers/q20.md": "14f58675a8feabb05c7e3d188753445c753880ed9d0abd6bbc11dc4d6295dfc9",
+    "answers/q21.md": "09accc6044385f93d6663968c0c2ffb7c1a992d16fd3335b69e37868130c14df",
+    "answers/q22.md": "8fcf9ea122981c2a3bec30ec09e0b4bc3754b6e977c2a552c0a8482f54ba1aea",
+    "answers/q23.md": "b9493443398c37249dccfbd78ac14b16e0a00121c41de31d2ecc06b976ccd39c",
+    "answers/q24.md": "67301115225558cfa4b5cca890b63b8736c1f961e049428e7cfd427c903a542b",
+    "answers/q25.md": "d3886c08d326e9438b3700a6955b7ea2fe99d1b0267a97c384b4c788c4a3d8bf",
+    "answers/q26.md": "e454fda833385f557c574d0424b980e2db41100988a91a78237f812496625124",
+    "answers/q27.md": "ba789837423342fb0674fe37295942e1e2995d48b61bc99ff2ded0ba7e00fcdb",
+    "answers/q28.md": "3222b7302bf342d0ea8cbec6c51e4e907829e1086f38be3405b2e12adbf52f41",
+    "answers/q29.md": "c130e5987a350efef508471a1caf6a6b680863dd49eca6e225471fb05a1513c1",
+    "answers/q30.md": "1f916a4e2da490037ef5d647f7fd387c5d40c95f3e77a69fab151b6978df0bd8",
+    "transcript/q01.jsonl": "ced7468f2bf69a36eef3297834e80ed579668494a658e9c13d2872283aed1faf",
+    "transcript/q02.jsonl": "82b5e6f74bc5344fcf96b4aabbe89d9ebd25da181c55bb851ad6c4f28abfa03b",
+    "transcript/q03.jsonl": "b42169a4558ad4d5fb71a00fe82c8beddcbff469460cbf78b28a1cf38ec2a119",
+    "transcript/q04.jsonl": "566ba9cb39f6e71f6bbfe49f4364616fbd7f5b6ebc227bd9a7ec1daf7eeab927",
+    "transcript/q05.jsonl": "38789bcd9b346d372a819d3676b0b155f7e1a3377f29c7f67e74bae4493af245",
+    "transcript/q06.jsonl": "9821283f5bb6b808f5bc9e97215ef94253453a8209e06c794609823ea87a875b",
+    "transcript/q07.jsonl": "524419774c094e4651433c13115cf0ad880a94793824bd051646d5b75fa637a3",
+    "transcript/q08.jsonl": "df2a8674dac816e5dd130796a2c40175d062774ac9be0c9bf2ef8f32114e1914",
+    "transcript/q09.jsonl": "8b2263bf0313a2b3744e063aef793514726b8bd0bb8e8187e2a814481e4668b1",
+    "transcript/q10.jsonl": "bb8d2f156e7e9349702d1a9acc5327be1862b6a85532d005d7b5fb0756bf7848",
+    "transcript/q11.jsonl": "bc43191ead10039b1a933c8a8ec876708ef17220b1cb7b95019711fae2b308b0",
+    "transcript/q12.jsonl": "6a8f6955a736ba21893be9d05bab868d0f8d0ac727d0a9c3c47e3cf6a01c5639",
+    "transcript/q13.jsonl": "92ebbe612f2e6d1c2892892f0887d507f190208a74051bfca90a35cc19444d49",
+    "transcript/q14.jsonl": "9882dcf7df37b0884cab0e1af85620243f32fe3f7c6e64ea6e8b54305d1db79d",
+    "transcript/q15.jsonl": "0b81fa1c31a1b7d4723b27900795c9919a1bba9d4d1c41decd933bd0028665b0",
+    "transcript/q16.jsonl": "a677aaa2f83a6fcbfe990bd556664c7934581e64955dd4635d92c00baed68c22",
+    "transcript/q17.jsonl": "9e0cd8e7a8cd660ca7a34545419bdfe9317f9599677a50a27f5210fdeb1bb267",
+    "transcript/q18.jsonl": "e90c46221365f2419cf491edc0fb254cf5f96eb370329ce4c4036636f23ae2e4",
+    "transcript/q19.jsonl": "3615346d26d0bf46c6c60dd2ee00106b00db53fae51dac4669a1cf6dd8303cb0",
+    "transcript/q20.jsonl": "45647cd737e3403ccd3ad52a0aa304ce0b1e787f75816255a9c2afb269c1cd99",
+    "transcript/q21.jsonl": "afa59daa86ca3b1cdc13fd493a1999291a588736a77178fdbef2705979a1855b",
+    "transcript/q22.jsonl": "b72f11e566d34f8ac1578861c697047aae8d08f4f063cc620c611819b7b648e6",
+    "transcript/q23.jsonl": "dae8cc5f22ae56f2d8ce3d6837bb75991064ee38d0b55c962eb607b476094719",
+    "transcript/q24.jsonl": "a815ffbdb41866106959d6416a47821e5e40046c7e25786e6c47d1c1a2d7907c",
+    "transcript/q25.jsonl": "9a4c051f4468a544e06a4442cb51f5aacb7ea78ddf8c4a22294b206b9da7757a",
+    "transcript/q26.jsonl": "ab702cc2904f022b0200fe7dc4299f1c975c00189c2527a414e9c6b6699b7ecc",
+    "transcript/q27.jsonl": "88c8a6bfbd6ceb869905a8dd7e5ba4ffd4ec50bbc09be50db5e81bd5038fba2d",
+    "transcript/q28.jsonl": "73f0c2942f10f1a38302d54d9e47e6c9ed5a75b24fc656543550251c17a7d152",
+    "transcript/q29.jsonl": "98a1e10792b65cc1ffaade39e5fa05286a0a5eb4550121f0e9e4d1971231b8c4",
+    "transcript/q30.jsonl": "af7fbe221b5dc5636b7aa696b8b08c91de5474d0a42f948ec5899c9a5e1e9dc6",
+    "verdicts.json": "1c2ce558e7a05bb1fef2f094bd902652e43efbc338bae460c18b30d75a3fabdd"
+  },
+  "identity": {
+    "arm": "ta-ask-fz-009",
+    "arm_label": "TA Ask (Ask) @ fz-009",
+    "battery": "memos",
+    "commit_sha": "2d01420c23372d5708904ec78e03485edb44d49b",
+    "denominator": 30,
+    "exam": "ZeroShotExam",
+    "exam_epoch": 4,
+    "family": "product",
+    "model": "gpt-5.6-luna",
+    "rep": 2,
+    "repo": "memos",
+    "repo_public": "usememos-memos",
+    "run_key": "ef773dfc921e2e957e945faf5ffc8679|ta-ask-fz-009|gpt-5.6-luna|ZeroShotExam|33ee333a178d3d40bd6a3f99f45d4162|2",
+    "side": "ta"
+  },
+  "provenance": {
+    "captured_first": "2026-08-26T19:16:35Z",
+    "captured_last": "2026-08-26T19:33:55Z",
+    "cell_records": 30,
+    "exam_queue": "exq-20260826-191606-42a8b7",
+    "examiner_version_live": {
+      "ArchMap": {
+        "engine_version": "0.11.8",
+        "module": "v0.11.8",
+        "replace": "../ta-indexer/pkg/ArchMap",
+        "surface_content_hash": "dc074c6eb47fc8f6",
+        "surface_min_engine": "0.11.8",
+        "surface_source": "embedded",
+        "surface_version": "2.4.2"
+      },
+      "examiner": {
+        "go": "go1.26.5",
+        "version": "0.1.13.1"
+      },
+      "indexer": {
+        "ir_meta_version": "1.0",
+        "ir_schema_version": "1.0",
+        "module": "v1.4.74",
+        "replace": "../ta-indexer",
+        "version": "1.4.74"
+      },
+      "modules": {
+        "connectrpc.com/connect": "v1.19.1",
+        "github.com/TrueArchitect-ai/ta-dev": "v0.0.0 =\u003e ../ta-dev",
+        "github.com/TrueArchitect-ai/ta-indexer": "v1.4.74 =\u003e ../ta-indexer",
+        "github.com/TrueArchitect-ai/ta-indexer/pkg/ArchMap": "v0.11.8 =\u003e ../ta-indexer/pkg/ArchMap",
+        "github.com/TrueArchitect-ai/ta-proto": "v0.0.7 =\u003e ../ta-proto",
+        "github.com/google/uuid": "v1.6.0",
+        "github.com/scip-code/scip/bindings/go/scip": "v0.7.1",
+        "github.com/sourcegraph/beaut": "v0.0.0-20240611013027-627e4c25335a",
+        "golang.org/x/mod": "v0.35.0",
+        "golang.org/x/net": "v0.53.0",
+        "golang.org/x/sync": "v0.20.0",
+        "golang.org/x/text": "v0.36.0",
+        "golang.org/x/tools": "v0.44.0",
+        "google.golang.org/protobuf": "v1.36.11"
+      },
+      "ta_dev": {
+        "module": "v0.0.0",
+        "replace": "../ta-dev",
+        "version": "0.4.17"
+      },
+      "ta_proto": {
+        "module": "v0.0.7",
+        "replace": "../ta-proto"
+      }
+    },
+    "freeze_id": "fz-009",
+    "gateway_launch_folder": "gateway-0.9.57",
+    "hostname": "Mini-M4-48GB",
+    "record_shape": "gateway_ledger",
+    "surface_dirs": "AGENT-Surface=0.9.54--rev02 · DEV-Surface=0.4.17 · ArchMap-Surface=ArchMap-v0.11.x-surface-v2.4.2",
+    "tuple": "idx-1.4.74-ArchMap-0.11.8-dev-0.4.17",
+    "units": 30
+  },
+  "redaction": {
+    "fences": 0,
+    "envelope_lines": 0,
+    "selectors": 0,
+    "macros": 0,
+    "attrs": 0,
+    "names": 30,
+    "paths": 0
+  },
+  "schema_version": "public-run/1",
+  "scoring": {
+    "adjudications": [],
+    "by_difficulty": {
+      "1": 10,
+      "2": 10,
+      "3": 10
+    },
+    "denominator": 30,
+    "scored_at": "2026-08-26T19:44:23Z",
+    "scorer_era": "tabench-1.1",
+    "tier_census": {
+      "T1": 13,
+      "T2": 17
+    },
+    "total": 30
+  },
+  "transcript": {
+    "lane": "gateway",
+    "source": "tree",
+    "units": [
+      {
+        "chars_source": "result_chars",
+        "path": "transcript/q01.jsonl",
+        "query_calls": 1,
+        "redaction": {
+          "fences": 0,
+          "envelope_lines": 0,
+          "selectors": 0,
+          "macros": 0,
+          "attrs": 0,
+          "names": 1,
+          "paths": 0
+        },
+        "tool_calls": 1,
+        "turns": 1,
+        "unit": "q01"
+      },
+      {
+        "chars_source": "result_chars",
+        "path": "transcript/q02.jsonl",
+        "query_calls": 1,
+        "redaction": {
+          "fences": 0,
+          "envelope_lines": 0,
+          "selectors": 0,
+          "macros": 0,
+          "attrs": 0,
+          "names": 1,
+          "paths": 0
+        },
+        "tool_calls": 1,
+        "turns": 1,
+        "unit": "q02"
+      },
+      {
+        "chars_source": "result_chars",
+        "path": "transcript/q03.jsonl",
+        "query_calls": 2,
+        "redaction": {
+          "fences": 0,
+          "envelope_lines": 0,
+          "selectors": 0,
+          "macros": 0,
+          "attrs": 0,
+          "names": 1,
+          "paths": 0
+        },
+        "tool_calls": 5,
+        "turns": 1,
+        "unit": "q03"
+      },
+      {
+        "chars_source": "result_chars",
+        "path": "transcript/q04.jsonl",
+        "query_calls": 1,
+        "redaction": {
+          "fences": 0,
+          "envelope_lines": 0,
+          "selectors": 0,
+          "macros": 0,
+          "attrs": 0,
+          "names": 1,
+          "paths": 0
+        },
+        "tool_calls": 1,
+        "turns": 1,
+        "unit": "q04"
+      },
+      {
+        "chars_source": "result_chars",
+        "path": "transcript/q05.jsonl",
+        "query_calls": 0,
+        "redaction": {
+          "fences": 0,
+          "envelope_lines": 0,
+          "selectors": 0,
+          "macros": 0,
+          "attrs": 0,
+          "names": 1,
+          "paths": 0
+        },
+        "tool_calls": 2,
+        "turns": 1,
+        "unit": "q05"
+      },
+      {
+        "chars_source": "result_chars",
+        "path": "transcript/q06.jsonl",
+        "query_calls": 2,
+        "redaction": {
+          "fences": 0,
+          "envelope_lines": 0,
+          "selectors": 0,
+          "macros": 0,
+          "attrs": 0,
+          "names": 1,
+          "paths": 0
+        },
+        "tool_calls": 2,
+        "turns": 1,
+        "unit": "q06"
+      },
+      {
+        "chars_source": "result_chars",
+        "path": "transcript/q07.jsonl",
+        "query_calls": 1,
+        "redaction": {
+          "fences": 0,
+          "envelope_lines": 0,
+          "selectors": 0,
+          "macros": 0,
+          "attrs": 0,
+          "names": 1,
+          "paths": 0
+        },
+        "tool_calls": 4,
+        "turns": 1,
+        "unit": "q07"
+      },
+      {
+        "chars_source": "result_chars",
+        "path": "transcript/q08.jsonl",
+        "query_calls": 2,
+        "redaction": {
+          "fences": 0,
+          "envelope_lines": 0,
+          "selectors": 0,
+          "macros": 0,
+          "attrs": 0,
+          "names": 1,
+          "paths": 0
+        },
+        "tool_calls": 2,
+        "turns": 1,
+        "unit": "q08"
+      },
+      {
+        "chars_source": "result_chars",
+        "path": "transcript/q09.jsonl",
+        "query_calls": 1,
+        "redaction": {
+          "fences": 0,
+          "envelope_lines": 0,
+          "selectors": 0,
+          "macros": 0,
+          "attrs": 0,
+          "names": 1,
+          "paths": 0
+        },
+        "tool_calls": 1,
+        "turns": 1,
+        "unit": "q09"
+      },
+      {
+        "chars_source": "result_chars",
+        "path": "transcript/q10.jsonl",
+        "query_calls": 1,
+        "redaction": {
+          "fences": 0,
+          "envelope_lines": 0,
+          "selectors": 0,
+          "macros": 0,
+          "attrs": 0,
+          "names": 1,
+          "paths": 0
+        },
+        "tool_calls": 1,
+        "turns": 1,
+        "unit": "q10"
+      },
+      {
+        "chars_source": "result_chars",
+        "path": "transcript/q11.jsonl",
+        "query_calls": 2,
+        "redaction": {
+          "fences": 0,
+          "envelope_lines": 0,
+          "selectors": 0,
+          "macros": 0,
+          "attrs": 0,
+          "names": 1,
+          "paths": 0
+        },
+        "tool_calls": 2,
+        "turns": 1,
+        "unit": "q11"
+      },
+      {
+        "chars_source": "result_chars",
+        "path": "transcript/q12.jsonl",
+        "query_calls": 5,
+        "redaction": {
+          "fences": 0,
+          "envelope_lines": 0,
+          "selectors": 0,
+          "macros": 0,
+          "attrs": 0,
+          "names": 1,
+          "paths": 0
+        },
+        "tool_calls": 19,
+        "turns": 1,
+        "unit": "q12"
+      },
+      {
+        "chars_source": "result_chars",
+        "path": "transcript/q13.jsonl",
+        "query_calls": 6,
+        "redaction": {
+          "fences": 0,
+          "envelope_lines": 0,
+          "selectors": 0,
+          "macros": 0,
+          "attrs": 0,
+          "names": 1,
+          "paths": 0
+        },
+        "tool_calls": 6,
+        "turns": 1,
+        "unit": "q13"
+      },
+      {
+        "chars_source": "result_chars",
+        "path": "transcript/q14.jsonl",
+        "query_calls": 3,
+        "redaction": {
+          "fences": 0,
+          "envelope_lines": 0,
+          "selectors": 0,
+          "macros": 0,
+          "attrs": 0,
+          "names": 1,
+          "paths": 0
+        },
+        "tool_calls": 6,
+        "turns": 1,
+        "unit": "q14"
+      },
+      {
+        "chars_source": "result_chars",
+        "path": "transcript/q15.jsonl",
+        "query_calls": 8,
+        "redaction": {
+          "fences": 0,
+          "envelope_lines": 0,
+          "selectors": 0,
+          "macros": 0,
+          "attrs": 0,
+          "names": 1,
+          "paths": 0
+        },
+        "tool_calls": 8,
+        "turns": 1,
+        "unit": "q15"
+      },
+      {
+        "chars_source": "result_chars",
+        "path": "transcript/q16.jsonl",
+        "query_calls": 2,
+        "redaction": {
+          "fences": 0,
+          "envelope_lines": 0,
+          "selectors": 0,
+          "macros": 0,
+          "attrs": 0,
+          "names": 1,
+          "paths": 0
+        },
+        "tool_calls": 8,
+        "turns": 1,
+        "unit": "q16"
+      },
+      {
+        "chars_source": "result_chars",
+        "path": "transcript/q17.jsonl",
+        "query_calls": 1,
+        "redaction": {
+          "fences": 0,
+          "envelope_lines": 0,
+          "selectors": 0,
+          "macros": 0,
+          "attrs": 0,
+          "names": 1,
+          "paths": 0
+        },
+        "tool_calls": 6,
+        "turns": 1,
+        "unit": "q17"
+      },
+      {
+        "chars_source": "result_chars",
+        "path": "transcript/q18.jsonl",
+        "query_calls": 4,
+        "redaction": {
+          "fences": 0,
+          "envelope_lines": 0,
+          "selectors": 0,
+          "macros": 0,
+          "attrs": 0,
+          "names": 1,
+          "paths": 0
+        },
+        "tool_calls": 4,
+        "turns": 1,
+        "unit": "q18"
+      },
+      {
+        "chars_source": "result_chars",
+        "path": "transcript/q19.jsonl",
+        "query_calls": 2,
+        "redaction": {
+          "fences": 0,
+          "envelope_lines": 0,
+          "selectors": 0,
+          "macros": 0,
+          "attrs": 0,
+          "names": 1,
+          "paths": 0
+        },
+        "tool_calls": 7,
+        "turns": 1,
+        "unit": "q19"
+      },
+      {
+        "chars_source": "result_chars",
+        "path": "transcript/q20.jsonl",
+        "query_calls": 2,
+        "redaction": {
+          "fences": 0,
+          "envelope_lines": 0,
+          "selectors": 0,
+          "macros": 0,
+          "attrs": 0,
+          "names": 1,
+          "paths": 0
+        },
+        "tool_calls": 12,
+        "turns": 1,
+        "unit": "q20"
+      },
+      {
+        "chars_source": "result_chars",
+        "path": "transcript/q21.jsonl",
+        "query_calls": 1,
+        "redaction": {
+          "fences": 0,
+          "envelope_lines": 0,
+          "selectors": 0,
+          "macros": 0,
+          "attrs": 0,
+          "names": 1,
+          "paths": 0
+        },
+        "tool_calls": 1,
+        "turns": 1,
+        "unit": "q21"
+      },
+      {
+        "chars_source": "result_chars",
+        "path": "transcript/q22.jsonl",
+        "query_calls": 5,
+        "redaction": {
+          "fences": 0,
+          "envelope_lines": 0,
+          "selectors": 0,
+          "macros": 0,
+          "attrs": 0,
+          "names": 1,
+          "paths": 0
+        },
+        "tool_calls": 11,
+        "turns": 1,
+        "unit": "q22"
+      },
+      {
+        "chars_source": "result_chars",
+        "path": "transcript/q23.jsonl",
+        "query_calls": 1,
+        "redaction": {
+          "fences": 0,
+          "envelope_lines": 0,
+          "selectors": 0,
+          "macros": 0,
+          "attrs": 0,
+          "names": 1,
+          "paths": 0
+        },
+        "tool_calls": 4,
+        "turns": 1,
+        "unit": "q23"
+      },
+      {
+        "chars_source": "result_chars",
+        "path": "transcript/q24.jsonl",
+        "query_calls": 9,
+        "redaction": {
+          "fences": 0,
+          "envelope_lines": 0,
+          "selectors": 0,
+          "macros": 0,
+          "attrs": 0,
+          "names": 1,
+          "paths": 0
+        },
+        "tool_calls": 18,
+        "turns": 1,
+        "unit": "q24"
+      },
+      {
+        "chars_source": "result_chars",
+        "path": "transcript/q25.jsonl",
+        "query_calls": 2,
+        "redaction": {
+          "fences": 0,
+          "envelope_lines": 0,
+          "selectors": 0,
+          "macros": 0,
+          "attrs": 0,
+          "names": 1,
+          "paths": 0
+        },
+        "tool_calls": 9,
+        "turns": 1,
+        "unit": "q25"
+      },
+      {
+        "chars_source": "result_chars",
+        "path": "transcript/q26.jsonl",
+        "query_calls": 4,
+        "redaction": {
+          "fences": 0,
+          "envelope_lines": 0,
+          "selectors": 0,
+          "macros": 0,
+          "attrs": 0,
+          "names": 1,
+          "paths": 0
+        },
+        "tool_calls": 18,
+        "turns": 1,
+        "unit": "q26"
+      },
+      {
+        "chars_source": "result_chars",
+        "path": "transcript/q27.jsonl",
+        "query_calls": 0,
+        "redaction": {
+          "fences": 0,
+          "envelope_lines": 0,
+          "selectors": 0,
+          "macros": 0,
+          "attrs": 0,
+          "names": 1,
+          "paths": 0
+        },
+        "tool_calls": 13,
+        "turns": 1,
+        "unit": "q27"
+      },
+      {
+        "chars_source": "result_chars",
+        "path": "transcript/q28.jsonl",
+        "query_calls": 4,
+        "redaction": {
+          "fences": 0,
+          "envelope_lines": 0,
+          "selectors": 0,
+          "macros": 0,
+          "attrs": 0,
+          "names": 1,
+          "paths": 0
+        },
+        "tool_calls": 8,
+        "turns": 1,
+        "unit": "q28"
+      },
+      {
+        "chars_source": "result_chars",
+        "path": "transcript/q29.jsonl",
+        "query_calls": 3,
+        "redaction": {
+          "fences": 0,
+          "envelope_lines": 0,
+          "selectors": 0,
+          "macros": 0,
+          "attrs": 0,
+          "names": 1,
+          "paths": 0
+        },
+        "tool_calls": 7,
+        "turns": 1,
+        "unit": "q29"
+      },
+      {
+        "chars_source": "result_chars",
+        "path": "transcript/q30.jsonl",
+        "query_calls": 4,
+        "redaction": {
+          "fences": 0,
+          "envelope_lines": 0,
+          "selectors": 0,
+          "macros": 0,
+          "attrs": 0,
+          "names": 1,
+          "paths": 0
+        },
+        "tool_calls": 10,
+        "turns": 1,
+        "unit": "q30"
+      }
+    ]
+  },
+  "validity": {
+    "detail": "",
+    "ok": true,
+    "reason": "run_ok",
+    "status": "scored"
+  }
+}

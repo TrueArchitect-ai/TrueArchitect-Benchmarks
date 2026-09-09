@@ -1,0 +1,793 @@
+{
+  "economics": {
+    "completed_at": "2026-08-05T15:16:31Z",
+    "cost_basis": "not_reported",
+    "cost_reported_usd": null,
+    "duration_ms": null,
+    "history_replay_delta": null,
+    "llm_calls_main_thread": 138,
+    "llm_calls_recorded": 0,
+    "main_turns": null,
+    "per_question": [
+      {
+        "cost_reported": null,
+        "duration_ms": 32973,
+        "main_turns": 8,
+        "qid": "h01",
+        "separable": true,
+        "subagent_threads": 0,
+        "subagent_turns": 0,
+        "tokens_cache_read": 95705,
+        "tokens_cache_write": 9548,
+        "tokens_input": 16,
+        "tokens_output": 1619
+      },
+      {
+        "cost_reported": null,
+        "duration_ms": 21156,
+        "main_turns": 4,
+        "qid": "h02",
+        "separable": true,
+        "subagent_threads": 0,
+        "subagent_turns": 0,
+        "tokens_cache_read": 47896,
+        "tokens_cache_write": 12666,
+        "tokens_input": 8,
+        "tokens_output": 1188
+      },
+      {
+        "cost_reported": null,
+        "duration_ms": 21918,
+        "main_turns": 4,
+        "qid": "h03",
+        "separable": true,
+        "subagent_threads": 0,
+        "subagent_turns": 0,
+        "tokens_cache_read": 40668,
+        "tokens_cache_write": 6969,
+        "tokens_input": 8,
+        "tokens_output": 1200
+      },
+      {
+        "cost_reported": null,
+        "duration_ms": 35774,
+        "main_turns": 5,
+        "qid": "h04",
+        "separable": true,
+        "subagent_threads": 0,
+        "subagent_turns": 0,
+        "tokens_cache_read": 43440,
+        "tokens_cache_write": 3943,
+        "tokens_input": 10,
+        "tokens_output": 1641
+      },
+      {
+        "cost_reported": null,
+        "duration_ms": 61153,
+        "main_turns": 6,
+        "qid": "h05",
+        "separable": true,
+        "subagent_threads": 0,
+        "subagent_turns": 0,
+        "tokens_cache_read": 218739,
+        "tokens_cache_write": 68339,
+        "tokens_input": 12,
+        "tokens_output": 2687
+      },
+      {
+        "cost_reported": null,
+        "duration_ms": 50969,
+        "main_turns": 7,
+        "qid": "h06",
+        "separable": true,
+        "subagent_threads": 0,
+        "subagent_turns": 0,
+        "tokens_cache_read": 82146,
+        "tokens_cache_write": 8036,
+        "tokens_input": 14,
+        "tokens_output": 2678
+      },
+      {
+        "cost_reported": null,
+        "duration_ms": 56744,
+        "main_turns": 8,
+        "qid": "h07",
+        "separable": true,
+        "subagent_threads": 0,
+        "subagent_turns": 0,
+        "tokens_cache_read": 137000,
+        "tokens_cache_write": 16431,
+        "tokens_input": 16,
+        "tokens_output": 2603
+      },
+      {
+        "cost_reported": null,
+        "duration_ms": 21153,
+        "main_turns": 4,
+        "qid": "h08",
+        "separable": true,
+        "subagent_threads": 0,
+        "subagent_turns": 0,
+        "tokens_cache_read": 30454,
+        "tokens_cache_write": 2887,
+        "tokens_input": 8,
+        "tokens_output": 1269
+      },
+      {
+        "cost_reported": null,
+        "duration_ms": 62914,
+        "main_turns": 9,
+        "qid": "h09",
+        "separable": true,
+        "subagent_threads": 0,
+        "subagent_turns": 0,
+        "tokens_cache_read": 84238,
+        "tokens_cache_write": 5957,
+        "tokens_input": 18,
+        "tokens_output": 4013
+      },
+      {
+        "cost_reported": null,
+        "duration_ms": 30544,
+        "main_turns": 6,
+        "qid": "h10",
+        "separable": true,
+        "subagent_threads": 0,
+        "subagent_turns": 0,
+        "tokens_cache_read": 54554,
+        "tokens_cache_write": 4559,
+        "tokens_input": 12,
+        "tokens_output": 1494
+      },
+      {
+        "cost_reported": null,
+        "duration_ms": 41220,
+        "main_turns": 7,
+        "qid": "h11",
+        "separable": true,
+        "subagent_threads": 0,
+        "subagent_turns": 0,
+        "tokens_cache_read": 59449,
+        "tokens_cache_write": 4700,
+        "tokens_input": 14,
+        "tokens_output": 2630
+      },
+      {
+        "cost_reported": null,
+        "duration_ms": 43021,
+        "main_turns": 7,
+        "qid": "h12",
+        "separable": true,
+        "subagent_threads": 0,
+        "subagent_turns": 0,
+        "tokens_cache_read": 94892,
+        "tokens_cache_write": 18762,
+        "tokens_input": 14,
+        "tokens_output": 2494
+      },
+      {
+        "cost_reported": null,
+        "duration_ms": 75399,
+        "main_turns": 13,
+        "qid": "h13",
+        "separable": true,
+        "subagent_threads": 0,
+        "subagent_turns": 0,
+        "tokens_cache_read": 181733,
+        "tokens_cache_write": 12732,
+        "tokens_input": 26,
+        "tokens_output": 4403
+      },
+      {
+        "cost_reported": null,
+        "duration_ms": 102860,
+        "main_turns": 15,
+        "qid": "h14",
+        "separable": true,
+        "subagent_threads": 0,
+        "subagent_turns": 0,
+        "tokens_cache_read": 353781,
+        "tokens_cache_write": 54889,
+        "tokens_input": 30,
+        "tokens_output": 6158
+      },
+      {
+        "cost_reported": null,
+        "duration_ms": 79803,
+        "main_turns": 8,
+        "qid": "h15",
+        "separable": true,
+        "subagent_threads": 0,
+        "subagent_turns": 0,
+        "tokens_cache_read": 157916,
+        "tokens_cache_write": 28158,
+        "tokens_input": 16,
+        "tokens_output": 4885
+      },
+      {
+        "cost_reported": null,
+        "duration_ms": 35672,
+        "main_turns": 5,
+        "qid": "r01",
+        "separable": true,
+        "subagent_threads": 0,
+        "subagent_turns": 0,
+        "tokens_cache_read": 63059,
+        "tokens_cache_write": 14461,
+        "tokens_input": 10,
+        "tokens_output": 1942
+      },
+      {
+        "cost_reported": null,
+        "duration_ms": 48770,
+        "main_turns": 6,
+        "qid": "r02",
+        "separable": true,
+        "subagent_threads": 0,
+        "subagent_turns": 0,
+        "tokens_cache_read": 74828,
+        "tokens_cache_write": 23002,
+        "tokens_input": 12,
+        "tokens_output": 2294
+      },
+      {
+        "cost_reported": null,
+        "duration_ms": 45069,
+        "main_turns": 7,
+        "qid": "r03",
+        "separable": true,
+        "subagent_threads": 0,
+        "subagent_turns": 0,
+        "tokens_cache_read": 119876,
+        "tokens_cache_write": 19170,
+        "tokens_input": 14,
+        "tokens_output": 2227
+      },
+      {
+        "cost_reported": null,
+        "duration_ms": 39403,
+        "main_turns": 4,
+        "qid": "r04",
+        "separable": true,
+        "subagent_threads": 0,
+        "subagent_turns": 0,
+        "tokens_cache_read": 39105,
+        "tokens_cache_write": 7794,
+        "tokens_input": 8,
+        "tokens_output": 1775
+      },
+      {
+        "cost_reported": null,
+        "duration_ms": 32694,
+        "main_turns": 5,
+        "qid": "r05",
+        "separable": true,
+        "subagent_threads": 0,
+        "subagent_turns": 0,
+        "tokens_cache_read": 55930,
+        "tokens_cache_write": 8052,
+        "tokens_input": 10,
+        "tokens_output": 1819
+      }
+    ],
+    "rate_table_version": null,
+    "started_at": "2026-08-05T13:25:20Z",
+    "token_source": "ledger_all_calls",
+    "tokens_cache_read": 2035409,
+    "tokens_cache_write": 331055,
+    "tokens_input": 276,
+    "tokens_output": 51019,
+    "tool_calls": {
+      "by_class": {
+        "product_builtin": 122,
+        "product_semantic": 82
+      },
+      "by_tool": {
+        "archmap_query": 82,
+        "detect_project": 7,
+        "find_references": 1,
+        "glob_files": 6,
+        "grep_content": 56,
+        "list_directory": 3,
+        "read_file": 49
+      },
+      "total": 204
+    }
+  },
+  "files": {
+    "answers/h01.md": "af1028574dce034eeb22d4d14360e87bc2a46edb64367aecc3f213a71223676d",
+    "answers/h02.md": "715a1a9d5459fa48a09317e7dbd04f8a02e4030a24cb0e23d7188fc5886cbe85",
+    "answers/h03.md": "ba2f0920d3e8c5a5d54a5e22060f6de063e2f6322ef657e7c8e20df464844df0",
+    "answers/h04.md": "f38250a2bead3dbdb25209b9ad29c7b39453129c0400a886cf13d0843b3edd15",
+    "answers/h05.md": "474f1accf10414674b6c04bdd037e3f0ed75ad07a4e16684f5e3d26db5afb8e7",
+    "answers/h06.md": "021bce638345bd1f43bd114e5c73c34662e85133da58954e25ba16b50017f728",
+    "answers/h07.md": "ba1d38b0137b0a3fd56f53684340d066a0978f044008314fff08cfe16b66efb1",
+    "answers/h08.md": "d718b33bb961d7ad0653a62ef904b04731a5df9106c0e51358aa3a5135865f7a",
+    "answers/h09.md": "a2922493bd70832bee746698b01823fdaae13707e6c66d98a564643fdee5b3d1",
+    "answers/h10.md": "dce2cde939eeaf64a250311304b484bb9436d28e04647822ed308332ecbd0f52",
+    "answers/h11.md": "17c59f8498db9db1c1eb14df06a05a694f78112380fbbb8bba76806b26e09987",
+    "answers/h12.md": "2bf9448683509608eb7a04368f26068c75989d38e6badbb13f4d8012f5339d31",
+    "answers/h13.md": "7bf54561e2226034404935cc5e9cd9e554ce1e491c214b54b9497fc8126f67b6",
+    "answers/h14.md": "f234515a608a5331ef1aeb9a8486ab99e0ff57713012b1434b7063e02adb8b1b",
+    "answers/h15.md": "cc05f5e2bda714eab632193985d3183d5718056fb2ad42059d7439ede695602c",
+    "answers/r01.md": "0bc9dba00c8d51e6a2401fe50ec0cce9f16524135d41a78415aa4f3cef8d8d57",
+    "answers/r02.md": "c0363e815566f4b9c2b4c9df4554e70b93fd8757031098ae2ef36f295231e77e",
+    "answers/r03.md": "a22e1d6ce424ad51aac154027b5ba75877541da23e47b6fe341c5537435172c1",
+    "answers/r04.md": "011542b8955f88e71c150cce0bc8c42f0af3b52a93178f9c6c21a35985e6ec75",
+    "answers/r05.md": "9222f97926a8673e7d601d98d28c0be8cbdaeb54056e02dc8a4b0cac81a2bc69",
+    "transcript/h01.jsonl": "462df16a4c657fb8f0b681b2f2d8708b8f3f2e7ff30add702f5e934474121831",
+    "transcript/h02.jsonl": "04270704bc26917912ae1d87cccce98c49a0c74b7d9166a7fb8ebbd19033f561",
+    "transcript/h03.jsonl": "bd80844f2d8b7247b484001dcc67e203f0269cbecf46a97b6407b5941cd6dde4",
+    "transcript/h04.jsonl": "6378827d4ae5271b21f9ea40469c429df8668c28eacc4771c66368bbc060977e",
+    "transcript/h05.jsonl": "c65f7d2d7e357417274d962d80c8b0a1e4a1748d6ab308fd852baa7619fc1482",
+    "transcript/h06.jsonl": "f525988c2a2fb43db89beca810a4bd1c9ff907d887fff0ef07782c1ffd7cdb94",
+    "transcript/h07.jsonl": "c48204216e215518c105b007804b6f63cd2107c1c6ec32603b1511c68077d6fd",
+    "transcript/h08.jsonl": "ea47567d61a52cb7c04c525629587ca46ba024e5d4068e6129c57716f52cbc80",
+    "transcript/h09.jsonl": "57b7751c901f6e5ee466b336ef5d0cef0abcb3271a0e5ba51c6fdce27bc2714f",
+    "transcript/h10.jsonl": "ddf153df1c98137a959ed8f072d90f0f56e629aa714794e989216ca8c960dc08",
+    "transcript/h11.jsonl": "f765920fd6ba5e4fcf937e354361aef9f35a5dcf3db1cdc6dc4ad7281783e1b4",
+    "transcript/h12.jsonl": "9d6f03686b091930bf294ac50af422d67dfb8c14e059b87f951cbdd795fb848f",
+    "transcript/h13.jsonl": "2bdc831ff9afcecc22c06c2ae364326eb43484ce8b7a4c4a50965de595f43f86",
+    "transcript/h14.jsonl": "4d5f98a40ca3683293f320f05a94c840d5818793842198dae125eeb69646fabc",
+    "transcript/h15.jsonl": "e598a708c9d90bc116fa70c2aa345eba289d2c4e60a1797fa3e56ff684c95294",
+    "transcript/r01.jsonl": "f361c2e87e336dae65331f0c5f5afdaa3ba0d7a098e51dd1ff931d5b0c5cb326",
+    "transcript/r02.jsonl": "e469a37830f4b27f4df62b126883d0c12491ff8e4431604ba8adef74a1caa2eb",
+    "transcript/r03.jsonl": "a7bbc26925486faebf1bf7d47e6cf2650d820a0cd6b3efede3dbd37bf49fcb31",
+    "transcript/r04.jsonl": "e1b5bfd40819b78c86c74efdcee8b815def6248cd1b1619322d13d83b4308b3a",
+    "transcript/r05.jsonl": "db7d45a1b58228a190bb8c9e342fb52f0d2f73c66dbe0909b2eac007ad9919d2",
+    "verdicts.json": "a659bff4649246960e731da083a1c392b1a94766b3120a056d9d7ed3054bbaf0"
+  },
+  "identity": {
+    "arm": "ta-ask-fz-009",
+    "arm_label": "TA Ask (Ask) @ fz-009",
+    "battery": "memos-hard",
+    "commit_sha": "2d01420c23372d5708904ec78e03485edb44d49b",
+    "denominator": 20,
+    "exam": "ZeroShotExam",
+    "exam_epoch": 4,
+    "family": "product",
+    "model": "claude-opus-5",
+    "rep": 4,
+    "repo": "memos",
+    "repo_public": "usememos-memos",
+    "run_key": "ef773dfc921e2e957e945faf5ffc8679|ta-ask-fz-009|claude-opus-5|ZeroShotExam|ffc82068051276c8ecade67885ff45af|4",
+    "side": "ta"
+  },
+  "provenance": {
+    "captured_first": "2026-08-05T13:25:20Z",
+    "captured_last": "2026-08-05T15:16:31Z",
+    "cell_records": 20,
+    "exam_queue": "exq-20260805-045219-3469aa",
+    "examiner_version_live": {
+      "ArchMap": {
+        "engine_version": "0.11.8",
+        "module": "v0.11.8",
+        "replace": "../ta-indexer/pkg/ArchMap",
+        "surface_content_hash": "dc074c6eb47fc8f6",
+        "surface_min_engine": "0.11.8",
+        "surface_source": "embedded",
+        "surface_version": "2.4.2"
+      },
+      "examiner": {
+        "commit": "994aec27df526222bc53da219a819e2d1c083a37",
+        "go": "go1.26.1",
+        "version": "0.1.13"
+      },
+      "indexer": {
+        "ir_meta_version": "1.0",
+        "ir_schema_version": "1.0",
+        "module": "v1.4.74",
+        "replace": "../ta-indexer",
+        "version": "1.4.74"
+      },
+      "modules": {
+        "connectrpc.com/connect": "v1.19.1",
+        "github.com/TrueArchitect-ai/ta-dev": "v0.0.0 =\u003e ../ta-dev",
+        "github.com/TrueArchitect-ai/ta-indexer": "v1.4.74 =\u003e ../ta-indexer",
+        "github.com/TrueArchitect-ai/ta-indexer/pkg/ArchMap": "v0.11.8 =\u003e ../ta-indexer/pkg/ArchMap",
+        "github.com/TrueArchitect-ai/ta-proto": "v0.0.7 =\u003e ../ta-proto",
+        "github.com/google/uuid": "v1.6.0",
+        "github.com/scip-code/scip/bindings/go/scip": "v0.7.1",
+        "github.com/sourcegraph/beaut": "v0.0.0-20240611013027-627e4c25335a",
+        "golang.org/x/mod": "v0.35.0",
+        "golang.org/x/net": "v0.53.0",
+        "golang.org/x/sync": "v0.20.0",
+        "golang.org/x/text": "v0.36.0",
+        "golang.org/x/tools": "v0.44.0",
+        "google.golang.org/protobuf": "v1.36.11"
+      },
+      "ta_dev": {
+        "module": "v0.0.0",
+        "replace": "../ta-dev",
+        "version": "0.4.17"
+      },
+      "ta_proto": {
+        "module": "v0.0.7",
+        "replace": "../ta-proto"
+      }
+    },
+    "freeze_id": "fz-009",
+    "gateway_launch_folder": "gateway-0.9.57",
+    "hostname": "Mini-M4-48GB",
+    "record_shape": "gateway_ledger",
+    "surface_dirs": "AGENT-Surface=0.9.54 · DEV-Surface=0.4.17 · ArchMap-Surface=ArchMap-v0.11.x-surface-v2.4.2",
+    "tuple": "idx-1.4.74-ArchMap-0.11.8-dev-0.4.17",
+    "units": 20
+  },
+  "redaction": {
+    "fences": 0,
+    "envelope_lines": 0,
+    "selectors": 0,
+    "macros": 8,
+    "attrs": 2,
+    "names": 20,
+    "paths": 0
+  },
+  "schema_version": "public-run/1",
+  "scoring": {
+    "adjudications": [],
+    "by_difficulty": {
+      "4": 19
+    },
+    "denominator": 20,
+    "scored_at": "2026-08-07T00:14:08Z",
+    "scorer_era": "tabench-1.1",
+    "tier_census": {
+      "T1": 1,
+      "T2": 19
+    },
+    "total": 19
+  },
+  "transcript": {
+    "lane": "gateway",
+    "source": "tree",
+    "units": [
+      {
+        "chars_source": "result_chars",
+        "path": "transcript/h01.jsonl",
+        "query_calls": 3,
+        "redaction": {
+          "fences": 0,
+          "envelope_lines": 0,
+          "selectors": 0,
+          "macros": 0,
+          "attrs": 0,
+          "names": 1,
+          "paths": 0
+        },
+        "tool_calls": 10,
+        "turns": 1,
+        "unit": "h01"
+      },
+      {
+        "chars_source": "result_chars",
+        "path": "transcript/h02.jsonl",
+        "query_calls": 2,
+        "redaction": {
+          "fences": 0,
+          "envelope_lines": 0,
+          "selectors": 0,
+          "macros": 0,
+          "attrs": 0,
+          "names": 1,
+          "paths": 0
+        },
+        "tool_calls": 5,
+        "turns": 1,
+        "unit": "h02"
+      },
+      {
+        "chars_source": "result_chars",
+        "path": "transcript/h03.jsonl",
+        "query_calls": 2,
+        "redaction": {
+          "fences": 0,
+          "envelope_lines": 0,
+          "selectors": 0,
+          "macros": 0,
+          "attrs": 0,
+          "names": 1,
+          "paths": 0
+        },
+        "tool_calls": 5,
+        "turns": 1,
+        "unit": "h03"
+      },
+      {
+        "chars_source": "result_chars",
+        "path": "transcript/h04.jsonl",
+        "query_calls": 2,
+        "redaction": {
+          "fences": 0,
+          "envelope_lines": 0,
+          "selectors": 0,
+          "macros": 1,
+          "attrs": 1,
+          "names": 1,
+          "paths": 0
+        },
+        "tool_calls": 7,
+        "turns": 1,
+        "unit": "h04"
+      },
+      {
+        "chars_source": "result_chars",
+        "path": "transcript/h05.jsonl",
+        "query_calls": 1,
+        "redaction": {
+          "fences": 0,
+          "envelope_lines": 0,
+          "selectors": 0,
+          "macros": 0,
+          "attrs": 0,
+          "names": 1,
+          "paths": 0
+        },
+        "tool_calls": 9,
+        "turns": 1,
+        "unit": "h05"
+      },
+      {
+        "chars_source": "result_chars",
+        "path": "transcript/h06.jsonl",
+        "query_calls": 5,
+        "redaction": {
+          "fences": 0,
+          "envelope_lines": 0,
+          "selectors": 0,
+          "macros": 0,
+          "attrs": 0,
+          "names": 1,
+          "paths": 0
+        },
+        "tool_calls": 10,
+        "turns": 1,
+        "unit": "h06"
+      },
+      {
+        "chars_source": "result_chars",
+        "path": "transcript/h07.jsonl",
+        "query_calls": 5,
+        "redaction": {
+          "fences": 0,
+          "envelope_lines": 0,
+          "selectors": 0,
+          "macros": 0,
+          "attrs": 0,
+          "names": 1,
+          "paths": 0
+        },
+        "tool_calls": 11,
+        "turns": 1,
+        "unit": "h07"
+      },
+      {
+        "chars_source": "result_chars",
+        "path": "transcript/h08.jsonl",
+        "query_calls": 4,
+        "redaction": {
+          "fences": 0,
+          "envelope_lines": 0,
+          "selectors": 0,
+          "macros": 1,
+          "attrs": 0,
+          "names": 1,
+          "paths": 0
+        },
+        "tool_calls": 6,
+        "turns": 1,
+        "unit": "h08"
+      },
+      {
+        "chars_source": "result_chars",
+        "path": "transcript/h09.jsonl",
+        "query_calls": 11,
+        "redaction": {
+          "fences": 0,
+          "envelope_lines": 0,
+          "selectors": 0,
+          "macros": 0,
+          "attrs": 0,
+          "names": 1,
+          "paths": 0
+        },
+        "tool_calls": 15,
+        "turns": 1,
+        "unit": "h09"
+      },
+      {
+        "chars_source": "result_chars",
+        "path": "transcript/h10.jsonl",
+        "query_calls": 7,
+        "redaction": {
+          "fences": 0,
+          "envelope_lines": 0,
+          "selectors": 0,
+          "macros": 0,
+          "attrs": 0,
+          "names": 1,
+          "paths": 0
+        },
+        "tool_calls": 7,
+        "turns": 1,
+        "unit": "h10"
+      },
+      {
+        "chars_source": "result_chars",
+        "path": "transcript/h11.jsonl",
+        "query_calls": 11,
+        "redaction": {
+          "fences": 0,
+          "envelope_lines": 0,
+          "selectors": 0,
+          "macros": 0,
+          "attrs": 0,
+          "names": 1,
+          "paths": 0
+        },
+        "tool_calls": 12,
+        "turns": 1,
+        "unit": "h11"
+      },
+      {
+        "chars_source": "result_chars",
+        "path": "transcript/h12.jsonl",
+        "query_calls": 3,
+        "redaction": {
+          "fences": 0,
+          "envelope_lines": 0,
+          "selectors": 0,
+          "macros": 0,
+          "attrs": 0,
+          "names": 1,
+          "paths": 0
+        },
+        "tool_calls": 11,
+        "turns": 1,
+        "unit": "h12"
+      },
+      {
+        "chars_source": "result_chars",
+        "path": "transcript/h13.jsonl",
+        "query_calls": 8,
+        "redaction": {
+          "fences": 0,
+          "envelope_lines": 0,
+          "selectors": 0,
+          "macros": 0,
+          "attrs": 0,
+          "names": 1,
+          "paths": 0
+        },
+        "tool_calls": 17,
+        "turns": 1,
+        "unit": "h13"
+      },
+      {
+        "chars_source": "result_chars",
+        "path": "transcript/h14.jsonl",
+        "query_calls": 4,
+        "redaction": {
+          "fences": 0,
+          "envelope_lines": 0,
+          "selectors": 0,
+          "macros": 0,
+          "attrs": 0,
+          "names": 1,
+          "paths": 0
+        },
+        "tool_calls": 22,
+        "turns": 1,
+        "unit": "h14"
+      },
+      {
+        "chars_source": "result_chars",
+        "path": "transcript/h15.jsonl",
+        "query_calls": 1,
+        "redaction": {
+          "fences": 0,
+          "envelope_lines": 0,
+          "selectors": 0,
+          "macros": 0,
+          "attrs": 0,
+          "names": 1,
+          "paths": 0
+        },
+        "tool_calls": 14,
+        "turns": 1,
+        "unit": "h15"
+      },
+      {
+        "chars_source": "result_chars",
+        "path": "transcript/r01.jsonl",
+        "query_calls": 2,
+        "redaction": {
+          "fences": 0,
+          "envelope_lines": 0,
+          "selectors": 0,
+          "macros": 0,
+          "attrs": 0,
+          "names": 1,
+          "paths": 0
+        },
+        "tool_calls": 8,
+        "turns": 1,
+        "unit": "r01"
+      },
+      {
+        "chars_source": "result_chars",
+        "path": "transcript/r02.jsonl",
+        "query_calls": 4,
+        "redaction": {
+          "fences": 0,
+          "envelope_lines": 0,
+          "selectors": 0,
+          "macros": 2,
+          "attrs": 0,
+          "names": 1,
+          "paths": 0
+        },
+        "tool_calls": 10,
+        "turns": 1,
+        "unit": "r02"
+      },
+      {
+        "chars_source": "result_chars",
+        "path": "transcript/r03.jsonl",
+        "query_calls": 2,
+        "redaction": {
+          "fences": 0,
+          "envelope_lines": 0,
+          "selectors": 0,
+          "macros": 0,
+          "attrs": 0,
+          "names": 1,
+          "paths": 0
+        },
+        "tool_calls": 11,
+        "turns": 1,
+        "unit": "r03"
+      },
+      {
+        "chars_source": "result_chars",
+        "path": "transcript/r04.jsonl",
+        "query_calls": 3,
+        "redaction": {
+          "fences": 0,
+          "envelope_lines": 0,
+          "selectors": 0,
+          "macros": 0,
+          "attrs": 0,
+          "names": 1,
+          "paths": 0
+        },
+        "tool_calls": 6,
+        "turns": 1,
+        "unit": "r04"
+      },
+      {
+        "chars_source": "result_chars",
+        "path": "transcript/r05.jsonl",
+        "query_calls": 2,
+        "redaction": {
+          "fences": 0,
+          "envelope_lines": 0,
+          "selectors": 0,
+          "macros": 0,
+          "attrs": 0,
+          "names": 1,
+          "paths": 0
+        },
+        "tool_calls": 8,
+        "turns": 1,
+        "unit": "r05"
+      }
+    ]
+  },
+  "validity": {
+    "detail": "",
+    "ok": true,
+    "reason": "run_ok",
+    "status": "scored"
+  }
+}

@@ -1,0 +1,67 @@
+---
+import Base from '../../layouts/Base.astro'
+import FigureIsland from '../../charts/FigureIsland'
+import { FIGURES } from '../../lib/figures'
+import { loadRuns, loadManifest, loadPerQuestion, loadQuestions, latestEpoch } from '../../lib/data'
+import { packRows } from '../../lib/measures'
+import { buildHeat } from '../../lib/heat'
+import { EXAMS } from '../../lib/roster'
+
+export function getStaticPaths() {
+  return FIGURES.map(f => ({ params: { slug: f.slug } }))
+}
+const { slug } = Astro.params
+const fig = FIGURES.find(f => f.slug === slug)!
+const epoch = latestEpoch()
+const manifest = loadManifest(epoch)
+const runs = loadRuns(epoch)
+const data = fig.kind === 'heatmap' ? [] : packRows(runs, fig.measure.key)
+let heat = undefined
+if (fig.kind === 'heatmap') {
+  const pq = loadPerQuestion(epoch)
+  const repo = Object.keys(manifest.repositories)[0]
+  const qs: Record<string, any[]> = {}
+  for (const b of manifest.repositories[repo].batteries) qs[b.battery_key] = loadQuestions(repo, b.battery_key)
+  heat = []
+  for (const e of EXAMS) for (const b of ['memos-hard', 'memos', 'both'] as const) heat.push(buildHeat(pq, qs, e, b))
+}
+const prev = FIGURES.find(f => f.number === fig.number - 1)
+const next = FIGURES.find(f => f.number === fig.number + 1)
+const base = import.meta.env.BASE_URL.replace(/\/$/, '')
+---
+<Base title={`Figure ${fig.number} — ${fig.title}`} description={fig.caption[0]}>
+  <div class="prose">
+    <div class="kicker">Figure {fig.number} · {manifest.epoch.id}</div>
+    <h1>{fig.title}</h1>
+    <p class="lede">{fig.caption[0]}</p>
+  </div>
+
+  <FigureIsland client:load fig={fig} data={data} heat={heat} />
+
+  <div class="prose">
+  <p class="caption"><b>Figure {fig.number}.</b> {fig.caption[0]} {fig.caption[1]} {fig.caption[2]}</p>
+
+  <div class="explain">
+    <h2>How this figure is computed</h2>
+    {fig.explanation.map(p => <p>{p}</p>)}
+    {fig.disclosures && fig.disclosures.length > 0 && (
+      <>
+        <h3>Disclosures</h3>
+        {fig.disclosures.map(d => <p class="disc">{d}</p>)}
+      </>
+    )}
+    <h3>Provenance</h3>
+    <p>
+      Computed at build time from <code>epochs/{epoch}/summary/runs.json</code> of the proof package
+      (export tool {manifest.export_tool.name} {manifest.export_tool.version}, scorer era {manifest.scorer_eras.join(', ')}).
+      Each row of the table above links to the run directories in the repository, where <code>run.json</code>,
+      the answers, the verdicts and the transcript of every run can be read.
+    </p>
+  </div>
+
+  <nav class="fig-grid" aria-label="figures">
+    {prev && <a class="fig-link" href={`${base}/results/${prev.slug}/`}><span class="n">← Figure {prev.number}</span><span class="t">{prev.title}</span></a>}
+    {next && <a class="fig-link" href={`${base}/results/${next.slug}/`}><span class="n">Figure {next.number} →</span><span class="t">{next.title}</span></a>}
+  </nav>
+  </div>
+</Base>

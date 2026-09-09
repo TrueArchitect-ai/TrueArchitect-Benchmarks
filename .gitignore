@@ -1,0 +1,3 @@
+# the export's staging directory (removed on completion; survives only a crash)
+.export-stage/
+.DS_Store

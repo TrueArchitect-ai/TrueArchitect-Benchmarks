@@ -1,0 +1,48 @@
+---
+import Base from '../../layouts/Base.astro'
+import FigureIsland from '../../charts/FigureIsland'
+import { COMPARISONS } from '../../lib/comparisons'
+import { FIGURES } from '../../lib/figures'
+import { loadRuns, loadManifest, latestEpoch } from '../../lib/data'
+import { packRows } from '../../lib/measures'
+import { armInfo, armOrder, modelLabel, modelOrder } from '../../lib/roster'
+
+export function getStaticPaths() {
+  return COMPARISONS.map(c => ({ params: { slug: c.slug } }))
+}
+const { slug } = Astro.params
+const cmp = COMPARISONS.find(c => c.slug === slug)!
+const epoch = latestEpoch()
+const manifest = loadManifest(epoch)
+const runs = loadRuns(epoch).filter(r => cmp.arms(r.arm) && cmp.models(r.model))
+const arms = [...new Set(runs.map(r => r.arm))].sort(armOrder).map(armInfo)
+const models = [...new Set(runs.filter(r => r.validity_ok && r.score != null).map(r => r.model))].sort(modelOrder)
+const figs = cmp.figures.map(s => FIGURES.find(f => f.slug === s)!)
+const base = import.meta.env.BASE_URL.replace(/\/$/, '')
+---
+<Base title={cmp.title} description={cmp.intro[0]}>
+  <div class="prose">
+    <div class="kicker">Comparison · {manifest.epoch.id}</div>
+    <h1>{cmp.title}</h1>
+    {cmp.intro.map(p => <p class="lede">{p}</p>)}
+    <p class="muted" style="font-size:13px">
+      Arms: {arms.map(a => a.short).join(' · ')}. Models: {models.map(modelLabel).join(' · ')}.
+      {runs.filter(r => r.validity_ok && r.score != null).length} valid scored runs. One column per model on every figure; the defaults pool the
+      ZeroShot and MultiTurn protocols over both batteries (each protocol × battery × model cell one vote) — the controls on each figure change that.
+      The arm and model set is fixed to this comparison.
+      {cmp.note && <span> {cmp.note}</span>}
+    </p>
+  </div>
+
+  {figs.map(fig => (
+    <section class="cmp-figure">
+      <div class="prose">
+        <h2 id={fig.slug}><span class="fig-no-inline">Figure {fig.number}</span> {fig.title}</h2>
+      </div>
+      <FigureIsland client:load fig={{ ...fig, defaults: { ...fig.defaults, columns: 'per-model' } }} data={packRows(runs, fig.measure.key)} controls table />
+      <div class="prose">
+        <p class="caption">{fig.caption[0]} {fig.caption[1]} <a href={`${base}/results/${fig.slug}/`}>Full figure, definition and disclosures →</a></p>
+      </div>
+    </section>
+  ))}
+</Base>
