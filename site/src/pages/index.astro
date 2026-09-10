@@ -39,20 +39,59 @@ const accTA = ta(accGroups)?.pooled ?? null, accCC = cold(accGroups)?.pooled ?? 
 const relTA = ta(relGroups)?.pooled ?? null, relCC = cold(relGroups)?.pooled ?? null
 const bestIndexer = accGroups.filter(g => g.arm.role === 'indexer').sort((a, b) => (b.pooled ?? 0) - (a.pooled ?? 0))[0]
 const base = import.meta.env.BASE_URL.replace(/\/$/, '')
-const repo = Object.values(manifest.repositories)[0]
+const repoKey = Object.keys(manifest.repositories)[0]
+const repo = manifest.repositories[repoKey]
+const tree = `${REPO_URL}/tree/main`, blob = `${REPO_URL}/blob/main`
 ---
 <Base title="Summary">
   <div class="prose">
   <div class="kicker">{manifest.epoch.label} · public proof package</div>
-  <h1>Does TrueArchitect's codebase index make an AI coding agent more accurate, more consistent and cheaper than text search?</h1>
+  <h1>Does TrueArchitect's codebase index make an AI coding agent more accurate, more consistent and cheaper than lexical search?</h1>
   <p class="lede">
-    This site reports one benchmark epoch in which the TrueArchitect <em>Ask</em> agent — the model plus TrueArchitect's index of the
-    codebase, built by its own proprietary indexing system and designed for LLM consumption — answered {repo.batteries.reduce((a, b) => a + b.questions, 0)} questions
+    This site reports one benchmark epoch in which the TrueArchitect <em>Ask</em> agent, the model plus TrueArchitect's index of the
+    codebase, built by its own proprietary indexing system and designed for LLM consumption, answered {repo.batteries.reduce((a, b) => a + b.questions, 0)} questions
     about <a href={repo.source_url} target="_blank" rel="noopener">{repo.source_url.replace('https://github.com/', '')}</a> under three exam
     protocols, beside bare Claude Code, bare Codex, bare Cursor Agent, and five codebase-indexing tools installed on Claude Code,
     at the same models and from the same clean checkout. Every figure is computed from the run records in the
     public repository, and every number links to the runs behind it.
   </p>
+
+  <h2>What is measured</h2>
+  <p>
+    The benchmark measures <b>codebase understanding</b>: whether an agent, asked a question about a codebase it has never seen, arrives at the
+    correct answer. Understanding precedes development. Correct code follows from a correct reading of the existing code and from loading the
+    right context; an agent that misreads the codebase writes against a wrong model of it. No protocol in this epoch asks the agent to write
+    code; every question tests context-building alone. Protocols in development extend the same method to planning code changes
+    (refactors and new features) and to executing plans.
+  </p>
+  <p>
+    The <a href={`${tree}/repositories/${repoKey}/batteries`} target="_blank" rel="noopener">questions</a> are published with their grading key
+    (gold answers, accepted variants, scoring policies and the judge's exemplars). Every arm's
+    <a href={`${tree}/runs`} target="_blank" rel="noopener">runs</a> are published in full: the answer to each question, the
+    <a href={`${blob}/judging/judge-prompt.md`} target="_blank" rel="noopener">judge</a>'s verdict with its stated reason, the per-run tokens, cost,
+    tool calls and time, and the session transcript.
+  </p>
+
+  <h2>What every arm could do</h2>
+  <p>
+    No arm was restricted. Each comparison arm ran in its own container with full permission to call every tool it ships with and any shell
+    command, so <code>grep</code>, directory listing and file reading were available to all of them. The codebase-indexing tools were installed
+    inside their containers as shipped, and whatever each install adds to the environment (an MCP server, skills, instruction files) was kept;
+    the <a href={`${tree}/docker-containers`} target="_blank" rel="noopener">container definitions</a> are published. The TrueArchitect arm had the
+    same file tools and one addition: a tool that queries TrueArchitect's index of the codebase. The comparison is therefore between tool sets,
+    at the same models, on the same questions.
+  </p>
+
+  <h2>Caveats</h2>
+  <ul>
+    <li><b>Fable 5 refused many questions.</b> The questions concern the structure of a public codebase and touch nothing sensitive, yet the model
+      declined a large share of them under the per-question protocols. Repeated attempts did not yield a complete set, so Fable 5 is a thin roster
+      in this epoch and its columns should be read with their run counts. The exact figures are on the
+      <a href={`${base}/limitations/`}>Limitations</a> page.</li>
+    <li><b>Haiku 4.5 and the whole-battery protocol.</b> Haiku 4.5 has a 200K-token context window where the other models have 1M. Under HumanExam,
+      which presents the entire battery in one prompt, some Haiku 4.5 runs exceeded it and did not finish. They are published unscored and never enter a mean.</li>
+    <li><b>Planned additions.</b> Anthropic's Fable 5.1 and OpenAI's ChatGPT-6 (Astra) will be added in a later epoch.</li>
+  </ul>
 
   <a class="repo-callout" href={REPO_URL} target="_blank" rel="noopener">
     <svg width="28" height="28" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0 0 16 8c0-4.42-3.58-8-8-8z"/></svg>
