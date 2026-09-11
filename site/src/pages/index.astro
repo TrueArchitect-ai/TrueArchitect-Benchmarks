@@ -16,6 +16,8 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '')
 const MARK: Record<Verdict, string> = { win: '✓', loss: '✗', tie: '≈', none: '—' }
 const WORD: Record<Verdict, string> = { win: 'TrueArchitect better', loss: 'TrueArchitect worse', tie: 'within noise', none: 'not comparable' }
 const total = (id: string) => { const t = sc.tally[id]; return t.win + t.tie + t.loss }
+// gap-strip geometry: a point's position on the card's zoomed axis, in %
+const pos = (v: number, lo: number, hi: number) => Math.max(0, Math.min(100, ((v - lo) / (hi - lo)) * 100))
 ---
 <Base title="Benchmark Results" description="How TrueArchitect did against every comparator on every measure, like for like at shared models, in one table.">
   <div class="prose">
@@ -37,15 +39,39 @@ const total = (id: string) => { const t = sc.tally[id]; return t.win + t.tie + t
           <span class="card-sub">{h.sub}</span>
         </span>
         <span class="card-ledger">
-          {h.rows.map(r => (
-            <span class={'card-row v-' + r.verdict}>
-              <span class="card-mark" aria-label={WORD[r.verdict]}>{MARK[r.verdict]}</span>
-              <span class="card-name">{r.name}<span class="card-detail">{r.detail}</span></span>
-              <span class="card-delta">{r.delta}</span>
-            </span>
-          ))}
+          <span class="card-axis"><span>comparator</span><span>{h.axis.loLabel} — {h.axis.hiLabel}</span></span>
+          {h.rows.map(r => {
+            const a = r.ta != null ? pos(r.ta, h.axis.lo, h.axis.hi) : null
+            const b = r.cmp != null ? pos(r.cmp, h.axis.lo, h.axis.hi) : null
+            const sl = r.spanLo != null ? pos(r.spanLo, h.axis.lo, h.axis.hi) : null
+            const sh = r.spanHi != null ? pos(r.spanHi, h.axis.lo, h.axis.hi) : null
+            const far = b ?? sh
+            const gl = a != null && far != null ? Math.min(a, far) : null
+            const gw = a != null && far != null ? Math.abs(far - a) : null
+            return (
+              <span class={'card-row v-' + r.verdict}>
+                <span class="card-line">
+                  <span class="card-mark" aria-label={WORD[r.verdict]}>{MARK[r.verdict]}</span>
+                  <span class="card-name">{r.name}<span class="card-detail">{r.detail}</span></span>
+                  <span class="card-delta">{r.delta}</span>
+                </span>
+                {a != null && (
+                  <span class="card-strip" aria-hidden="true">
+                    <i class="track"></i>
+                    {gl != null && <i class="gap" style={`left:${gl}%;width:${gw}%`}></i>}
+                    {sl != null && sh != null && <i class="span" style={`left:${sl}%;width:${sh - sl}%`}></i>}
+                    {b != null && <i class="dot cmp" style={`left:${b}%`}></i>}
+                    <i class="dot ta" style={`left:${a}%`}></i>
+                  </span>
+                )}
+              </span>
+            )
+          })}
         </span>
-        <span class="card-foot"><span class="card-tally">{h.tally}</span><span>Figure {h.number} →</span></span>
+        <span class="card-foot">
+          <span class="card-legend"><span><i class="dot ta"></i>TrueArchitect</span><span><i class="dot cmp"></i>comparator</span></span>
+          <span class="card-tally">{h.tally} · Figure {h.number} →</span>
+        </span>
       </a>
     ))}
   </div>

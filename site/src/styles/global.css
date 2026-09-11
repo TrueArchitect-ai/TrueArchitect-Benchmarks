@@ -136,7 +136,22 @@ details.data summary { cursor: pointer; font-size: 13px; font-weight: 600; margi
 .card-headline { font-family: var(--serif); font-size: 32px; line-height: 1.08; letter-spacing: -0.01em; font-weight: 400; text-wrap: pretty; }
 .card-sub { font-size: 14px; line-height: 1.45; color: var(--muted); text-wrap: pretty; }
 .card-ledger { position: relative; display: flex; flex-direction: column; border-top: 1px solid var(--ink); }
-.card-row { display: grid; grid-template-columns: 18px minmax(0, 1fr) auto; gap: 10px; align-items: baseline; padding: 9px 0; border-bottom: 1px solid var(--grid); font-size: 14px; }
+.card-axis { display: flex; justify-content: space-between; font-family: var(--mono); font-size: 10px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); padding: 6px 0 2px; }
+.card-row { display: flex; flex-direction: column; gap: 7px; padding: 10px 0; border-bottom: 1px solid var(--grid); font-size: 14px; }
+.card-line { display: grid; grid-template-columns: 18px minmax(0, 1fr) auto; gap: 10px; align-items: baseline; }
+/* the gap strip: a thin track, the comparator (grey) and TrueArchitect (green) dots, the gap bar between */
+.card-strip { position: relative; display: block; height: 12px; margin-left: 28px; }
+.card-strip .track { position: absolute; left: 0; right: 0; top: 5px; height: 2px; background: var(--grid); }
+.card-strip .gap { position: absolute; top: 4px; height: 4px; background: color-mix(in srgb, var(--ahead) 35%, transparent); }
+.card-strip .span { position: absolute; top: 3px; height: 6px; background: color-mix(in srgb, var(--muted) 25%, transparent); border-radius: 3px; }
+.card-strip .dot, .card-legend .dot { position: absolute; top: 1px; width: 10px; height: 10px; border-radius: 50%; transform: translateX(-50%); }
+.card-strip .dot.cmp { background: var(--baseline); }
+.card-strip .dot.ta { top: 0; width: 12px; height: 12px; background: var(--ahead); box-shadow: 0 0 0 2px var(--card); }
+.card-legend { display: flex; gap: 12px; }
+.card-legend > span { display: inline-flex; align-items: center; gap: 5px; }
+.card-legend .dot { position: static; transform: none; width: 9px; height: 9px; display: inline-block; }
+.card-legend .dot.ta { background: var(--ahead); }
+.card-legend .dot.cmp { background: var(--baseline); width: 8px; height: 8px; }
 .card-mark { font-weight: 700; color: var(--muted); }
 .card-row.v-win .card-mark, .card-row.v-win .card-delta { color: var(--ahead); }
 .card-row.v-loss .card-mark, .card-row.v-loss .card-delta { color: var(--behind); }
