@@ -48,13 +48,19 @@ export const CONSISTENCY_FIG: Figure = {
   slug: 'accuracy', short: 'Consistency', title: 'Run-to-run spread of accuracy',
   measure: { key: 'pct', cell: 'cv', label: 'run-to-run variation of accuracy (coefficient of variation, %)', unit: 'pct', better: 'low' },
 }
-const SCORECARD_FIGS = ['accuracy', 'pass-rate', 'consistency', 'context-tokens', 'tokens-per-correct', 'cost-per-correct', 'tool-calls', 'tool-result-tokens', 'wall-time']
-const figFor = (slug: string): Figure => (slug === 'consistency' ? CONSISTENCY_FIG : FIGURES.find(f => f.slug === slug)!)
+// HARD BATTERY — accuracy on memos-hard alone: the 20 questions written to
+// defeat text search (15 grep-hostile, 5 false-premise). Same figure, same
+// statistic, one battery instead of both. Where the tools separate.
+export const HARD_FIG: Figure = { ...ACCURACY_FIG, short: 'Hard battery', title: 'Accuracy on the hard battery', defaults: { ...ACCURACY_FIG.defaults, battery: 'memos-hard' } }
+const SCORECARD_FIGS = ['accuracy', 'accuracy-hard', 'pass-rate', 'consistency', 'context-tokens', 'tokens-per-correct', 'cost-per-correct', 'tool-calls', 'tool-result-tokens', 'wall-time']
+const figFor = (slug: string): Figure => (slug === 'consistency' ? CONSISTENCY_FIG : slug === 'accuracy-hard' ? HARD_FIG : FIGURES.find(f => f.slug === slug)!)
+// the slice a scorecard row pools over: both batteries, except the hard-battery row
+const sliceFor = (fig: Figure) => (fig === HARD_FIG ? { ...SLICE, battery: 'memos-hard' as const } : SLICE)
 
 const TA = (id: string) => armInfo(id).role === 'trueArchitect'
 
 function pooled(fig: Figure, rows: Row[], models: string[], model: string | 'all') {
-  const gs = buildGroups(fig, rows.filter(r => models.includes(r.model)), { ...SLICE, columns: 'pooled', model }, false)
+  const gs = buildGroups(fig, rows.filter(r => models.includes(r.model)), { ...sliceFor(fig), columns: 'pooled', model }, false)
   return gs
 }
 
@@ -219,8 +225,9 @@ export function headlines(sc: Scorecard): Card[] {
     out.push({ label, direction: 'lower is better', number: r.fig.number, figure: r.fig.slug, headline: headline(Math.min(...wins), Math.max(...wins)), sub: sub(peaks.length ? Math.max(...peaks) : null), rows, tally: tallyOf(rows), axis })
   }
 
-  const acc = row('accuracy', 'Accuracy'), rel = row('pass-rate'), con = row('accuracy', 'Consistency'), ctx = row('context-tokens'), cost = row('cost-per-correct')
+  const acc = row('accuracy', 'Accuracy'), hard = row('accuracy', 'Hard battery'), rel = row('pass-rate'), con = row('accuracy', 'Consistency'), ctx = row('context-tokens'), cost = row('cost-per-correct')
   if (acc) pointsCard(acc, 'Accuracy', (lo, hi) => `${lo.toFixed(0)}–${hi.toFixed(0)} points more accurate`, 'than every comparator, at the models each of them ran.')
+  if (hard) pointsCard(hard, 'Hard battery', (lo, hi) => `${lo.toFixed(0)}–${hi.toFixed(0)} points more accurate on the hard battery`, 'the 20 questions written to defeat text search: 15 grep-hostile, 5 false-premise. On the base battery every arm is near the ceiling; this is where the tools separate.')
   if (rel) pointsCard(rel, 'Reliability', (lo, hi) => `${lo.toFixed(0)}–${hi.toFixed(0)} points more runs at 90%+ accuracy`, 'share of full-battery runs scoring at least nine in ten. Each arm was run repeatedly; this is how often a run lands in the top band.')
   if (con) ratioCard(con, 'Consistency', (lo, hi) => {
     const a = Math.round((1 - 1 / lo) * 100), b = Math.round((1 - 1 / hi) * 100)
