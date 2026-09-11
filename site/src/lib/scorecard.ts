@@ -114,57 +114,90 @@ function cell(fig: Figure, rows: Row[], taId: string, other: ArmInfo): ScoreCell
  * if they read nothing else. Each is derived from the scorecard cells, so a
  * headline can never say something the table does not.
  */
-export type Headline = { big: string; claim: string; detail: string; figure: string }
+export type HeadlineLine = { label: string; text: string; verdict: Verdict }
+export type Headline = { big: string; claim: string; detail: string; figure: string; lines: HeadlineLine[] }
 
+/**
+ * Each card = one measure, one headline that holds against EVERY comparator,
+ * and a strip with one line per comparator (Claude Code, Codex, Cursor
+ * Agent, the best indexing tool on that measure) so no reader has to ask
+ * "but what about X". The headline range spans the comparators the verdict
+ * is a win against; a mixed-by-model comparator is shown in its line as
+ * such and excluded from the range.
+ */
 export function headlines(sc: Scorecard): Headline[] {
   const row = (slug: string) => sc.rows.find(r => r.fig.slug === slug)
-  const cellOf = (slug: string, armId: string) => row(slug)?.cells.find(c => c.arm.id === armId || (armId === 'best-indexer' && c.arm.id === 'best-indexer'))
   const out: Headline[] = []
   const x = (r: number) => r.toFixed(1) + '×'
   // full names in prose (the table uses the chart shorthand); the best indexer is named by its tool
-  const nameOf = (c: ScoreCell) => (c.arm.id === 'best-indexer' ? c.arm.short.replace('Best indexing tool: ', '') : c.arm.name)
-
-  // 1. context tokens — the range at the same model against bare Claude Code
-  const ctx = cellOf('context-tokens', 'cold')
-  if (ctx?.perModel?.length) {
-    const ratios = ctx.perModel.map(p => p.other / p.ta)
-    const lo = Math.min(...ratios), hi = Math.max(...ratios)
-    const others = ['codex', 'cursor', 'best-indexer'].map(id => cellOf('context-tokens', id)).filter((c): c is ScoreCell => !!c && c.verdict === 'win')
-    out.push({
-      big: `${x(lo)}–${x(hi)} fewer context tokens`,
-      claim: 'than bare Claude Code at the same model, on the same questions.',
-      detail: `Claude Code read ${x(lo)} to ${x(hi)} the context TrueArchitect read, at every one of the ${ctx.perModel.length} models both ran` +
-        (others.length ? `; ${others.map(c => `${nameOf(c)} ${c.headline.replace(' more than TrueArchitect', '')}`).join(', ')} likewise` : '') + '.',
-      figure: 'context-tokens',
-    })
+  const nameOf = (c: ScoreCell) => (c.arm.id === 'best-indexer' ? `${c.arm.short.replace('Best indexing tool: ', '')} (best indexing tool)` : c.arm.name.replace(' (bare)', ''))
+  const pctLine = (c: ScoreCell): HeadlineLine => ({
+    label: nameOf(c),
+    verdict: c.verdict,
+    text: c.ta != null && c.other != null ? `${c.ta.toFixed(1)}% vs ${c.other.toFixed(1)}% · ${c.ta - c.other >= 0 ? '+' : '−'}${Math.abs(c.ta - c.other).toFixed(1)} pts` : 'no shared model',
+  })
+  // per-model ratio range for a token cell (comparator ÷ TrueArchitect)
+  const ratioRange = (c: ScoreCell) => {
+    const rs = (c.perModel ?? []).map(p => p.other / p.ta)
+    return rs.length ? { lo: Math.min(...rs), hi: Math.max(...rs), n: rs.length } : null
+  }
+  const tokenLine = (c: ScoreCell): HeadlineLine => {
+    const r = ratioRange(c)
+    if (!r) return { label: nameOf(c), verdict: c.verdict, text: 'no shared model' }
+    const range = r.lo === r.hi ? x(r.lo) : `${x(r.lo)}–${x(r.hi)}`
+    return { label: nameOf(c), verdict: c.verdict, text: c.verdict === 'win' ? `reads ${range} more, at ${r.n} shared model${r.n === 1 ? '' : 's'}` : c.verdict === 'loss' ? `reads ${range}, less than TrueArchitect` : `${range}, varies by model` }
   }
 
-  // 2. accuracy — the smallest and largest lead over the comparators
+  // 1. context tokens
+  const ctx = row('context-tokens')
+  if (ctx) {
+    // headline = the pooled ratio per comparator (each over its shared roster); the strip carries the per-model spread
+    const wins = ctx.cells.filter(c => c.verdict === 'win' && c.ta != null && c.other != null).map(c => c.other! / c.ta!)
+    const peak = Math.max(...ctx.cells.map(ratioRange).filter((r): r is NonNullable<typeof r> => !!r).map(r => r.hi))
+    if (wins.length) {
+      const lo = Math.min(...wins), hi = Math.max(...wins)
+      const mixed = ctx.cells.filter(c => c.verdict === 'tie').map(nameOf)
+      out.push({
+        big: `${x(lo)}–${x(hi)} fewer context tokens`,
+        claim: `on average at the same model, up to ${x(peak)} at individual models, against every comparator it beats${mixed.length ? `; ${mixed.join(' and ')} varies by model` : ''}.`,
+        detail: 'Context tokens = the uncached input plus every cache read, summed over every call of a run. Raw token counts are compared per model, never across vendors.',
+        figure: 'context-tokens',
+        lines: ctx.cells.map(tokenLine),
+      })
+    }
+  }
+
+  // 2. accuracy
   const acc = row('accuracy')
   if (acc) {
-    const leads = acc.cells.filter(c => c.ta != null && c.other != null).map(c => ({ c, d: c.ta! - c.other! }))
+    const leads = acc.cells.filter(c => c.ta != null && c.other != null).map(c => c.ta! - c.other!)
     if (leads.length) {
-      const lo = Math.min(...leads.map(l => l.d)), hi = Math.max(...leads.map(l => l.d))
-      const cc = leads.find(l => l.c.arm.id === 'cold')
+      const lo = Math.min(...leads), hi = Math.max(...leads)
+      const all = leads.every(d => d >= 1)
       out.push({
         big: `${lo.toFixed(0)}–${hi.toFixed(0)} points more accurate`,
-        claim: 'than every comparator, at the models each of them ran.',
-        detail: 'TrueArchitect vs ' + leads.map(l => `${nameOf(l.c)} ${l.c.ta!.toFixed(1)}% vs ${l.c.other!.toFixed(1)}%`).join(' · ') + '.',
+        claim: all ? 'than every comparator, at the models each of them ran.' : 'than most comparators, at the models each of them ran.',
+        detail: 'Accuracy = questions correct per run, pooled with equal weight per protocol × battery × model over the models both arms ran.',
         figure: 'accuracy',
+        lines: acc.cells.map(pctLine),
       })
     }
   }
 
   // 3. reliability — share of runs at or above 90 %
-  const rel = cellOf('pass-rate', 'cold')
-  const relBest = cellOf('pass-rate', 'best-indexer')
-  if (rel?.ta != null && rel.other != null) {
-    out.push({
-      big: `${rel.ta.toFixed(0)}% of runs score 90% or better`,
-      claim: `against ${rel.other.toFixed(0)}% for bare Claude Code${relBest?.other != null ? ` and ${relBest.other.toFixed(0)}% for the best indexing tool` : ''}.`,
-      detail: `A run is one full pass over a battery; this is the share that came back with at least nine answers in ten correct, over the ${rel.models.length} models both arms ran.`,
-      figure: 'pass-rate',
-    })
+  const rel = row('pass-rate')
+  if (rel) {
+    const leads = rel.cells.filter(c => c.ta != null && c.other != null).map(c => c.ta! - c.other!)
+    if (leads.length) {
+      const lo = Math.min(...leads), hi = Math.max(...leads)
+      out.push({
+        big: `${lo.toFixed(0)}–${hi.toFixed(0)} points more runs at 90%+ accuracy`,
+        claim: 'the share of full battery passes with at least nine answers in ten correct, against every comparator.',
+        detail: 'A run is one complete pass over a battery. The mean hides how often a tool merely works; this is how often it works well.',
+        figure: 'pass-rate',
+        lines: rel.cells.map(pctLine),
+      })
+    }
   }
   return out
 }

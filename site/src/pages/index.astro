@@ -33,6 +33,11 @@ const total = (id: string) => { const t = sc.tally[id]; return t.win + t.tie + t
       <a class="headline" href={`${base}/results/${h.figure}/`}>
         <span class="hl-big">{h.big}</span>
         <span class="hl-claim">{h.claim}</span>
+        <span class="hl-lines">
+          {h.lines.map(l => (
+            <span class={'hl-line v-' + l.verdict}><span class="hl-mark">{MARK[l.verdict]}</span><span class="hl-label">{l.label}</span><span class="hl-text">{l.text}</span></span>
+          ))}
+        </span>
         <span class="hl-detail">{h.detail}</span>
       </a>
     ))}

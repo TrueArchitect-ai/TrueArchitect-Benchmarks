@@ -130,6 +130,13 @@ details.data summary { cursor: pointer; font-size: 13px; font-weight: 600; margi
 .headline .hl-big { font-family: var(--serif); font-weight: 600; font-size: 24px; line-height: 1.15; letter-spacing: -0.01em; color: var(--mauve-ink); }
 .headline .hl-claim { font-size: 14px; font-weight: 600; color: var(--ink); }
 .headline .hl-detail { font-size: 12px; color: var(--muted); line-height: 1.45; }
+.headline .hl-lines { display: flex; flex-direction: column; gap: 3px; margin: 6px 0 4px; padding: 8px 0 6px; border-top: 1px solid var(--mauve-edge); border-bottom: 1px solid var(--mauve-edge); }
+.headline .hl-line { display: grid; grid-template-columns: 16px minmax(96px, auto) 1fr; gap: 6px; font-size: 12.5px; line-height: 1.4; align-items: baseline; }
+.headline .hl-mark { font-weight: 700; color: var(--muted); }
+.headline .hl-line.v-win .hl-mark { color: var(--accent); }
+.headline .hl-line.v-loss .hl-mark { color: #d6701e; }
+.headline .hl-label { font-weight: 600; color: var(--ink); }
+.headline .hl-text { color: var(--muted); }
 /* the Results scorecard */
 .scorecard-wrap { overflow-x: auto; margin: 18px 0 6px; }
 .scorecard { border-collapse: separate; border-spacing: 0; font-size: 13px; min-width: 900px; }
