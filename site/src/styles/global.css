@@ -117,6 +117,26 @@ details.data summary { cursor: pointer; font-size: 13px; font-weight: 600; margi
 .key h3 { margin: 0 0 8px; }
 .key ol { margin: 0; padding-left: 20px; }
 .key li { margin-bottom: 6px; max-width: 84ch; }
+/* the Results scorecard */
+.scorecard-wrap { overflow-x: auto; margin: 18px 0 6px; }
+.scorecard { border-collapse: separate; border-spacing: 0; font-size: 13px; min-width: 900px; }
+.scorecard th, .scorecard td { border-bottom: 1px solid var(--grid); padding: 10px 12px; vertical-align: top; }
+.scorecard thead th { position: sticky; top: 0; background: var(--surface); }
+.scorecard td.measure, .scorecard th.measure { min-width: 190px; }
+.scorecard td.measure b { font-family: var(--serif); font-size: 15px; }
+.scorecard .sub { display: block; font-size: 11.5px; color: var(--muted); line-height: 1.4; margin-top: 2px; }
+.scorecard td.cell { min-width: 170px; border-left: 3px solid transparent; }
+.scorecard td.cell .mark { display: inline-block; width: 18px; font-weight: 700; }
+.scorecard td.cell .head { font-weight: 600; color: var(--ink); }
+.scorecard td.v-win { border-left-color: var(--accent); background: color-mix(in srgb, var(--accent) 7%, transparent); }
+.scorecard td.v-win .mark { color: var(--accent); }
+.scorecard td.v-loss { border-left-color: #d6701e; background: color-mix(in srgb, #d6701e 8%, transparent); }
+.scorecard td.v-loss .mark { color: #d6701e; }
+.scorecard td.v-tie { border-left-color: var(--baseline); }
+.scorecard td.v-tie .mark { color: var(--muted); }
+.scorecard td.v-none .head { color: var(--faint); font-weight: 400; }
+.scorecard tfoot td { border-top: 2px solid var(--baseline); border-bottom: none; background: var(--surface-2); }
+.scorecard td.fig { white-space: nowrap; }
 /* the GitHub call-out on the Summary page */
 .repo-callout { display: flex; align-items: center; gap: 16px; margin: 18px 0 6px; padding: 14px 18px; border: 1px solid var(--grid); border-radius: 10px; color: var(--ink); background: var(--surface-2); max-width: 1180px; }
 .repo-callout:hover { text-decoration: none; border-color: var(--accent); }

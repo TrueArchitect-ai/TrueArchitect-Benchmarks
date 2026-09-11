@@ -38,6 +38,7 @@ const is = (p: string) => (p === '/' ? here === '/' : here.startsWith(p))
         <a class="brand" href={`${base}/`}>TrueArchitect Benchmarks</a>
         <div class="brand-sub">{manifest.epoch.id} · the public proof package</div>
         <a class={is('/overview') ? 'on' : ''} href={`${base}/overview/`}>Overview</a>
+        <a class={here === '/results' ? 'on' : ''} href={`${base}/results/`}>Results</a>
         <a class={is('/') ? 'on' : ''} href={`${base}/`}>Summary</a>
         <h4>Comparisons</h4>
         {COMPARISONS.map(c => (

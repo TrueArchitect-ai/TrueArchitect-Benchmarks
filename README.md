@@ -284,7 +284,8 @@ index queries).
   `denominator`, `mean_total`, `mean_pct`, `min`, `max`. Means are over valid scored runs only.
 - `per-question.csv` — per arm × model × exam × battery × question: `pass`, `n`, `pass_rate`.
 - `runs.json` — one flat row per run (identity, validity, score and fail counts, the four token
-  columns and their source, duration, LLM and tool call counts by class, tool wall time, tool
+  columns and their source, duration with its basis (the run's own figure for `HumanExam`; the sum of
+  the per-question durations for the per-question protocols), LLM and tool call counts by class, tool wall time, tool
   result tokens, index-query count, cost with its basis, and the run's path). Every figure on the
   companion site is computed from this file and nothing else, so a site number can always be
   traced to a run directory here.

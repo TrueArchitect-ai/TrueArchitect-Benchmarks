@@ -47,7 +47,7 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '')
     {fig.explanation.map(p => <p>{p}</p>)}
     {fig.disclosures && fig.disclosures.length > 0 && (
       <>
-        <h3>Disclosures</h3>
+        <h3 id="disclosures">Disclosures</h3>
         {fig.disclosures.map(d => <p class="disc">{d}</p>)}
       </>
     )}
