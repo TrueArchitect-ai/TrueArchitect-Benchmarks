@@ -31,7 +31,6 @@ const total = (id: string) => { const t = sc.tally[id]; return t.win + t.tie + t
   <div class="cards">
     {heads.map(h => (
       <a class="card" href={`${base}/results/${h.figure}/`}>
-        <span class="card-num" aria-hidden="true">{h.number}</span>
         <span class="card-head">
           <span class="card-label">{h.label} · {h.direction}</span>
           <span class="card-headline">{h.headline}</span>
