@@ -91,6 +91,13 @@ function cell(fig: Figure, rows: Row[], taId: string, other: ArmInfo): ScoreCell
   const t = gs.find(g => g.arm.id === taId)?.pooled ?? null, o = gs.find(g => g.arm.id === other.id)?.pooled ?? null
   if (t == null || o == null) return none
   const verdict = verdictOf(fig, t, o)
+  // the per-model pairs as well (the headlines quote the range at the same model)
+  const perModel: { model: string; ta: number; other: number }[] = []
+  for (const m of shared) {
+    const g1 = pooled(fig, rows, [m], m)
+    const a = g1.find(g => g.arm.id === taId)?.pooled, b = g1.find(g => g.arm.id === other.id)?.pooled
+    if (a != null && b != null) perModel.push({ model: m, ta: a, other: b })
+  }
   let headline: string
   if (fig.measure.unit === 'pct') {
     const d = t - o
@@ -99,7 +106,67 @@ function cell(fig: Figure, rows: Row[], taId: string, other: ArmInfo): ScoreCell
     const ratio = o / t
     headline = verdict === 'tie' ? 'about the same' : ratio >= 1 ? `${x(ratio)} more than TrueArchitect` : `${x(ratio)} of TrueArchitect's`
   }
-  return { arm: other, models: shared, ta: t, other: o, verdict, headline, detail: `${fmt(fig, t)} vs ${fmt(fig, o)} · ${nModels}` }
+  return { arm: other, models: shared, ta: t, other: o, verdict, headline, detail: `${fmt(fig, t)} vs ${fmt(fig, o)} · ${nModels}`, perModel }
+}
+
+/**
+ * The three headlines above the table — the one thing a reader takes away
+ * if they read nothing else. Each is derived from the scorecard cells, so a
+ * headline can never say something the table does not.
+ */
+export type Headline = { big: string; claim: string; detail: string; figure: string }
+
+export function headlines(sc: Scorecard): Headline[] {
+  const row = (slug: string) => sc.rows.find(r => r.fig.slug === slug)
+  const cellOf = (slug: string, armId: string) => row(slug)?.cells.find(c => c.arm.id === armId || (armId === 'best-indexer' && c.arm.id === 'best-indexer'))
+  const out: Headline[] = []
+  const x = (r: number) => r.toFixed(1) + '×'
+  // full names in prose (the table uses the chart shorthand); the best indexer is named by its tool
+  const nameOf = (c: ScoreCell) => (c.arm.id === 'best-indexer' ? c.arm.short.replace('Best indexing tool: ', '') : c.arm.name)
+
+  // 1. context tokens — the range at the same model against bare Claude Code
+  const ctx = cellOf('context-tokens', 'cold')
+  if (ctx?.perModel?.length) {
+    const ratios = ctx.perModel.map(p => p.other / p.ta)
+    const lo = Math.min(...ratios), hi = Math.max(...ratios)
+    const others = ['codex', 'cursor', 'best-indexer'].map(id => cellOf('context-tokens', id)).filter((c): c is ScoreCell => !!c && c.verdict === 'win')
+    out.push({
+      big: `${x(lo)}–${x(hi)} fewer context tokens`,
+      claim: 'than bare Claude Code at the same model, on the same questions.',
+      detail: `Claude Code read ${x(lo)} to ${x(hi)} the context TrueArchitect read, at every one of the ${ctx.perModel.length} models both ran` +
+        (others.length ? `; ${others.map(c => `${nameOf(c)} ${c.headline.replace(' more than TrueArchitect', '')}`).join(', ')} likewise` : '') + '.',
+      figure: 'context-tokens',
+    })
+  }
+
+  // 2. accuracy — the smallest and largest lead over the comparators
+  const acc = row('accuracy')
+  if (acc) {
+    const leads = acc.cells.filter(c => c.ta != null && c.other != null).map(c => ({ c, d: c.ta! - c.other! }))
+    if (leads.length) {
+      const lo = Math.min(...leads.map(l => l.d)), hi = Math.max(...leads.map(l => l.d))
+      const cc = leads.find(l => l.c.arm.id === 'cold')
+      out.push({
+        big: `${lo.toFixed(0)}–${hi.toFixed(0)} points more accurate`,
+        claim: 'than every comparator, at the models each of them ran.',
+        detail: 'TrueArchitect vs ' + leads.map(l => `${nameOf(l.c)} ${l.c.ta!.toFixed(1)}% vs ${l.c.other!.toFixed(1)}%`).join(' · ') + '.',
+        figure: 'accuracy',
+      })
+    }
+  }
+
+  // 3. reliability — share of runs at or above 90 %
+  const rel = cellOf('pass-rate', 'cold')
+  const relBest = cellOf('pass-rate', 'best-indexer')
+  if (rel?.ta != null && rel.other != null) {
+    out.push({
+      big: `${rel.ta.toFixed(0)}% of runs score 90% or better`,
+      claim: `against ${rel.other.toFixed(0)}% for bare Claude Code${relBest?.other != null ? ` and ${relBest.other.toFixed(0)}% for the best indexing tool` : ''}.`,
+      detail: `A run is one full pass over a battery; this is the share that came back with at least nine answers in ten correct, over the ${rel.models.length} models both arms ran.`,
+      figure: 'pass-rate',
+    })
+  }
+  return out
 }
 
 /** Build the scorecard. Comparators: every bare harness, then the best indexer per measure. */

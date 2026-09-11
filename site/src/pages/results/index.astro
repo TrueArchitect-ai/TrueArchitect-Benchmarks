@@ -4,12 +4,13 @@
 // summarises. The macro of the site: Overview → Results → Comparisons → Figures.
 import Base from '../../layouts/Base.astro'
 import { loadRuns, loadManifest, latestEpoch } from '../../lib/data'
-import { buildScorecard, type Verdict } from '../../lib/scorecard'
+import { buildScorecard, headlines, type Verdict } from '../../lib/scorecard'
 import { COMPARISONS } from '../../lib/comparisons'
 const epoch = latestEpoch()
 const manifest = loadManifest(epoch)
 const runs = loadRuns(epoch)
 const sc = buildScorecard(runs)
+const heads = headlines(sc)
 const base = import.meta.env.BASE_URL.replace(/\/$/, '')
 const MARK: Record<Verdict, string> = { win: '✓', loss: '✗', tie: '≈', none: '—' }
 const WORD: Record<Verdict, string> = { win: 'TrueArchitect better', loss: 'TrueArchitect worse', tie: 'within noise', none: 'not comparable' }
@@ -24,6 +25,16 @@ const total = (id: string) => { const t = sc.tally[id]; return t.win + t.tie + t
       pooled with equal weight per protocol × battery × model, on the ZeroShot and MultiTurn protocols over both batteries.
       Higher is better for accuracy and reliability; lower is better for everything else. Each row links to the figure behind it.
     </p>
+  </div>
+
+  <div class="headlines">
+    {heads.map(h => (
+      <a class="headline" href={`${base}/results/${h.figure}/`}>
+        <span class="hl-big">{h.big}</span>
+        <span class="hl-claim">{h.claim}</span>
+        <span class="hl-detail">{h.detail}</span>
+      </a>
+    ))}
   </div>
 
   <div class="scorecard-wrap">
