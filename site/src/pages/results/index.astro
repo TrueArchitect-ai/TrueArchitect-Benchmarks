@@ -1,94 +1,15 @@
 ---
-// RESULTS — the scorecard. One verdict per measure × comparator, like for
-// like over the models both arms ran, each cell linking to the figure it
-// summarises. The macro of the site: Overview → Results → Comparisons → Figures.
-import Base from '../../layouts/Base.astro'
-import { loadRuns, loadManifest, latestEpoch } from '../../lib/data'
-import { buildScorecard, headlines, type Verdict } from '../../lib/scorecard'
-import { COMPARISONS } from '../../lib/comparisons'
-const epoch = latestEpoch()
-const manifest = loadManifest(epoch)
-const runs = loadRuns(epoch)
-const sc = buildScorecard(runs)
-const heads = headlines(sc)
+// /results/ moved to the home page; keep the old address working.
 const base = import.meta.env.BASE_URL.replace(/\/$/, '')
-const MARK: Record<Verdict, string> = { win: '✓', loss: '✗', tie: '≈', none: '—' }
-const WORD: Record<Verdict, string> = { win: 'TrueArchitect better', loss: 'TrueArchitect worse', tie: 'within noise', none: 'not comparable' }
-const total = (id: string) => { const t = sc.tally[id]; return t.win + t.tie + t.loss }
+const to = `${base}/`
 ---
-<Base title="Results" description="How TrueArchitect did against every comparator on every measure, like for like at shared models, in one table.">
-  <div class="prose">
-    <div class="kicker">Results · {manifest.epoch.id}</div>
-    <h1>How TrueArchitect did</h1>
-    <p class="lede">
-      One verdict per measure and comparator. Every cell compares TrueArchitect and the comparator over the models <em>both</em> ran,
-      pooled with equal weight per protocol × battery × model, on the ZeroShot and MultiTurn protocols over both batteries.
-      Higher is better for accuracy and reliability; lower is better for everything else. Each row links to the figure behind it.
-    </p>
-  </div>
-
-  <div class="headlines">
-    {heads.map(h => (
-      <a class="headline" href={`${base}/results/${h.figure}/`}>
-        <span class="hl-big">{h.big}</span>
-        <span class="hl-claim">{h.claim}</span>
-        <span class="hl-detail">{h.detail}</span>
-      </a>
-    ))}
-  </div>
-
-  <div class="scorecard-wrap">
-    <table class="scorecard">
-      <thead>
-        <tr>
-          <th class="measure">measure</th>
-          {sc.comparators.map(c => <th>vs {c.short}</th>)}
-          <th class="fig">figure</th>
-        </tr>
-      </thead>
-      <tbody>
-        {sc.rows.map(r => (
-          <tr>
-            <td class="measure">
-              <b>{r.fig.short}</b>
-              <span class="sub">{r.fig.measure.label} · {r.fig.measure.better === 'high' ? 'higher is better' : 'lower is better'}{r.fig.disclosures?.length ? <> · <a href={`${base}/results/${r.fig.slug}/#disclosures`}>disclosure</a></> : null}</span>
-            </td>
-            {r.cells.map(c => (
-              <td class={'cell v-' + c.verdict} title={c.detail}>
-                <span class="mark" aria-label={WORD[c.verdict]}>{MARK[c.verdict]}</span>
-                <span class="head">{c.headline}</span>
-                <span class="sub">{c.arm.id === 'best-indexer' ? c.arm.short.replace('Best indexing tool: ', '') + ' · ' : ''}{c.perModel ? `${c.models.length} shared models, per model` : c.detail}</span>
-              </td>
-            ))}
-            <td class="fig"><a href={`${base}/results/${r.fig.slug}/`}>Figure {r.fig.number} →</a></td>
-          </tr>
-        ))}
-      </tbody>
-      <tfoot>
-        <tr>
-          <td class="measure"><b>Tally</b><span class="sub">measures where TrueArchitect is better · within noise · worse</span></td>
-          {sc.comparators.map(c => { const t = sc.tally[c.id]; return (
-            <td class="cell tally"><span class="head">{t.win} of {total(c.id)}</span><span class="sub">{t.win} better · {t.tie} within noise · {t.loss} worse</span></td>
-          ) })}
-          <td class="fig"></td>
-        </tr>
-      </tfoot>
-    </table>
-  </div>
-
-  <div class="prose">
-    <p class="muted" style="font-size:12.5px;margin-top:10px">
-      ✓ TrueArchitect better · ≈ within noise (under 1 point of accuracy, or within 5 % on a ratio) · ✗ TrueArchitect worse. Raw token counts are never pooled
-      across vendors: where the shared roster spans Anthropic and OpenAI models the cell compares per model and reports the range of ratios;
-      hover a cell for the per-model numbers. "Best indexing tool" is the strongest of the five on that row, named in the cell.
-      {sc.slice}.
-    </p>
-
-    <h2>Next level down</h2>
-    <p>The four comparison pages hold the figures for one group of arms each, with the same controls as the figure pages:</p>
-    <ul>
-      {COMPARISONS.map(c => <li><a href={`${base}/compare/${c.slug}/`}>{c.title}</a> — {c.intro[0]}</li>)}
-    </ul>
-    <p>The <a href={`${base}/`}>Summary</a> states what was measured and how; the <a href={`${base}/limitations/`}>Limitations</a> page collects every caveat, including the Fable 5 refusals, the Haiku 4.5 context window, and the host-versus-container asymmetry that makes wall time a disclosure rather than a claim.</p>
-  </div>
-</Base>
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="refresh" content={`0; url=${to}`} />
+    <link rel="canonical" href={to} />
+    <title>Benchmark Results — TrueArchitect Benchmarks</title>
+  </head>
+  <body><a href={to}>Benchmark Results</a></body>
+</html>
