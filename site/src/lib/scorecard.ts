@@ -35,7 +35,21 @@ export type Scorecard = {
 }
 
 const SLICE = { exams: ['ZeroShotExam', 'MultiTurnExam'], battery: 'both' as const }
-const SCORECARD_FIGS = ['accuracy', 'pass-rate', 'context-tokens', 'tokens-per-correct', 'cost-per-correct', 'tool-calls', 'tool-result-tokens', 'wall-time']
+
+// CONSISTENCY — the run-to-run spread of accuracy: the coefficient of variation
+// (sd ÷ mean, in %) of run accuracy within a protocol × battery × model cell,
+// averaged with equal weight over the cells. Lower = the same tool gives the
+// same answer quality run after run. It reads Figure 2's rows (every run is a
+// dot there), so the card links to Figure 2; the statistic itself is the
+// engine's own `cv` cell kind. Not a figure of its own (yet).
+const ACCURACY_FIG = FIGURES.find(f => f.slug === 'accuracy')!
+export const CONSISTENCY_FIG: Figure = {
+  ...ACCURACY_FIG,
+  slug: 'accuracy', short: 'Consistency', title: 'Run-to-run spread of accuracy',
+  measure: { key: 'pct', cell: 'cv', label: 'run-to-run variation of accuracy (coefficient of variation, %)', unit: 'pct', better: 'low' },
+}
+const SCORECARD_FIGS = ['accuracy', 'pass-rate', 'consistency', 'context-tokens', 'tokens-per-correct', 'cost-per-correct', 'tool-calls', 'tool-result-tokens', 'wall-time']
+const figFor = (slug: string): Figure => (slug === 'consistency' ? CONSISTENCY_FIG : FIGURES.find(f => f.slug === slug)!)
 
 const TA = (id: string) => armInfo(id).role === 'trueArchitect'
 
@@ -44,9 +58,12 @@ function pooled(fig: Figure, rows: Row[], models: string[], model: string | 'all
   return gs
 }
 
+// spread statistics (sd, cv) are compared as ratios even though they print as %
+const ratioLike = (fig: Figure) => fig.measure.unit !== 'pct' || fig.measure.cell === 'cv' || fig.measure.cell === 'sd'
+
 function verdictOf(fig: Figure, ta: number, other: number): Verdict {
   const better = fig.measure.better
-  if (fig.measure.unit === 'pct') {
+  if (!ratioLike(fig)) {
     const d = ta - other
     if (Math.abs(d) < 1) return 'tie'
     return (better === 'high' ? d > 0 : d < 0) ? 'win' : 'loss'
@@ -91,6 +108,7 @@ function cell(fig: Figure, rows: Row[], taId: string, other: ArmInfo): ScoreCell
   const t = gs.find(g => g.arm.id === taId)?.pooled ?? null, o = gs.find(g => g.arm.id === other.id)?.pooled ?? null
   if (t == null || o == null) return none
   const verdict = verdictOf(fig, t, o)
+  const asRatio = ratioLike(fig)
   // the per-model pairs as well (the headlines quote the range at the same model)
   const perModel: { model: string; ta: number; other: number }[] = []
   for (const m of shared) {
@@ -99,7 +117,7 @@ function cell(fig: Figure, rows: Row[], taId: string, other: ArmInfo): ScoreCell
     if (a != null && b != null) perModel.push({ model: m, ta: a, other: b })
   }
   let headline: string
-  if (fig.measure.unit === 'pct') {
+  if (!asRatio) {
     const d = t - o
     headline = `${d >= 0 ? '+' : '−'}${Math.abs(d).toFixed(1)} pts`
   } else {
@@ -114,91 +132,85 @@ function cell(fig: Figure, rows: Row[], taId: string, other: ArmInfo): ScoreCell
  * if they read nothing else. Each is derived from the scorecard cells, so a
  * headline can never say something the table does not.
  */
-export type HeadlineLine = { label: string; text: string; verdict: Verdict }
-export type Headline = { big: string; claim: string; detail: string; figure: string; lines: HeadlineLine[] }
+export type CardRow = { name: string; detail: string; delta: string; verdict: Verdict }
+export type Card = {
+  label: string        // ACCURACY
+  direction: string    // higher is better
+  number: number       // the figure the card links to
+  figure: string       // its slug
+  headline: string     // the range statement
+  sub: string          // one sentence of qualification
+  rows: CardRow[]      // one per comparator
+  tally: string        // "4 of 4 better"
+}
 
 /**
- * Each card = one measure, one headline that holds against EVERY comparator,
- * and a strip with one line per comparator (Claude Code, Codex, Cursor
- * Agent, the best indexing tool on that measure) so no reader has to ask
- * "but what about X". The headline range spans the comparators the verdict
- * is a win against; a mixed-by-model comparator is shown in its line as
- * such and excluded from the range.
+ * The headline cards (the design handoff's editorial ledger, 2026-09-11):
+ * one card per measure, a headline that holds against EVERY comparator, and
+ * a ledger row per comparator (Claude Code, Codex, Cursor Agent, the best
+ * indexing tool on that measure) so no reader has to ask "but what about X".
+ * Every number is a scorecard cell; the card can never say what the table
+ * does not. A headline range spans the comparators the verdict is a win
+ * against; a mixed-by-model comparator is shown as ≈ and excluded.
  */
-export function headlines(sc: Scorecard): Headline[] {
-  const row = (slug: string) => sc.rows.find(r => r.fig.slug === slug)
-  const out: Headline[] = []
+export function headlines(sc: Scorecard): Card[] {
+  const row = (slug: string, short?: string) => sc.rows.find(r => r.fig.slug === slug && (!short || r.fig.short === short))
   const x = (r: number) => r.toFixed(1) + '×'
-  // full names in prose (the table uses the chart shorthand); the best indexer is named by its tool
-  const nameOf = (c: ScoreCell) => (c.arm.id === 'best-indexer' ? `${c.arm.short.replace('Best indexing tool: ', '')} (best indexing tool)` : c.arm.name.replace(' (bare)', ''))
-  const pctLine = (c: ScoreCell): HeadlineLine => ({
-    label: nameOf(c),
-    verdict: c.verdict,
-    text: c.ta != null && c.other != null ? `${c.ta.toFixed(1)}% vs ${c.other.toFixed(1)}% · ${c.ta - c.other >= 0 ? '+' : '−'}${Math.abs(c.ta - c.other).toFixed(1)} pts` : 'no shared model',
-  })
-  // per-model ratio range for a token cell (comparator ÷ TrueArchitect)
+  const nameOf = (c: ScoreCell) => (c.arm.id === 'best-indexer' ? `${c.arm.short.replace('Best indexing tool: ', '')} (best indexer)` : c.arm.name.replace(' (bare)', ''))
+  const shared = (c: ScoreCell) => `${c.models.length} shared model${c.models.length === 1 ? '' : 's'}`
   const ratioRange = (c: ScoreCell) => {
     const rs = (c.perModel ?? []).map(p => p.other / p.ta)
     return rs.length ? { lo: Math.min(...rs), hi: Math.max(...rs), n: rs.length } : null
   }
-  const tokenLine = (c: ScoreCell): HeadlineLine => {
-    const r = ratioRange(c)
-    if (!r) return { label: nameOf(c), verdict: c.verdict, text: 'no shared model' }
-    const range = r.lo === r.hi ? x(r.lo) : `${x(r.lo)}–${x(r.hi)}`
-    return { label: nameOf(c), verdict: c.verdict, text: c.verdict === 'win' ? `reads ${range} more, at ${r.n} shared model${r.n === 1 ? '' : 's'}` : c.verdict === 'loss' ? `reads ${range}, less than TrueArchitect` : `${range}, varies by model` }
+  const tallyOf = (rows: CardRow[]) => {
+    const w = rows.filter(r => r.verdict === 'win').length, t = rows.filter(r => r.verdict === 'tie').length, n = rows.filter(r => r.verdict !== 'none').length
+    return `${w} of ${n} better${t ? ` · ${t} ≈` : ''}`
+  }
+  const out: Card[] = []
+
+  // points-delta cards (accuracy, reliability): delta = TA − comparator, in points
+  const pointsCard = (r: ScoreRow, label: string, headline: (lo: number, hi: number) => string, sub: string) => {
+    const rows: CardRow[] = r.cells.map(c => ({
+      name: nameOf(c), verdict: c.verdict,
+      detail: c.ta != null && c.other != null ? `${c.ta.toFixed(1)}% vs ${c.other.toFixed(1)}% · ${shared(c)}` : 'no shared model',
+      delta: c.ta != null && c.other != null ? `${c.ta - c.other >= 0 ? '+' : '−'}${Math.abs(c.ta - c.other).toFixed(1)} points` : '—',
+    }))
+    const leads = r.cells.filter(c => c.ta != null && c.other != null && c.verdict === 'win').map(c => c.ta! - c.other!)
+    if (!leads.length) return
+    out.push({ label, direction: 'higher is better', number: r.fig.number, figure: r.fig.slug, headline: headline(Math.min(...leads), Math.max(...leads)), sub, rows, tally: tallyOf(rows) })
+  }
+  // ratio cards (tokens, cost, spread): delta = comparator ÷ TA, "less" for TrueArchitect
+  const ratioCard = (r: ScoreRow, label: string, headline: (lo: number, hi: number) => string, sub: (peak: number | null) => string, opts: { perModelDetail?: boolean; values?: boolean; pctLess?: boolean } = {}) => {
+    const rows: CardRow[] = r.cells.map(c => {
+      const rr = ratioRange(c)
+      // a vendor-split cell (raw tokens over a two-vendor roster) has no pooled pair — it is its per-model range
+      if (c.ta == null || c.other == null) {
+        if (rr) return { name: nameOf(c), verdict: c.verdict, detail: `${x(rr.lo)}–${x(rr.hi)} · varies by model · ${shared(c)}`, delta: c.verdict === 'tie' ? `${x(rr.lo)}–${x(rr.hi)}` : c.verdict === 'win' ? `${x(rr.lo)}–${x(rr.hi)} less` : `${x(rr.lo)}–${x(rr.hi)} more` }
+        return { name: nameOf(c), verdict: c.verdict, detail: 'no shared model', delta: '—' }
+      }
+      const ratio = c.other / c.ta
+      const values = opts.values ? `${fmt(r.fig, c.ta)} vs ${fmt(r.fig, c.other)} · ` : ''
+      const detail = opts.perModelDetail && rr ? `${values}${x(rr.lo)}–${x(rr.hi)} · ${shared(c)}` : `${values}${shared(c)}`
+      const delta = c.verdict === 'tie' ? 'about equal'
+        : opts.pctLess ? (ratio >= 1 ? `${Math.round((1 - 1 / ratio) * 100)}% less` : `${Math.round((ratio - 1) * 100)}% more`)
+        : ratio >= 1 ? `${x(ratio)} less` : `${x(1 / ratio)} more`
+      return { name: nameOf(c), verdict: c.verdict, detail, delta }
+    })
+    const wins = r.cells.filter(c => c.verdict === 'win' && c.ta != null && c.other != null).map(c => c.other! / c.ta!)
+    if (!wins.length) return
+    const peaks = r.cells.map(ratioRange).filter((v): v is NonNullable<typeof v> => !!v).map(v => v.hi)
+    out.push({ label, direction: 'lower is better', number: r.fig.number, figure: r.fig.slug, headline: headline(Math.min(...wins), Math.max(...wins)), sub: sub(peaks.length ? Math.max(...peaks) : null), rows, tally: tallyOf(rows) })
   }
 
-  // 1. context tokens
-  const ctx = row('context-tokens')
-  if (ctx) {
-    // headline = the pooled ratio per comparator (each over its shared roster); the strip carries the per-model spread
-    const wins = ctx.cells.filter(c => c.verdict === 'win' && c.ta != null && c.other != null).map(c => c.other! / c.ta!)
-    const peak = Math.max(...ctx.cells.map(ratioRange).filter((r): r is NonNullable<typeof r> => !!r).map(r => r.hi))
-    if (wins.length) {
-      const lo = Math.min(...wins), hi = Math.max(...wins)
-      const mixed = ctx.cells.filter(c => c.verdict === 'tie').map(nameOf)
-      out.push({
-        big: `${x(lo)}–${x(hi)} fewer context tokens`,
-        claim: `on average at the same model, up to ${x(peak)} at individual models, against every comparator it beats${mixed.length ? `; ${mixed.join(' and ')} varies by model` : ''}.`,
-        detail: 'Context tokens = the uncached input plus every cache read, summed over every call of a run. Raw token counts are compared per model, never across vendors.',
-        figure: 'context-tokens',
-        lines: ctx.cells.map(tokenLine),
-      })
-    }
-  }
-
-  // 2. accuracy
-  const acc = row('accuracy')
-  if (acc) {
-    const leads = acc.cells.filter(c => c.ta != null && c.other != null).map(c => c.ta! - c.other!)
-    if (leads.length) {
-      const lo = Math.min(...leads), hi = Math.max(...leads)
-      const all = leads.every(d => d >= 1)
-      out.push({
-        big: `${lo.toFixed(0)}–${hi.toFixed(0)} points more accurate`,
-        claim: all ? 'than every comparator, at the models each of them ran.' : 'than most comparators, at the models each of them ran.',
-        detail: 'Accuracy = questions correct per run, pooled with equal weight per protocol × battery × model over the models both arms ran.',
-        figure: 'accuracy',
-        lines: acc.cells.map(pctLine),
-      })
-    }
-  }
-
-  // 3. reliability — share of runs at or above 90 %
-  const rel = row('pass-rate')
-  if (rel) {
-    const leads = rel.cells.filter(c => c.ta != null && c.other != null).map(c => c.ta! - c.other!)
-    if (leads.length) {
-      const lo = Math.min(...leads), hi = Math.max(...leads)
-      out.push({
-        big: `${lo.toFixed(0)}–${hi.toFixed(0)} points more runs at 90%+ accuracy`,
-        claim: 'the share of full battery passes with at least nine answers in ten correct, against every comparator.',
-        detail: 'A run is one complete pass over a battery. The mean hides how often a tool merely works; this is how often it works well.',
-        figure: 'pass-rate',
-        lines: rel.cells.map(pctLine),
-      })
-    }
-  }
+  const acc = row('accuracy', 'Accuracy'), rel = row('pass-rate'), con = row('accuracy', 'Consistency'), ctx = row('context-tokens'), cost = row('cost-per-correct')
+  if (acc) pointsCard(acc, 'Accuracy', (lo, hi) => `${lo.toFixed(0)}–${hi.toFixed(0)} points more accurate`, 'than every comparator, at the models each of them ran.')
+  if (rel) pointsCard(rel, 'Reliability', (lo, hi) => `${lo.toFixed(0)}–${hi.toFixed(0)} points more runs at 90%+ accuracy`, 'share of full-battery runs scoring at least nine in ten. Each arm was run repeatedly; this is how often a run lands in the top band.')
+  if (con) ratioCard(con, 'Consistency', (lo, hi) => {
+    const a = Math.round((1 - 1 / lo) * 100), b = Math.round((1 - 1 / hi) * 100)
+    return `${a === b ? `${a}%` : `${Math.min(a, b)}–${Math.max(a, b)}%`} less run-to-run variation`
+  }, () => 'in accuracy. Same tool, same model, same questions, run again: how far the score moves. Coefficient of variation of run accuracy, lower is steadier.', { values: true, pctLess: true })
+  if (ctx) ratioCard(ctx, 'Context tokens', (lo, hi) => `${x(lo)}–${x(hi)} fewer context tokens`, peak => `on average at the same model${peak ? `, up to ${x(peak)} at individual models` : ''}. Uncached input plus cache reads, summed over every call of a run.`, { perModelDetail: true })
+  if (cost) ratioCard(cost, 'Cost per correct', (lo, hi) => `${x(lo)}–${x(hi)} lower cost per correct answer`, () => 'against every comparator, at the models each of them ran. USD per correct answer; vendor-reported where available, otherwise estimated from published rate tables.', { values: true })
   return out
 }
 
@@ -214,7 +226,7 @@ export function buildScorecard(runs: RunRow[]): Scorecard {
   const tally: Scorecard['tally'] = {}
   for (const c of comparators) tally[c.id] = { win: 0, tie: 0, loss: 0 }
   for (const slug of SCORECARD_FIGS) {
-    const fig = FIGURES.find(f => f.slug === slug)!
+    const fig = figFor(slug)
     const data = rowsFor(runs, fig.measure.key)
     const cells: ScoreCell[] = bare.map(b => cell(fig, data, taId, b))
     // the best indexer on THIS measure (its own shared roster with TrueArchitect)

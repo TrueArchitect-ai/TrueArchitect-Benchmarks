@@ -28,17 +28,25 @@ const total = (id: string) => { const t = sc.tally[id]; return t.win + t.tie + t
     </p>
   </div>
 
-  <div class="headlines">
+  <div class="cards">
     {heads.map(h => (
-      <a class="headline" href={`${base}/results/${h.figure}/`}>
-        <span class="hl-big">{h.big}</span>
-        <span class="hl-claim">{h.claim}</span>
-        <span class="hl-lines">
-          {h.lines.map(l => (
-            <span class={'hl-line v-' + l.verdict}><span class="hl-mark">{MARK[l.verdict]}</span><span class="hl-label">{l.label}</span><span class="hl-text">{l.text}</span></span>
+      <a class="card" href={`${base}/results/${h.figure}/`}>
+        <span class="card-num" aria-hidden="true">{h.number}</span>
+        <span class="card-head">
+          <span class="card-label">{h.label} · {h.direction}</span>
+          <span class="card-headline">{h.headline}</span>
+          <span class="card-sub">{h.sub}</span>
+        </span>
+        <span class="card-ledger">
+          {h.rows.map(r => (
+            <span class={'card-row v-' + r.verdict}>
+              <span class="card-mark" aria-label={WORD[r.verdict]}>{MARK[r.verdict]}</span>
+              <span class="card-name">{r.name}<span class="card-detail">{r.detail}</span></span>
+              <span class="card-delta">{r.delta}</span>
+            </span>
           ))}
         </span>
-        <span class="hl-detail">{h.detail}</span>
+        <span class="card-foot"><span class="card-tally">{h.tally}</span><span>Figure {h.number} →</span></span>
       </a>
     ))}
   </div>
@@ -63,7 +71,7 @@ const total = (id: string) => { const t = sc.tally[id]; return t.win + t.tie + t
               <td class={'cell v-' + c.verdict} title={c.detail}>
                 <span class="mark" aria-label={WORD[c.verdict]}>{MARK[c.verdict]}</span>
                 <span class="head">{c.headline}</span>
-                <span class="sub">{c.arm.id === 'best-indexer' ? c.arm.short.replace('Best indexing tool: ', '') + ' · ' : ''}{c.perModel ? `${c.models.length} shared models, per model` : c.detail}</span>
+                <span class="sub">{c.arm.id === 'best-indexer' ? c.arm.short.replace('Best indexing tool: ', '') + ' · ' : ''}{c.ta == null && c.perModel ? `${c.models.length} shared models, per model` : c.detail}</span>
               </td>
             ))}
             <td class="fig"><a href={`${base}/results/${r.fig.slug}/`}>Figure {r.fig.number} →</a></td>
