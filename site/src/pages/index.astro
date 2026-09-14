@@ -39,6 +39,8 @@ const pos = (v: number, lo: number, hi: number) => Math.max(0, Math.min(100, ((v
           <span class="card-headline">{h.headline}</span>
           <span class="card-sub">{h.sub}</span>
         </span>
+        <details class="card-details">
+          <summary><span class="rule"></span><span class="lbl">Details<svg class="caret" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6" /></svg></span><span class="rule"></span></summary>
         <span class="card-ledger">
           <span class="card-axis"><span>comparator</span><span>{h.axis.loLabel} — {h.axis.hiLabel}</span></span>
           {h.rows.map(r => {
@@ -69,8 +71,9 @@ const pos = (v: number, lo: number, hi: number) => Math.max(0, Math.min(100, ((v
             )
           })}
         </span>
+        <span class="card-legend"><span><i class="dot ta"></i>TrueArchitect</span><span><i class="dot cmp"></i>comparator</span></span>
+        </details>
         <span class="card-foot">
-          <span class="card-legend"><span><i class="dot ta"></i>TrueArchitect</span><span><i class="dot cmp"></i>comparator</span></span>
           <span class="card-tally">{h.tally}</span>
           <a class="card-go" href={`${base}/results/${h.figure}/`}>Go to Figure {h.number} →</a>
         </span>
