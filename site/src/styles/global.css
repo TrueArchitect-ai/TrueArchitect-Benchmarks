@@ -19,10 +19,10 @@
      data color); --ta-text = the same hue at reading contrast on each ground. */
   --ta: #3987e5;
   --ta-text: #2468cf;
-  /* the ledger's blue — the same hue ~30% desaturated so the deltas and the dot
-     sit under the headline instead of competing with it */
-  --ta-soft: color-mix(in oklch, var(--ta-text) 70%, #6b7080);
-  --ta-dot: color-mix(in oklch, var(--ta) 70%, #8a8f9c);
+  /* the ledger's blue — the same hue at roughly half the chroma so the deltas and
+     the dot sit under the headline instead of competing with it */
+  --ta-soft: color-mix(in oklch, var(--ta-text) 50%, #6b7080);
+  --ta-dot: color-mix(in oklch, var(--ta) 50%, #8a8f9c);
   --ahead: var(--ta-soft);   /* TrueArchitect ahead — was the handoff's green */
   --behind: #9a3b2f;         /* TrueArchitect behind */
   --nav-w: 248px;
@@ -44,8 +44,8 @@
   --card: #1c1e2c;
   --ta: #3987e5;
   --ta-text: #7db4ff;
-  --ta-soft: color-mix(in oklch, var(--ta-text) 70%, #9397ab);
-  --ta-dot: color-mix(in oklch, var(--ta) 70%, #8a8f9c);
+  --ta-soft: color-mix(in oklch, var(--ta-text) 50%, #9397ab);
+  --ta-dot: color-mix(in oklch, var(--ta) 50%, #8a8f9c);
   --ahead: var(--ta-soft);
   --behind: #e8907e;
 }
