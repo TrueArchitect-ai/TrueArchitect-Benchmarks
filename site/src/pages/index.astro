@@ -34,7 +34,7 @@ const pos = (v: number, lo: number, hi: number) => Math.max(0, Math.min(100, ((v
     {heads.map(h => (
       <div class="card">
         <span class="card-head">
-          <span class="card-label">{h.label} · {h.direction}</span>
+          <span class="card-label"><span class="card-cat">{h.category}</span> · {h.label} · {h.direction}</span>
           <span class="card-headline">{h.headline}</span>
           <span class="card-sub">{h.sub}</span>
         </span>

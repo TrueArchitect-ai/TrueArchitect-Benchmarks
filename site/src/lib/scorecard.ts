@@ -145,7 +145,8 @@ function cell(fig: Figure, rows: Row[], taId: string, other: ArmInfo): ScoreCell
 // it carries the comparator's per-model range instead.
 export type CardRow = { name: string; detail: string; delta: string; verdict: Verdict; ta: number | null; cmp: number | null; spanLo?: number; spanHi?: number }
 export type Card = {
-  label: string        // ACCURACY
+  category: string     // the one word the card is about: Accuracy · Reliability · Efficiency · Consistency (owner 2026-09-14)
+  label: string        // the rest of the label: "context tokens", "hard battery"
   direction: string    // higher is better
   number: number       // the figure the card links to
   figure: string       // its slug
@@ -190,7 +191,7 @@ export function headlines(sc: Scorecard): Card[] {
   }
 
   // points-delta cards (accuracy, reliability): delta = TA − comparator, in points; axis in %
-  const pointsCard = (r: ScoreRow, label: string, headline: (lo: number, hi: number) => string, sub: string) => {
+  const pointsCard = (r: ScoreRow, category: string, label: string, headline: (lo: number, hi: number) => string, sub: string) => {
     const rows: CardRow[] = r.cells.map(c => ({
       name: nameOf(c), verdict: c.verdict, ta: c.ta, cmp: c.other,
       detail: c.ta != null && c.other != null ? `${c.ta.toFixed(1)}% vs ${c.other.toFixed(1)}% · ${shared(c)}` : 'no shared model',
@@ -198,7 +199,7 @@ export function headlines(sc: Scorecard): Card[] {
     }))
     const leads = r.cells.filter(c => c.ta != null && c.other != null && c.verdict === 'win').map(c => c.ta! - c.other!)
     if (!leads.length) return
-    out.push({ label, direction: 'higher is better', number: r.fig.number, figure: r.fig.slug, headline: headline(Math.min(...leads), Math.max(...leads)), sub, rows, tally: tallyOf(rows), axis: axisOf(rows, 5, 0, v => `${v}%`) })
+    out.push({ category, label, direction: 'higher is better', number: r.fig.number, figure: r.fig.slug, headline: headline(Math.min(...leads), Math.max(...leads)), sub, rows, tally: tallyOf(rows), axis: axisOf(rows, 5, 0, v => `${v}%`) })
   }
   // ratio cards (tokens, cost, spread): delta = TrueArchitect's saving against the
   // comparator, in percent (1 − TA ÷ comparator). Axis: the comparator as a multiple
@@ -206,7 +207,7 @@ export function headlines(sc: Scorecard): Card[] {
   // per-model magnitudes differ; a card whose values are already on one scale (the
   // spread %) plots the values themselves. The headline receives the saving range in
   // percent (lo, hi), already rounded.
-  const ratioCard = (r: ScoreRow, label: string, headline: (lo: number, hi: number) => string, sub: (peak: number | null) => string, opts: { perModelDetail?: boolean; values?: boolean; plotValues?: boolean } = {}) => {
+  const ratioCard = (r: ScoreRow, category: string, label: string, headline: (lo: number, hi: number) => string, sub: (peak: number | null) => string, opts: { perModelDetail?: boolean; values?: boolean; plotValues?: boolean } = {}) => {
     const rows: CardRow[] = r.cells.map(c => {
       const rr = ratioRange(c)
       // a vendor-split cell (raw tokens over a two-vendor roster) has no pooled pair — it is its per-model range
@@ -225,7 +226,7 @@ export function headlines(sc: Scorecard): Card[] {
     const peaks = r.cells.map(ratioRange).filter((v): v is NonNullable<typeof v> => !!v).map(v => v.hi)
     const axis = opts.plotValues ? axisOf(rows, 1, 0, v => `${v}%`) : axisOf(rows, 0.5, 1, v => `${v}×`)
     const lo = Math.round(saving(Math.min(...wins))), hi = Math.round(saving(Math.max(...wins)))
-    out.push({ label, direction: 'lower is better', number: r.fig.number, figure: r.fig.slug, headline: headline(lo, hi), sub: sub(peaks.length ? Math.round(saving(Math.max(...peaks))) : null), rows, tally: tallyOf(rows), axis })
+    out.push({ category, label, direction: 'lower is better', number: r.fig.number, figure: r.fig.slug, headline: headline(lo, hi), sub: sub(peaks.length ? Math.round(saving(Math.max(...peaks))) : null), rows, tally: tallyOf(rows), axis })
   }
   const span = (lo: number, hi: number) => (lo === hi ? `${lo}%` : `${lo}–${hi}%`)
 
@@ -235,12 +236,12 @@ export function headlines(sc: Scorecard): Card[] {
   const acc = row('accuracy'), hard = row('accuracy-hard'), rel = row('pass-rate'), con = row('consistency'), ctx = row('context-tokens'), cost = row('cost-per-correct')
   // SUBTITLES (owner 2026-09-14): one shape, ~35 words each — the clause that
   // completes the headline, then what the measure is, then what to notice.
-  if (ctx) ratioCard(ctx, 'Lower cost · context tokens', (lo, hi) => `${span(lo, hi)} context token savings`, peak => `on average at the same model${peak ? `, up to ${peak}% at individual models` : ''}. Context is everything the model read to answer a run: uncached input plus cache reads, summed over every call. The index replaces reading, and the answers hold.`, { perModelDetail: true })
-  if (hard) pointsCard(hard, 'Hard battery', (lo, hi) => `${lo.toFixed(0)}–${hi.toFixed(0)} points more accurate on the hard battery`, 'on the 20 questions where matching text alone cannot reach the answer: several components have to be understood together, and 5 carry a false premise to refuse. Every arm is near the ceiling on easy questions; here the tools separate.')
-  if (con) ratioCard(con, 'Consistency · lower variation', (lo, hi) => `${span(lo, hi)} less run-to-run variation`, () => 'in accuracy. Same tool, same model, same questions, run again: how far the score moves between runs. Coefficient of variation of run accuracy; lower means the result depends on the tool rather than on the run.', { values: true, plotValues: true })
-  if (rel) pointsCard(rel, 'Reliability', (lo, hi) => `${lo.toFixed(0)}–${hi.toFixed(0)} points more runs at 90%+ accuracy`, 'share of full-battery runs scoring at least nine questions in ten. Each arm was run repeatedly at each model; this is how often a run lands in the top band, rather than how well the arm does on average across its runs.')
-  if (cost) ratioCard(cost, 'Lower cost · per correct answer', (lo, hi) => `${span(lo, hi)} lower cost per correct answer`, () => 'against every comparator, at the models each of them ran. US dollars per correct answer, vendor-reported where the harness reported one and otherwise estimated from published rate tables. The token saving above, priced per right answer.', { values: true })
-  if (acc) pointsCard(acc, 'Accuracy · both batteries', (lo, hi) => `${lo.toFixed(0)}–${hi.toFixed(0)} points more accurate over all 50 questions`, 'than every comparator at the models each ran: the 30 base questions most tools answer well plus the 20 hard ones above. Easy questions pull every arm toward the ceiling, so the overall gap is narrower than on the hard battery.')
+  if (ctx) ratioCard(ctx, 'Efficiency', 'context tokens', (lo, hi) => `${span(lo, hi)} context token savings`, peak => `on average at the same model${peak ? `, up to ${peak}% at individual models` : ''}. Context is everything the model read to answer a run: uncached input plus cache reads, summed over every call. The index replaces reading, and the answers hold.`, { perModelDetail: true })
+  if (hard) pointsCard(hard, 'Accuracy', 'hard battery', (lo, hi) => `${lo.toFixed(0)}–${hi.toFixed(0)} points more accurate on the hard battery`, 'on the 20 questions where matching text alone cannot reach the answer: several components have to be understood together, and 5 carry a false premise to refuse. Every arm is near the ceiling on easy questions; here the tools separate.')
+  if (con) ratioCard(con, 'Consistency', 'run-to-run variation', (lo, hi) => `${span(lo, hi)} less run-to-run variation`, () => 'in accuracy. Same tool, same model, same questions, run again: how far the score moves between runs. Coefficient of variation of run accuracy; lower means the result depends on the tool rather than on the run.', { values: true, plotValues: true })
+  if (rel) pointsCard(rel, 'Reliability', 'runs at 90%+ accuracy', (lo, hi) => `${lo.toFixed(0)}–${hi.toFixed(0)} points more runs at 90%+ accuracy`, 'share of full-battery runs scoring at least nine questions in ten. Each arm was run repeatedly at each model; this is how often a run lands in the top band, rather than how well the arm does on average across its runs.')
+  if (cost) ratioCard(cost, 'Efficiency', 'cost per correct answer', (lo, hi) => `${span(lo, hi)} lower cost per correct answer`, () => 'against every comparator, at the models each of them ran. US dollars per correct answer, vendor-reported where the harness reported one and otherwise estimated from published rate tables. The token saving above, priced per right answer.', { values: true })
+  if (acc) pointsCard(acc, 'Accuracy', 'all 50 questions', (lo, hi) => `${lo.toFixed(0)}–${hi.toFixed(0)} points more accurate over all 50 questions`, 'than every comparator at the models each ran: the 30 base questions most tools answer well plus the 20 hard ones above. Easy questions pull every arm toward the ceiling, so the overall gap is narrower than on the hard battery.')
   return out
 }
 
