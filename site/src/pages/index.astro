@@ -41,16 +41,21 @@ const kQuestions = `${Math.floor(questionsJudged / 1000)}K`
     </dl>
   </div>
 
+  <div class="prose">
+    <h2 class="topline">Topline results</h2>
+    <p class="topline-sub">TrueArchitect against every comparator, at the models each of them ran. Open Details for the per-comparator ledger.</p>
+  </div>
+
   <div class="cards">
     {heads.map(h => (
       <div class="card">
         <span class="card-head">
           <span class="card-label"><span class="card-cat">{h.category}</span> · {h.label} · {h.direction}</span>
           <span class="card-headline">{h.headline}</span>
-          <span class="card-sub">{h.sub}</span>
         </span>
         <details class="card-details">
           <summary><span class="rule"></span><span class="lbl">Details<svg class="caret" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6" /></svg></span><span class="rule"></span></summary>
+          <span class="card-sub">{h.sub}</span>
         <span class="card-ledger">
           <span class="card-axis"><span>comparator</span><span>{h.axis.loLabel} — {h.axis.hiLabel}</span></span>
           {h.rows.map(r => {

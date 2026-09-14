@@ -205,6 +205,11 @@ details.data summary { cursor: pointer; font-size: 13px; font-weight: 600; margi
 .card-details > summary:hover .rule { background: color-mix(in srgb, var(--ta) 60%, var(--grid)); }
 .card-details[open] > summary .caret { transform: rotate(180deg); }
 .card-details[open] > summary { margin-bottom: 6px; }
+.card-details .card-sub { display: block; margin: 4px 0 12px; font-size: 13.5px; }
+/* the section header between the framing lines and the cards */
+.topline { margin: 30px 0 2px; font-size: 24px; }
+.topline-sub { color: var(--muted); font-size: 14px; margin: 0; }
+.cards { margin-top: 16px; }
 .card-details .card-legend { justify-content: center; font-size: 12px; color: var(--muted); padding-top: 10px; }
 .card-ledger { position: relative; display: flex; flex-direction: column; border-top: 1px solid var(--ink); }
 .card-axis { display: flex; justify-content: space-between; font-family: var(--mono); font-size: 10px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); padding: 6px 0 2px; }
