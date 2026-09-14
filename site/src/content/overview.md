@@ -1,42 +1,84 @@
-# What We 
+# Better Context, Better Results
 
-# Opinionated Overview {TLDR}
+<!-- Sections 1–3 (TL;DR · Why we built this · The problem with lexical and semantic
+     search) are a first hack at the restructure, 2026-09-14. Sections 4–7 are your
+     text, moved into the new order with headings normalised to ## and nothing else
+     changed; the unfinished lines are marked with comments like this one, which do
+     not render. -->
 
-> Autonomous agent programming has an irresistible appeal. 
+## TL;DR
 
-If I can say a few sentences, or even a few paragraphs, and an LLM agent (or swarm) creates it as intended, with the right architecture and product vision, then *everyone* becomes like a CEO of their own set of perfect employees. Say a few things, get high performance code out, the right code done the right way. Amazing.
+This is TrueArchitect's own benchmark. We built the tool, we wrote the questions, we ran every arm ourselves, and we published all of it: every run, every transcript, every judged answer, and the code that produced the numbers. Read it with that in mind. It is also why the numbers are worth reading: nothing here is a summary of something you cannot open.
 
-What *mires* this utopia of software development is multifaceted to say the least. We have experienced how LLM Agents vary in their outputs and completion. Each idea spawns a handful (or a dozen) new ideas, and many go incomplete but with partial artifacts in the codebase. This is far less about model capability and what patterns exist in the model training, most models have more than enough training on coding, instead, it's far more about the infinite variables of context, instruction, and pattern matching within the context *of that particular agent.*
+> Better context, better results.
 
-> If accuracy is matching the right solution to the right understanding of the problem, then the exact same model, cheap or expensive, at any tier, can produce both accurate and inaccurate results, regardless of how they are marketed and the opinions on social media. 
+What a model can do at any given tier is decided more by what is in its context window than by the tier, the training, or what people say about the model online. We set out to test that claim on the one part of context that can be built deterministically, codebase understanding, and to measure it against the tools developers actually use.
 
-Read popular Reddit channels for a few days and you will see the dichotomy, a plethora of "this model is incredible" and "this model is sh-t"... for the same exact model. The **challenge** is that it is hard to know exactly *when* an LLM is correct, did things correctly, and when it didn't. For instance, if the LLM is correct 80% of the time, phenomenal, except on any given step or task, was that task part of the 80% or part of the 20%? This is one of the cornerstones of agentic development, when to trust it, and how to ensure quality when the volume of output far exceeds human ability to read it. 
+Against bare Claude Code, Codex and Cursor Agent, and against the best of the codebase indexing tools on each measure, at the models each of them ran, TrueArchitect showed:
 
-## The Coding Hydra
+* **28–54% fewer context tokens** per run, up to 65% at individual models
+* **7–9 points more accurate** on the twenty hard questions, where the tools separate
+* **14–30% less run-to-run variation** in accuracy: the same tool gives the same result again
+* **5–22 points more runs at 90%+ accuracy**: a good average became a dependable one
+* **18–56% lower cost per correct answer**
+* **3–6 points more accurate** over all fifty questions, easy ones included
 
-Coding tasks and steps cascade, and with multi-agent autonomous development, it compounds what is being developed via prompt and context engineering. If coding tasks involve many different processes, systems, and dependencies, and you can't tell if a given task was done correctly, the downstream negative effects grow exponentially. Agents that spawn agents can develop what we call "poisoned context", a slightly (or not so slightly) incorrect codebase understanding that becomes the artifacts the parallel or next agent reads. When things go wrong, even if it's slightly, it results in wasting tokens, wasting time, and lowered trust (and a host of other psychological effects we won't go into). Future agents and other agents will read the outputs of previous agents, so when context is *poisoned* with incorrect intent, assumptions and code patterns, it can go *viral* in a codebase quickly and without easy detection.
+Every one of those is a card on the [results page](/), and every card opens the figure and the runs behind it.
 
-While not quite a misunderstanding, nor poisoned context, overgeneration on one task, can lead to cascading overgeneration of unasked-for features, altering of standards and codebase patterns, and codebase bloat for unnecessary features that were not intentional. Sometimes, this can go right, code for things not thought of can be beneficial, but it's still out-of-control in the sense that it was unspecified, and when it goes wrong, it can lead to a lot of poor, and difficult to debug, code. This happens so often that there are so many memes of this everywhere, and we call it Vibe Coding, or coding without much consideration of code quality or testing.
+## Why we built this
 
-> This means **correct context** and **correct codebase understanding** is not just important, it is, to borrow AI colloquialism, "load-bearing" and the "most insightful thing said in this entire overview." Humor aside, ***context is the most controllable aspect of agentic coding*** and it is not just true for LLMs, it's true for humans just as much. 
+> Autonomous agent programming has an irresistible appeal.
 
-All those meetings, all those whiteboards, plans, tracking, tickets, they are all to try to create alignment amongst humans. We have performance reviews, slidedecks, slack channels, standups, company weeklys, all to try to align our thinking and have a shared context together. At every company, and any task of any department, there is a percentage of wasted work due to slight misunderstanding. While for most tasks, this is likely incalculable, but for coding, actually for many things, it can be calculated. 
+If I can say a few sentences, or a few paragraphs, and an agent or a swarm of them builds what I meant, with the right architecture and the right product sense, then everyone becomes the CEO of a perfect engineering team. Say a few things, get the right code done the right way. Amazing.
 
-Not every human, nor every LLM, will understand everything the same, in fact no one understands anything exactly the same. This is one of the beauties of the complexity of the human mind and experience. Despite this, in a hundred or so years we've gone from horse and buggy to landing on Mars, hundreds of billions invested in LLMs, and contemplating robots for everyday tasks. However, when agent to agent does not understand the codebase the same and you are relying on agents for interdependence consistency and deep functional applications (not talking about brochureware sites), then the codebase understanding of *any agent* in the system is paramount. When they differ, then that inconsistency will manifest in the codebase.
+What mires that utopia is not model capability. Most models have more than enough training on code. It is the infinite variables of context, instruction, and pattern matching inside the window of that particular agent, on that particular task. The same model, cheap or expensive, produces accurate and inaccurate work depending on what it was shown. Read a coding forum for a few days and you will see "this model is incredible" and "this model is garbage" about the exact same model, in the same week, and both are true reports of what those people saw.
 
-## The Problem with Lexical and Semantic Search 
+> If the agent is right 80% of the time, that is phenomenal, except that on any given step you do not know whether you are in the 80% or the 20%.
 
-> The tools that help an LLM with code discovery, and develop some level of codebase understanding, is exactly what also leads it astray.
+That is the cornerstone problem of agentic development: when to trust it, and how to keep quality when the volume of output outruns any human's ability to read it. And it compounds. Coding tasks cascade. Agents spawn agents, and every agent reads the artifacts the last one left. A slightly wrong understanding of the codebase, a stale assumption, an invented pattern, becomes the input to the next agent, and the one after that. We call it **poisoned context**, and it goes viral in a codebase faster than anyone can detect it. Its milder cousin is overgeneration: one task grows unasked-for features, alters the codebase's conventions, and leaves behind code nobody specified. Sometimes that turns out fine. When it does not, it is the hardest kind of code to debug, because nobody intended it.
 
-Lexical and semantic search have fundamental problems. With vector search and RAG, it's well known that yes, you can find information that contains similar concepts, they will [cosine] locate near each other in latent space, but the *meaning* of the related concepts can contradict or decohere the response depending on what the actual content is. Just because embeddings are in a similar landscape/direction, does not mean, they correlate or add nuanced understanding. Humans have a stronger ability to differentiate and denoise information, we call this experience, focus, prioritization, and other terms. 
+> Context is the most controllable aspect of agentic coding.
 
-Every token in the window is a weight, and nothing marks a token as wrong. A stale comment and a live function enter the same attentional computation on the same terms; the model can discount the stale one only if something else in the window shows it to be stale, and usually nothing does. LLMs cannot easily distinguish between correct and incorrect information. They can only *find* information and process it in the context, depending completely, on what is in the context window. Stale or stray markdown files, code comments/docstrings, and also searching for words that aren't quite right results in a codebase understanding that may be incomplete, or incorrect. 
+It is the one variable in that whole system a developer can actually set. Humans know this; it is what every meeting, whiteboard, ticket and standup is for: getting a group of minds to hold the same picture of the work. No two people understand a thing identically, and neither do two agents. When the agents building a deep, interdependent application do not share the same understanding of the codebase, the difference shows up in the codebase. So the question we cared about was not which model is best. It was how to give every agent the same, correct understanding of the code, every time, and how much that is worth.
 
-If a codebase has different naming conventions in different parts of the application, then semantic search often will fail to discover, and again improper code will be written, and have to be rewritten, if it's found at all. 
+## The problem with lexical and semantic search
 
-Overall, the consensus seems to be, and it has been our experience, is that with LLM assisted coding, you can go twice as fast, and also have to retrace your steps four times as often. Is there an answer? 
+> The tools that help an agent discover a codebase are the same tools that lead it astray.
 
-**The TrueArchitect Motto**: Better context, better results.
+Today an agent learns a codebase the way a new hire does on day one: it greps for names, opens files, reads what it finds, and builds a picture from fragments. Harnesses add semantic search on top, and developers add Markdown files, skills and memory systems to tell the model what the structure is. Every one of those inputs is text, and every one of them has the same flaw: nothing marks any of it as wrong.
 
-## What We Did
+Every token in the window is a weight. A stale comment and a live function enter the same computation on the same terms; the model can discount the stale one only if something else in the window shows it to be stale, and usually nothing does. The model cannot tell correct information from incorrect information. It can only find what is there and reason from it. A stray Markdown file, an outdated docstring, a search for a word that is nearly but not quite the name used in this part of the code, and the agent now holds a picture of the codebase that is incomplete or simply false, with no signal that it is.
 
+Semantic search does not fix this; it changes its shape. Embeddings put related concepts near each other, and that is genuinely useful for finding things. But nearby in latent space does not mean consistent in meaning. Two passages can sit close together and contradict each other, and a retrieval that returns both hands the model a coherent-looking context that is not coherent. Humans are good at discounting that kind of noise; we call it experience, or focus. An LLM has only what is in the window. And when a codebase uses different names for the same thing in different places, which every real codebase does, lexical search misses the other half outright, and the code gets written twice.
+
+The consensus among people doing this seriously, and it has been our experience, is that assisted coding lets you go twice as fast and retrace your steps four times as often. The retracing is the context problem. So we asked whether the context could be built a different way.
+
+## Our question
+
+> Can we build context more deterministically?
+
+LLM Harnesses (Claude Code, Codex, Cursor, etc.) provide a set of tools for the LLM to do "codebase discovery." Developers create Markdown files, Skills, and sometimes "Agentic Memory" systems to tell the model the structure, user intent, or a myriad of other approaches that each developer figures out on their own.
+
+## What we did
+
+<!-- TODO (yours): the short version of the Procedure page — one repository, fifty
+     questions in two batteries, the arms, the models, the protocols, the judge, the
+     public package. Three or four paragraphs; link to /procedure/ for the rest. -->
+
+## What we discovered
+
+> It's not only possible to have much more deterministic context, it performs better on nearly every metric.
+
+The problem of creating codebase indexing is not actually a new problem that we solved in isolation. We have numerous tools for this going back decades. The newer problem is that all those systems were for several purposes: developer assistance in IDEs, syntax highlighting and error surfacing while coding, application profiling, dynamic compilation feedback.
+
+LLMs weren't in the picture when all of our solutions to various coding technologies were developed; they weren't optimized for the LLM architecture with limited context and targeted changes. SCIP, Tree-sitter and the rest were not designed for LLMs, they were designed to solve specific problems.
+
+<!-- TODO (yours): the discoveries themselves. Two candidates from the data:
+     (1) the cross-tier result — on the hard battery, TrueArchitect at Haiku 4.5 scores
+         above bare Claude Code at Opus 4.6 and Opus 4.8 (Figure 11 with the hard battery
+         selected) — which is the defensible form of "tier matters less than context";
+         the raw form ("once you get to mid-tier, accuracy is not determined by tier")
+         is contradicted by the bare-harness numbers, which climb steeply with tier.
+     (2) the reliability gap being wider than the accuracy gap (Figure 5 vs Figure 2). -->
+
+**The TrueArchitect motto**: better context, better results.

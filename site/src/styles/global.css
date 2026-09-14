@@ -221,13 +221,21 @@ details.data summary { cursor: pointer; font-size: 13px; font-weight: 600; margi
 .cmp-figure { margin-top: 28px; padding-top: 8px; border-top: 1px solid var(--grid); }
 .fig-no-inline { color: var(--faint); font-size: 12px; font-family: var(--sans); font-weight: 500; letter-spacing: 0.04em; margin-right: 8px; }
 /* the essay reads at book width, in the serif, a touch larger */
-.essay { max-width: 76ch; }
+/* the essay: a reading column CENTERED in the content area (owner 2026-09-14 — on a
+   wide monitor a left-pinned text column sat awkwardly far left) */
+.essay { max-width: 76ch; margin: 0 auto; }
 .essay .md { font-family: var(--serif); font-size: 17px; line-height: 1.6; }
 .essay .md h1 { font-size: 34px; margin: 6px 0 18px; }
-.essay .md h2 { font-size: 23px; margin-top: 34px; }
+.essay .md h2 { font-size: 23px; margin-top: 40px; }
 .essay .md p { max-width: none; margin-bottom: 16px; }
 .essay .md code, .essay .md pre { font-family: var(--mono); }
-.essay .md blockquote { margin: 18px 0; padding: 2px 0 2px 18px; border-left: 3px solid var(--grid); color: var(--muted); }
+.essay .md ul { padding-left: 22px; }
+.essay .md li { margin-bottom: 4px; }
+/* pull-quotes: the argument's spine, set to stand out — TrueArchitect blue rule,
+   larger italic serif in ink, on a faint blue ground */
+.essay .md blockquote { margin: 26px 0; padding: 14px 22px; border-left: 4px solid var(--ta); background: color-mix(in srgb, var(--ta) 7%, transparent); border-radius: 0 8px 8px 0; color: var(--ink); }
+.essay .md blockquote p { margin: 0; font-size: 21px; line-height: 1.35; font-style: italic; letter-spacing: -0.005em; text-wrap: pretty; }
+.essay .md blockquote p + p { margin-top: 10px; }
 .md h1 { font-size: 26px; }
 .md h2 { font-size: 19px; }
 .md table { font-size: 12px; margin: 10px 0 18px; }
