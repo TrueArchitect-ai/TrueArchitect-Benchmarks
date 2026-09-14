@@ -292,14 +292,14 @@ details.data summary { cursor: pointer; font-size: 13px; font-weight: 600; margi
 .nav-toggle { display: none; }
 @media (max-width: 900px) {
   .shell { grid-template-columns: 1fr; }
-  .nav { position: sticky; top: 0; z-index: 40; height: auto; overflow: visible; border-right: none; border-bottom: 1px solid var(--grid); padding: 12px 18px; }
+  .nav { position: sticky; top: 0; z-index: 40; height: auto; overflow: visible; border-right: none; border-bottom: 1px solid var(--grid); padding: 20px 18px 14px; }
   /* one line: the TrueArchitect word, the Menu button and the theme button share a
      centre line (nav padding 12 + half the 23px word line ≈ 23.5px from the top);
      BENCHMARKS hangs under the word */
   .nav-head { align-items: flex-start; padding-right: 48px; }   /* room for the theme button */
   .brand-word { font-size: 22px; line-height: 23px; }
   .nav-toggle { display: inline-flex; align-items: center; gap: 6px; height: 34px; margin-top: -5.5px; font: inherit; font-size: 13px; font-weight: 600; color: var(--ink); background: var(--surface-2); border: 1px solid var(--grid); border-radius: 7px; padding: 0 10px; cursor: pointer; }
-  .theme-fab { top: 6.5px; right: 16px; }
+  .theme-fab { top: 14.5px; right: 16px; }   /* nav padding-top 20 + 11.5 − 17 */
   .nav-toggle .x { display: none; }
   .nav.open .nav-toggle .bars { display: none; }
   .nav.open .nav-toggle .x { display: block; }
