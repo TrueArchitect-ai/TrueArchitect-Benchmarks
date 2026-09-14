@@ -72,6 +72,11 @@ td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; }
 .muted { color: var(--muted); }
 .swatch { display: inline-block; width: 9px; height: 9px; border-radius: 2px; margin-right: 6px; vertical-align: 0; }
 
+/* the home title: the motto large, the comparison line as a subtitle a shade under it */
+.home-title { font-size: 38px; margin: 0 0 4px; }
+.home-subtitle { font-family: var(--serif); font-weight: 500; font-size: 21px; line-height: 1.3; letter-spacing: -0.005em; color: color-mix(in srgb, var(--ink) 78%, var(--muted)); margin: 0 0 14px; max-width: none; }
+@media (max-width: 900px) { .home-title { font-size: 30px; } .home-subtitle { font-size: 18px; } }
+
 /* shell */
 .shell { display: grid; grid-template-columns: var(--nav-w) 1fr; min-height: 100vh; }
 .nav { position: sticky; top: 0; height: 100vh; overflow: auto; border-right: 1px solid var(--grid); padding: 22px 18px; background: var(--surface); }
