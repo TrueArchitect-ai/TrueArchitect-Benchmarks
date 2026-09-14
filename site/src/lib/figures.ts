@@ -82,7 +82,7 @@ export const FIGURES: Figure[] = [
     defaults: { exams: ['ZeroShotExam', 'MultiTurnExam'], battery: 'memos-hard', columns: 'pooled' },
     reference: 'bare',
     caption: [
-      'The hard battery is the twenty questions written to defeat text search: fifteen whose answer no single grep can reach (multi-hop, absence proofs, dispatch, cross-stack), and five with a false premise the arm must recognise and refuse.',
+      'The hard battery is the twenty questions where matching text alone cannot reach the answer: fifteen that need several components understood together (multi-hop chains, absence proofs, dispatch, cross-stack tracing), and five with a false premise the arm must recognise and refuse.',
       'Same statistic and same reading as Figure 2, restricted to that battery: every dot is one run, the tick its pooled mean, the thin line its range; the battery control above lets you put the base battery back.',
       'On the base battery every arm sits near the ceiling; here the tools separate, and TrueArchitect\'s cloud sits highest at every shared model.',
     ],
