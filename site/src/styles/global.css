@@ -133,7 +133,9 @@ td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; }
 
 /* figure block */
 .figure { margin: 18px 0 8px; }
-.chart-wrap svg { display: block; max-width: 100%; }
+/* a chart that cannot fit its panel SCROLLS at its true size (never scales down —
+   a scaled chart on a phone is unreadable labels floating in whitespace) */
+.chart-wrap svg { display: block; max-width: none; }
 /* one control per line: protocols · battery · model · columns */
 .controls { display: flex; flex-direction: column; gap: 5px; padding: 10px 0 12px; border-top: 1px solid var(--grid); border-bottom: 1px solid var(--grid); margin-bottom: 8px; }
 .seg { display: flex; align-items: center; gap: 2px; flex-wrap: wrap; }
@@ -283,8 +285,30 @@ details.data summary { cursor: pointer; font-size: 13px; font-weight: 600; margi
 .md h2 { font-size: 19px; }
 .md table { font-size: 12px; margin: 10px 0 18px; }
 .md pre { font-size: 11.5px; }
+/* the hamburger (phones + narrow tablets): the nav becomes a one-line bar — wordmark
+   left, Menu right of it, the theme button in its fixed corner — and the whole
+   menu folds behind the button so the page's content is the first thing seen */
+.nav-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; }
+.nav-toggle { display: none; }
 @media (max-width: 900px) {
   .shell { grid-template-columns: 1fr; }
-  .nav { position: static; height: auto; border-right: none; border-bottom: 1px solid var(--grid); }
-  .main { padding: 24px 18px 60px; }
+  .nav { position: sticky; top: 0; z-index: 40; height: auto; overflow: visible; border-right: none; border-bottom: 1px solid var(--grid); padding: 12px 18px; }
+  .nav-head { align-items: center; padding-right: 48px; }   /* room for the theme button */
+  .brand-word { font-size: 22px; }
+  .nav-toggle { display: inline-flex; align-items: center; gap: 6px; font: inherit; font-size: 13px; font-weight: 600; color: var(--ink); background: var(--surface-2); border: 1px solid var(--grid); border-radius: 7px; padding: 6px 10px; cursor: pointer; }
+  .nav-toggle .x { display: none; }
+  .nav.open .nav-toggle .bars { display: none; }
+  .nav.open .nav-toggle .x { display: block; }
+  .nav:not(.open) > :not(.nav-head) { display: none; }
+  .nav.open { max-height: 100vh; overflow: auto; }
+  .nav.open .brand-sub { margin-top: 8px; }
+  .main { padding: 20px 16px 60px; }
+  .seg-help, .seg-nudge { margin-left: 0; }
+  .card-headline { font-size: 30px; }
+  .card-line { grid-template-columns: 18px minmax(0, 1fr) auto; gap: 8px; }
+  .card-delta { font-size: 14px; }
+}
+@media (max-width: 420px) {
+  .card-line { grid-template-columns: 18px minmax(0, 1fr); }
+  .card-delta { grid-column: 2; justify-self: start; font-size: 14px; white-space: normal; }
 }

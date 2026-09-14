@@ -52,7 +52,9 @@ function useWidth<T extends HTMLElement>(): [React.RefObject<T | null>, number] 
   const [w, setW] = useState(960)
   useEffect(() => {
     if (!ref.current) return
-    const ro = new ResizeObserver(es => { for (const e of es) setW(Math.max(480, e.contentRect.width)) })
+    // the chart lays out for the panel it actually has (a phone is ~340px); below
+    // 300 the layout floors and the panel scrolls
+    const ro = new ResizeObserver(es => { for (const e of es) setW(Math.max(300, e.contentRect.width)) })
     ro.observe(ref.current)
     return () => ro.disconnect()
   }, [])

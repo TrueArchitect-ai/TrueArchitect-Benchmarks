@@ -66,7 +66,18 @@ export const shortModel = (label: string) => label.replace('GPT 5.6 ', '').repla
 
 const ROLE_SHORT: Record<string, string> = { trueArchitect: 'TrueArchitect', bare: 'bare harness', indexer: 'indexing tool' }
 
+/** A group's slot is TIGHT when it cannot hold its name upright (phones). */
+export const TIGHT_SLOT = 72
+
 export function GroupFooter({ g, cx, y, rankTotal, slotW = 999 }: { g: Group; cx: number; y: number; rankTotal: number; slotW?: number }) {
+  // tight slot (phones, portrait): the name turns 45° and the role + rank lines
+  // yield — both are in the data table beneath the figure
+  if (slotW < TIGHT_SLOT) {
+    return (
+      <text x={cx + 4} y={y - 6} textAnchor="end" fontSize={10.5} fontWeight={600} fill={T.ink} fontFamily={FONT_SERIF}
+        transform={`rotate(-45 ${cx + 4} ${y - 6})`}>{g.arm.short}</text>
+    )
+  }
   // the role line shortens when the group's slot cannot hold the long form
   const role = slotW < 150 ? ROLE_SHORT[g.arm.role] : ROLE_LABEL[g.arm.role]
   return (
@@ -85,10 +96,13 @@ export function GroupFooter({ g, cx, y, rankTotal, slotW = 999 }: { g: Group; cx
 export default function Columns({ fig, groups, refs, panelW }: { fig: Figure; groups: Group[]; refs: RefLine[]; panelW: number }) {
   const [tip, setTip] = useState<Tip>(null)
   // reference-line labels live in the right margin, never over the last group
-  const { xs, width, colW, padL, padR } = layoutGroups(groups, panelW, 36, 6, 44, 72, refs.length ? 104 : 28)
+  // a narrow panel gives the reference-line margin less room (labels shrink to match)
+  const phone = panelW < 560
+  const { xs, width, colW, padL, padR } = layoutGroups(groups, panelW, 36, 6, 44, phone ? 56 : 72, refs.length ? (phone ? 78 : 104) : 28)
   const narrow = colW < 40 && groups.some(g => g.columns.length > 1)
-  const H = narrow ? 560 : 520, padT = colW < 30 ? 64 : 44, padB = narrow ? 118 : 96, plotH = H - padT - padB
   const slotW = (i: number) => (i + 1 < xs.length ? (xs[i + 1].x0 + xs[i].x1) / 2 : width - padR) - (i > 0 ? (xs[i - 1].x1 + xs[i].x0) / 2 : padL)
+  const tight = xs.some((_, i) => slotW(i) < TIGHT_SLOT)   // rotated group names need a deeper footer
+  const H = tight ? 540 : narrow ? 560 : 520, padT = colW < 30 ? 64 : 44, padB = tight ? 150 : narrow ? 118 : 96, plotH = H - padT - padB
   const vals = groups.flatMap(g => g.columns.map(c => c.value!)).concat(refs.map(r => r.value))
   const vmax = vals.length ? Math.max(...vals) * 1.12 : 1
   const vmin = Math.min(0, ...vals)
@@ -119,7 +133,7 @@ export default function Columns({ fig, groups, refs, panelW }: { fig: Figure; gr
           <g key={'r' + i}>
             <line x1={padL} x2={width - padR} y1={y(r.value)} y2={y(r.value)} stroke={r.color} strokeDasharray="6 5" strokeWidth={1.2} opacity={0.85} />
             {ly[i] !== y(r.value) && <line x1={width - padR} x2={width - padR + 4} y1={y(r.value)} y2={ly[i]} stroke={r.color} strokeWidth={1} opacity={0.6} />}
-            <text x={width - padR + 6} y={ly[i] + 3.5} textAnchor="start" fontSize={9.5} fill={r.color} fontFamily={FONT_SANS}>{r.label} {fmt(fig, r.value)}</text>
+            <text x={width - padR + 6} y={ly[i] + 3.5} textAnchor="start" fontSize={phone ? 8.5 : 9.5} fill={r.color} fontFamily={FONT_SANS}>{r.label} {fmt(fig, r.value)}</text>
           </g>
         )) })()}
         {/* columns */}

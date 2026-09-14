@@ -2,7 +2,7 @@ import { useState } from 'react'
 import type { Figure } from '../lib/figures'
 import { modelLabel } from '../lib/roster'
 import { fmt, fmtAxis, niceTicks, spreadLabels, type Group, type RefLine } from './engine'
-import { layoutGroups, GroupFooter, Tooltip, shortModel, type Tip } from './Columns'
+import { layoutGroups, GroupFooter, Tooltip, shortModel, TIGHT_SLOT, type Tip } from './Columns'
 import { T, FONT_SANS } from './theme'
 
 // Deterministic jitter so the picture is identical on every render.
@@ -13,10 +13,12 @@ function jitter(seed: number): number {
 
 export default function Dots({ fig, groups, refs, panelW }: { fig: Figure; groups: Group[]; refs: RefLine[]; panelW: number }) {
   const [tip, setTip] = useState<Tip>(null)
-  const { xs, width, colW, padL, padR } = layoutGroups(groups, panelW, 44, 8, 44, 72, refs.length ? 104 : 28)
+  const phone = panelW < 560
+  const { xs, width, colW, padL, padR } = layoutGroups(groups, panelW, 44, 8, 44, phone ? 56 : 72, refs.length ? (phone ? 78 : 104) : 28)
   const narrow = colW < 40 && groups.some(g => g.columns.length > 1)
   const slotW = (i: number) => (i + 1 < xs.length ? (xs[i + 1].x0 + xs[i].x1) / 2 : width - padR) - (i > 0 ? (xs[i - 1].x1 + xs[i].x0) / 2 : padL)
-  const H = narrow ? 580 : 540, padT = 36, padB = narrow ? 118 : 96, plotH = H - padT - padB
+  const tight = xs.some((_, i) => slotW(i) < TIGHT_SLOT)
+  const H = tight ? 560 : narrow ? 580 : 540, padT = 36, padB = tight ? 150 : narrow ? 118 : 96, plotH = H - padT - padB
   const all = groups.flatMap(g => g.columns.flatMap(c => c.runs.map(r => (fig.measure.cell === 'mean' ? r.v : r.pct)!)))
   const lo = all.length ? Math.min(...all) : 0, hi = all.length ? Math.max(...all) : 1
   const span = Math.max(hi - lo, Math.abs(hi) * 0.05, 1e-9)
@@ -43,7 +45,7 @@ export default function Dots({ fig, groups, refs, panelW }: { fig: Figure; group
           <g key={'r' + i}>
             <line x1={padL} x2={width - padR} y1={y(r.value)} y2={y(r.value)} stroke={r.color} strokeDasharray="6 5" strokeWidth={1.2} opacity={0.85} />
             {ly[i] !== y(r.value) && <line x1={width - padR} x2={width - padR + 4} y1={y(r.value)} y2={ly[i]} stroke={r.color} strokeWidth={1} opacity={0.6} />}
-            <text x={width - padR + 6} y={ly[i] + 3.5} textAnchor="start" fontSize={9.5} fill={r.color} fontFamily={FONT_SANS}>{r.label} {fmt(fig, r.value)}</text>
+            <text x={width - padR + 6} y={ly[i] + 3.5} textAnchor="start" fontSize={phone ? 8.5 : 9.5} fill={r.color} fontFamily={FONT_SANS}>{r.label} {fmt(fig, r.value)}</text>
           </g>
         )) })()}
         {xs.map((s, gi) => (

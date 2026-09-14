@@ -34,11 +34,17 @@ const is = (p: string) => (p === '/' ? here === '/' : here.startsWith(p))
   </head>
   <body>
     <div class="shell">
-      <nav class="nav" aria-label="site">
-        <a class="brand" href={`${base}/`}>
-          <span class="brand-word">TrueArchitect</span>
-          <span class="brand-kicker">Benchmarks</span>
-        </a>
+      <nav class="nav" aria-label="site" id="site-nav">
+        <div class="nav-head">
+          <a class="brand" href={`${base}/`}>
+            <span class="brand-word">TrueArchitect</span>
+            <span class="brand-kicker">Benchmarks</span>
+          </a>
+          <button class="nav-toggle" type="button" id="nav-toggle" aria-expanded="false" aria-controls="site-nav" aria-label="Menu">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path class="bars" d="M4 7h16M4 12h16M4 17h16" /><path class="x" d="M6 6l12 12M18 6L6 18" /></svg>
+            <span>Menu</span>
+          </button>
+        </div>
         <div class="brand-sub">Epoch {parseInt(manifest.epoch.id.replace(/\D/g, ''), 10)} · the public proof package</div>
         <a class={is('/') ? 'on' : ''} href={`${base}/`}>Benchmark Results</a>
         <a class={is('/procedure') ? 'on' : ''} href={`${base}/procedure/`}>Benchmark Procedure</a>
@@ -114,6 +120,14 @@ const is = (p: string) => (p === '/' ? here === '/' : here.startsWith(p))
         })
         var onChange = function () { if (el.dataset.themeMode === 'system') apply('system') }
         if (mq.addEventListener) mq.addEventListener('change', onChange); else mq.addListener(onChange)
+      })()
+      // phone nav: the menu folds behind the hamburger and closes when a link is chosen
+      ;(function () {
+        var nav = document.getElementById('site-nav'), btn = document.getElementById('nav-toggle')
+        if (!nav || !btn) return
+        function set(open) { nav.classList.toggle('open', open); btn.setAttribute('aria-expanded', open ? 'true' : 'false') }
+        btn.addEventListener('click', function () { set(!nav.classList.contains('open')) })
+        nav.addEventListener('click', function (e) { if (e.target.closest && e.target.closest('a')) set(false) })
       })()
       // subnav scroll-spy: the section nearest the top of the viewport is the current one
       ;(function () {
