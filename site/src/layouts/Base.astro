@@ -19,7 +19,7 @@ const is = (p: string) => (p === '/' ? here === '/' : here.startsWith(p))
     <link rel="icon" href={`${base}/favicon.svg`} type="image/svg+xml" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Anta&family=Inter:wght@400;500;600&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&display=swap" rel="stylesheet" />
     <script is:inline>
       // theme before first paint: system | light | dark (system default; the choice persists)
       (function () {
@@ -35,10 +35,12 @@ const is = (p: string) => (p === '/' ? here === '/' : here.startsWith(p))
   <body>
     <div class="shell">
       <nav class="nav" aria-label="site">
-        <a class="brand" href={`${base}/`}>TrueArchitect Benchmarks</a>
+        <a class="brand" href={`${base}/`}>
+          <span class="brand-word">TrueArchitect</span>
+          <span class="brand-kicker">Benchmarks</span>
+        </a>
         <div class="brand-sub">{manifest.epoch.id} · the public proof package</div>
         <a class={is('/') ? 'on' : ''} href={`${base}/`}>Benchmark Results</a>
-        <a class={is('/overview') ? 'on' : ''} href={`${base}/overview/`}>The Why · Overview</a>
         <a class={is('/procedure') ? 'on' : ''} href={`${base}/procedure/`}>Benchmark Procedure</a>
         <h4>Comparisons</h4>
         {COMPARISONS.map(c => (
@@ -61,9 +63,18 @@ const is = (p: string) => (p === '/' ? here === '/' : here.startsWith(p))
         <a class={is('/method') ? 'on' : ''} href={`${base}/method/`}>Method</a>
         <a class={is('/limitations') ? 'on' : ''} href={`${base}/limitations/`}>Limitations</a>
         <a class={is('/data') ? 'on' : ''} href={`${base}/data/`}>Data &amp; reproducibility</a>
+        <a class={is('/about') ? 'on' : ''} href={`${base}/about/`}>About this site</a>
         <a href="https://github.com/TrueArchitect-ai/TrueArchitect-Benchmarks" target="_blank" rel="noopener">Repository ↗</a>
         <div class="nav-foot">
           Every number links to the run that produced it.
+          <div class="nav-brands">
+            <a href="https://truearchitect.ai" target="_blank" rel="noopener" title="TrueArchitect — the product"><span class="anta">TrueArchitect</span><span class="ext">↗</span></a>
+            <a href="https://metaphori.ai" target="_blank" rel="noopener" title="Metaphori, Inc. — the company">
+              <img class="mlogo mlogo-light" src={`${base}/metaphori-logo-light.png`} alt="" width="16" height="16" />
+              <img class="mlogo mlogo-dark" src={`${base}/metaphori-logo-dark.png`} alt="" width="16" height="16" />
+              <span class="mword">Metaphori</span><span class="ext">↗</span>
+            </a>
+          </div>
         </div>
       </nav>
       <main class="main">

@@ -24,7 +24,8 @@ const pos = (v: number, lo: number, hi: number) => Math.max(0, Math.min(100, ((v
     <div class="kicker">Benchmark results · {manifest.epoch.id} · public proof package</div>
     <h1>How TrueArchitect did</h1>
     <p class="lede">
-      One verdict per measure and comparator. Every cell compares TrueArchitect and the comparator over the models <em>both</em> ran,
+      This is TrueArchitect's own benchmark: we built the tool, wrote the questions, ran every arm, and published every run,
+      transcript and judged answer. One verdict per measure and comparator. Every cell compares TrueArchitect and the comparator over the models <em>both</em> ran,
       pooled with equal weight per protocol × battery × model, on the ZeroShot and MultiTurn protocols over both batteries.
       Higher is better for accuracy and reliability; lower is better for everything else. Each row links to the figure behind it.
     </p>
@@ -129,6 +130,6 @@ const pos = (v: number, lo: number, hi: number) => Math.max(0, Math.min(100, ((v
     <ul>
       {COMPARISONS.map(c => <li><a href={`${base}/compare/${c.slug}/`}>{c.title}</a> — {c.intro[0]}</li>)}
     </ul>
-    <p><a href={`${base}/overview/`}>The Why</a> is the author's account of what this benchmark set out to find; <a href={`${base}/procedure/`}>Benchmark Procedure</a> states what was measured and how; the <a href={`${base}/limitations/`}>Limitations</a> page collects every caveat, including the Fable 5 refusals, the Haiku 4.5 context window, and the host-versus-container asymmetry that makes wall time a disclosure rather than a claim.</p>
+    <p><a href={`${base}/procedure/`}>Benchmark Procedure</a> states what was measured and how; the <a href={`${base}/limitations/`}>Limitations</a> page collects every caveat, including the Fable 5 refusals, the Haiku 4.5 context window, and the host-versus-container asymmetry that makes wall time a disclosure rather than a claim; <a href={`${base}/about/`}>About this site</a> says who ran it and where the product and the company live.</p>
   </div>
 </Base>

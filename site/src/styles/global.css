@@ -27,6 +27,7 @@
   --behind: #9a3b2f;         /* TrueArchitect behind */
   --cat: #7a4fb0;            /* the card's category word (Accuracy · Reliability · Efficiency · Consistency): mauve, the blue's contrast */
   --nav-w: 248px;
+  --brand: Anta, "Source Serif 4", Georgia, serif;   /* the TrueArchitect wordmark (truearchitect.ai) */
   --serif: "Source Serif 4", Georgia, "Times New Roman", serif;
   --sans: Inter, system-ui, -apple-system, "Segoe UI", sans-serif;
   --mono: ui-monospace, SFMono-Regular, Menlo, monospace;
@@ -74,7 +75,18 @@ td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; }
 /* shell */
 .shell { display: grid; grid-template-columns: var(--nav-w) 1fr; min-height: 100vh; }
 .nav { position: sticky; top: 0; height: 100vh; overflow: auto; border-right: 1px solid var(--grid); padding: 22px 18px; background: var(--surface); }
-.brand { font-family: var(--serif); font-size: 17px; font-weight: 600; display: block; color: var(--ink); margin-bottom: 2px; }
+/* the wordmark, in the product's Anta (truearchitect.ai): the name in ink, the
+   kicker in the TrueArchitect blue at the product site's letter-spacing */
+.brand { display: flex; flex-direction: column; gap: 2px; color: var(--ink); margin-bottom: 4px; }
+.brand:hover { text-decoration: none; }
+.brand-word { font-family: var(--brand); font-size: 19px; letter-spacing: 0.03em; line-height: 1.1; }
+.brand-kicker { font-family: var(--brand); font-size: 9.5px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--ta-text); }
+.anta { font-family: var(--brand); letter-spacing: 0.03em; }
+.mword { font-family: var(--sans); font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; font-size: 0.92em; }
+.mlogo { display: none; width: 16px; height: 16px; vertical-align: -3px; }
+.mlogo-light { display: inline-block; }
+:root[data-theme="dark"] .mlogo-light { display: none; }
+:root[data-theme="dark"] .mlogo-dark { display: inline-block; }
 .brand-sub { font-size: 11px; color: var(--muted); margin-bottom: 18px; }
 .nav h4 { font-size: 10.5px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--faint); margin: 18px 0 6px; font-weight: 600; }
 .nav a { display: block; padding: 4px 8px; margin: 1px -8px; border-radius: 5px; color: var(--ink); font-size: 13.5px; }
@@ -85,6 +97,23 @@ td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; }
 .nav .subnav a.sub.on { color: var(--ink); background: var(--surface-2); font-weight: 600; }
 .cmp-figure h2 { scroll-margin-top: 16px; }
 .nav-foot { margin-top: 24px; font-size: 11.5px; color: var(--muted); }
+/* the way to the product and the company: two brand links under the nav */
+.nav-brands { display: flex; flex-direction: column; gap: 4px; margin-top: 12px; padding-top: 12px; border-top: 1px solid var(--grid); }
+.nav .nav-brands a { display: inline-flex; align-items: center; gap: 6px; padding: 3px 8px; margin: 0 -8px; font-size: 13px; color: var(--ink); }
+.nav .nav-brands .ext { color: var(--faint); font-size: 11px; }
+
+/* About: the two brand cards */
+.about .brand-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 18px; margin: 22px 0 8px; max-width: 900px; }
+.about .brand-card { display: flex; flex-direction: column; gap: 8px; padding: 22px 24px; background: var(--card); border-top: 3px solid var(--ta); color: var(--ink); border-radius: 0 0 8px 8px; }
+.about .brand-card:hover { text-decoration: none; box-shadow: 0 0 0 1px color-mix(in srgb, var(--ta) 45%, transparent); }
+.about .bc-word { font-size: 24px; line-height: 1.1; }
+.about .bc-logo { display: inline-flex; align-items: center; gap: 10px; }
+.about .bc-logo .mlogo { width: 28px; height: 28px; vertical-align: 0; }
+.about .bc-logo .bc-word { font-size: 20px; }
+.about .bc-kicker { font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--ta-text); }
+.about .bc-kicker:not(.anta) { letter-spacing: 0.02em; text-transform: none; font-size: 13px; font-style: italic; color: var(--muted); }
+.about .bc-body { font-size: 14px; line-height: 1.5; color: var(--muted); }
+.about .bc-link { font-family: var(--mono); font-size: 12px; color: var(--accent); margin-top: 4px; }
 /* floating theme switch, top right: cycles light → dark → system; the icon is the mode */
 .theme-fab { position: fixed; top: 14px; right: 16px; z-index: 50; width: 34px; height: 34px; display: inline-flex; align-items: center; justify-content: center; color: var(--muted); background: var(--surface); border: 1px solid var(--grid); border-radius: 50%; cursor: pointer; padding: 0; box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08); }
 .theme-fab:hover { color: var(--ink); background: var(--surface-2); }
