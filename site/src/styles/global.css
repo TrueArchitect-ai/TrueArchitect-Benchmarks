@@ -184,13 +184,13 @@ details.data summary { cursor: pointer; font-size: 13px; font-weight: 600; margi
    level stays quiet, the per-comparator rows open on demand — native <details>,
    so it works with no script and on every phone */
 .card-details { display: flex; flex-direction: column; gap: 0; }
-.card-details > summary { list-style: none; cursor: pointer; display: flex; align-items: center; gap: 12px; font-family: var(--mono); font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); user-select: none; }
+.card-details > summary { list-style: none; cursor: pointer; display: flex; align-items: center; gap: 12px; font-family: var(--mono); font-size: 11.5px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ta-soft); user-select: none; }
 .card-details > summary::-webkit-details-marker { display: none; }
-.card-details > summary .rule { flex: 1; height: 1px; background: var(--grid); }
+.card-details > summary .rule { flex: 1; height: 1px; background: color-mix(in srgb, var(--ta) 30%, var(--grid)); }
 .card-details > summary .lbl { display: inline-flex; align-items: center; gap: 5px; }
 .card-details > summary .caret { transition: transform 140ms ease; }
 .card-details > summary:hover { color: var(--ta-text); }
-.card-details > summary:hover .rule { background: color-mix(in srgb, var(--ta) 40%, var(--grid)); }
+.card-details > summary:hover .rule { background: color-mix(in srgb, var(--ta) 60%, var(--grid)); }
 .card-details[open] > summary .caret { transform: rotate(180deg); }
 .card-details[open] > summary { margin-bottom: 6px; }
 .card-details .card-legend { justify-content: center; font-size: 12px; color: var(--muted); padding-top: 10px; }
