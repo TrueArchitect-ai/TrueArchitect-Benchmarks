@@ -39,7 +39,7 @@ const is = (p: string) => (p === '/' ? here === '/' : here.startsWith(p))
           <span class="brand-word">TrueArchitect</span>
           <span class="brand-kicker">Benchmarks</span>
         </a>
-        <div class="brand-sub">{manifest.epoch.id} · the public proof package</div>
+        <div class="brand-sub">Epoch {parseInt(manifest.epoch.id.replace(/\D/g, ''), 10)} · the public proof package</div>
         <a class={is('/') ? 'on' : ''} href={`${base}/`}>Benchmark Results</a>
         <a class={is('/procedure') ? 'on' : ''} href={`${base}/procedure/`}>Benchmark Procedure</a>
         <h4>Comparisons</h4>

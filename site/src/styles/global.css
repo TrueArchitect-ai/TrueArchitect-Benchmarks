@@ -77,10 +77,10 @@ td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; }
 .nav { position: sticky; top: 0; height: 100vh; overflow: auto; border-right: 1px solid var(--grid); padding: 22px 18px; background: var(--surface); }
 /* the wordmark, in the product's Anta (truearchitect.ai): the name in ink, the
    kicker in the TrueArchitect blue at the product site's letter-spacing */
-.brand { display: flex; flex-direction: column; gap: 2px; color: var(--ink); margin-bottom: 4px; }
-.brand:hover { text-decoration: none; }
-.brand-word { font-family: var(--brand); font-size: 19px; letter-spacing: 0.03em; line-height: 1.1; }
-.brand-kicker { font-family: var(--brand); font-size: 9.5px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--ta-text); }
+.nav a.brand { display: flex; flex-direction: column; gap: 3px; padding: 0; margin: 0 0 6px; color: var(--ink); background: none; }
+.nav a.brand:hover { text-decoration: none; }
+.brand-word { font-family: var(--brand); font-size: 26px; letter-spacing: 0.02em; line-height: 1.05; }
+.brand-kicker { font-family: var(--brand); font-size: 10.5px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--ta-text); }
 .anta { font-family: var(--brand); letter-spacing: 0.03em; }
 .mword { font-family: var(--sans); font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; font-size: 0.92em; }
 .mlogo { display: none; width: 16px; height: 16px; vertical-align: -3px; }
