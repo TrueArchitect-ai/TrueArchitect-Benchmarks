@@ -76,6 +76,11 @@ td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; }
 .home-title { font-size: 38px; margin: 0 0 4px; }
 .home-subtitle { font-family: var(--serif); font-weight: 500; font-size: 25px; line-height: 1.25; letter-spacing: -0.008em; color: color-mix(in srgb, var(--ink) 92%, var(--muted)); margin: 0 0 14px; max-width: none; }
 @media (max-width: 900px) { .home-title { font-size: 30px; } .home-subtitle { font-size: 20px; } }
+/* Who · Hypothesis · How · Scope — the four lines that frame the results */
+.home-facts { display: grid; grid-template-columns: max-content 1fr; gap: 8px 18px; margin: 16px 0 6px; max-width: 900px; font-size: 15px; line-height: 1.5; }
+.home-facts dt { font-family: var(--mono); font-size: 11.5px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--cat); padding-top: 4px; }
+.home-facts dd { margin: 0; color: var(--ink); }
+@media (max-width: 600px) { .home-facts { grid-template-columns: 1fr; gap: 2px 0; } .home-facts dd { margin-bottom: 8px; } }
 
 /* shell */
 .shell { display: grid; grid-template-columns: var(--nav-w) 1fr; min-height: 100vh; }

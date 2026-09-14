@@ -18,18 +18,27 @@ const WORD: Record<Verdict, string> = { win: 'TrueArchitect better', loss: 'True
 const total = (id: string) => { const t = sc.tally[id]; return t.win + t.tie + t.loss }
 // gap-strip geometry: a point's position on the card's zoomed axis, in %
 const pos = (v: number, lo: number, hi: number) => Math.max(0, Math.min(100, ((v - lo) / (hi - lo)) * 100))
+// the scope line: questions judged across the valid, scored runs (score + fails —
+// the same count the scorecard cells are built from)
+const scored = runs.filter(r => r.validity_ok && r.score != null)
+const questionsJudged = scored.reduce((a, r) => a + (r.score ?? 0) + (r.fails ?? 0), 0)
+const kQuestions = `${Math.floor(questionsJudged / 1000)}K`
 ---
 <Base title="Benchmark Results" description="How TrueArchitect did against every comparator on every measure, like for like at shared models, in one table.">
   <div class="prose">
     <div class="kicker">Benchmark results · {manifest.epoch.id} · public proof package</div>
     <h1 class="home-title">Better Context, Better Results</h1>
     <p class="home-subtitle">How TrueArchitect Compares to Industry Leaders</p>
-    <p class="lede">
-      This is TrueArchitect's own benchmark: we built the tool, wrote the questions, ran every arm, and published every run,
-      transcript and judged answer. One verdict per measure and comparator. Every cell compares TrueArchitect and the comparator over the models <em>both</em> ran,
-      pooled with equal weight per protocol × battery × model, on the ZeroShot and MultiTurn protocols over both batteries.
-      Higher is better for accuracy and reliability; lower is better for everything else. Each row links to the figure behind it.
-    </p>
+    <dl class="home-facts">
+      <dt>Who</dt>
+      <dd><a href="https://metaphori.ai" target="_blank" rel="noopener">Metaphori, Inc.</a>'s <a href="https://truearchitect.ai" target="_blank" rel="noopener">TrueArchitect</a> is a codebase intelligence system with LLM-optimized tooling for LLM coding agents. This is our own benchmark: we built the tool, wrote the questions and ran every arm.</dd>
+      <dt>Hypothesis</dt>
+      <dd>LLM coding agents are already capable. Can they perform better if their context is better engineered?</dd>
+      <dt>How</dt>
+      <dd>We built a benchmarking tool to execute and compare apples to apples: a battery of questions presented in three protocols, across tiers of frontier models, with the vendor coding harnesses (Claude Code, Codex, Cursor) and the popular codebase indexing tools, measuring accuracy, variability and token usage.</dd>
+      <dt>Scope</dt>
+      <dd>Over {kQuestions} questions judged mechanically and, where necessary, by a heavily guided LLM judge. Every transcript, answer and verdict is in the <a href="https://github.com/TrueArchitect-ai/TrueArchitect-Benchmarks" target="_blank" rel="noopener">GitHub repository</a>.</dd>
+    </dl>
   </div>
 
   <div class="cards">
@@ -99,6 +108,13 @@ const pos = (v: number, lo: number, hi: number) => Math.max(0, Math.min(100, ((v
     })()
   </script>
 
+  <div class="prose">
+    <p class="muted" style="font-size:13px;margin:18px 0 0">
+      The full scorecard: one verdict per measure and comparator. Every cell compares TrueArchitect and the comparator over the models <em>both</em> ran,
+      pooled with equal weight per protocol × battery × model, on the ZeroShot and MultiTurn protocols over both batteries.
+      Higher is better for accuracy and reliability; lower is better for everything else. Each row links to the figure behind it.
+    </p>
+  </div>
   <div class="scorecard-wrap">
     <table class="scorecard">
       <thead>
