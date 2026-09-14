@@ -81,6 +81,23 @@ const pos = (v: number, lo: number, hi: number) => Math.max(0, Math.min(100, ((v
     ))}
   </div>
 
+  <script is:inline>
+    // the six Details fold together (owner 2026-09-14): opening or closing one
+    // opens or closes all — the ledger is one view, not six
+    ;(function () {
+      var all = Array.prototype.slice.call(document.querySelectorAll('details.card-details'))
+      var syncing = false
+      all.forEach(function (d) {
+        d.addEventListener('toggle', function () {
+          if (syncing) return
+          syncing = true
+          all.forEach(function (o) { if (o !== d) o.open = d.open })
+          syncing = false
+        })
+      })
+    })()
+  </script>
+
   <div class="scorecard-wrap">
     <table class="scorecard">
       <thead>
