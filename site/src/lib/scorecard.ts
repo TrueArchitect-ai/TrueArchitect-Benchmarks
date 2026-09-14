@@ -69,6 +69,22 @@ function verdictOf(fig: Figure, ta: number, other: number): Verdict {
 
 const x = (r: number) => (r >= 10 ? r.toFixed(0) : r.toFixed(1)) + '×'
 
+// PERCENT, NOT MULTIPLES (owner 2026-09-14): "1.4× fewer" makes a reader
+// compute; "30% fewer" is the native unit of a saving. ratio = comparator ÷
+// TrueArchitect on a lower-is-better measure. saving(ratio) = what
+// TrueArchitect saves against the comparator, in %, signed: positive = uses
+// less, negative = uses more. The strip's fine-print axis stays in multiples
+// (it is the raw geometry); every sentence and delta is a percent.
+const saving = (ratio: number) => (1 - 1 / ratio) * 100
+const pct = (v: number) => `${Math.round(Math.abs(v))}%`
+// a range of ratios as one percent phrase: "47–66% less" · "12–30% more" · "8% more to 40% less"
+const savingRange = (lo: number, hi: number) => {
+  const a = saving(lo), b = saving(hi)
+  if (a >= 0 && b >= 0) return a === b || Math.round(a) === Math.round(b) ? `${pct(b)} less` : `${Math.round(a)}–${pct(b)} less`
+  if (a <= 0 && b <= 0) return Math.round(a) === Math.round(b) ? `${pct(a)} more` : `${Math.round(Math.abs(b))}–${pct(a)} more`
+  return `${pct(a)} more to ${pct(b)} less`
+}
+
 function cell(fig: Figure, rows: Row[], taId: string, other: ArmInfo): ScoreCell {
   const scored = (id: string) => new Set(rows.filter(r => r.arm === id && r.ok && r.score != null && SLICE.exams.includes(r.exam)).map(r => r.model))
   const shared = [...scored(taId)].filter(m => scored(other.id).has(m)).sort(modelOrder)
@@ -92,8 +108,7 @@ function cell(fig: Figure, rows: Row[], taId: string, other: ArmInfo): ScoreCell
     const wins = verdicts.filter(v => v === 'win').length, losses = verdicts.filter(v => v === 'loss').length
     // a split roster earns a verdict only when every model agrees; otherwise it is mixed (shown as ≈)
     const verdict: Verdict = wins === per.length ? 'win' : losses === per.length ? 'loss' : 'tie'
-    const range = lo === hi ? x(lo) : `${x(lo)}–${x(hi)}`
-    const headline = lo >= 0.95 && hi >= 1.05 && lo >= 1 ? `${range} more than TrueArchitect` : hi <= 1 ? `${range} of TrueArchitect's` : `${range} TrueArchitect's, mixed by model`
+    const headline = verdict === 'tie' && !(lo >= 1 || hi <= 1) ? `${savingRange(lo, hi)}, mixed by model` : savingRange(lo, hi)
     return { arm: other, models: shared, ta: null, other: null, verdict, headline, detail: `per model · ${nModels} · ${per.map(p => `${modelLabel(p.model)} ${fmt(fig, p.ta)} vs ${fmt(fig, p.other)}`).join('; ')}`, perModel: per }
   }
 
@@ -115,7 +130,7 @@ function cell(fig: Figure, rows: Row[], taId: string, other: ArmInfo): ScoreCell
     headline = `${d >= 0 ? '+' : '−'}${Math.abs(d).toFixed(1)} pts`
   } else {
     const ratio = o / t
-    headline = verdict === 'tie' ? 'about the same' : ratio >= 1 ? `${x(ratio)} more than TrueArchitect` : `${x(ratio)} of TrueArchitect's`
+    headline = verdict === 'tie' ? 'about the same' : savingRange(ratio, ratio)
   }
   return { arm: other, models: shared, ta: t, other: o, verdict, headline, detail: `${fmt(fig, t)} vs ${fmt(fig, o)} · ${nModels}`, perModel }
 }
@@ -185,45 +200,44 @@ export function headlines(sc: Scorecard): Card[] {
     if (!leads.length) return
     out.push({ label, direction: 'higher is better', number: r.fig.number, figure: r.fig.slug, headline: headline(Math.min(...leads), Math.max(...leads)), sub, rows, tally: tallyOf(rows), axis: axisOf(rows, 5, 0, v => `${v}%`) })
   }
-  // ratio cards (tokens, cost, spread): delta = comparator ÷ TA, "less" for TrueArchitect.
-  // Axis: the comparator as a multiple of TrueArchitect (TrueArchitect sits at 1×) —
-  // the only common scale when the per-model magnitudes differ; a card whose values
-  // are already on one scale (the spread %) plots the values themselves.
-  const ratioCard = (r: ScoreRow, label: string, headline: (lo: number, hi: number) => string, sub: (peak: number | null) => string, opts: { perModelDetail?: boolean; values?: boolean; pctLess?: boolean; plotValues?: boolean } = {}) => {
+  // ratio cards (tokens, cost, spread): delta = TrueArchitect's saving against the
+  // comparator, in percent (1 − TA ÷ comparator). Axis: the comparator as a multiple
+  // of TrueArchitect (TrueArchitect sits at 1×) — the only common scale when the
+  // per-model magnitudes differ; a card whose values are already on one scale (the
+  // spread %) plots the values themselves. The headline receives the saving range in
+  // percent (lo, hi), already rounded.
+  const ratioCard = (r: ScoreRow, label: string, headline: (lo: number, hi: number) => string, sub: (peak: number | null) => string, opts: { perModelDetail?: boolean; values?: boolean; plotValues?: boolean } = {}) => {
     const rows: CardRow[] = r.cells.map(c => {
       const rr = ratioRange(c)
       // a vendor-split cell (raw tokens over a two-vendor roster) has no pooled pair — it is its per-model range
       if (c.ta == null || c.other == null) {
-        if (rr) return { name: nameOf(c), verdict: c.verdict, ta: 1, cmp: null, spanLo: rr.lo, spanHi: rr.hi, detail: `${x(rr.lo)}–${x(rr.hi)} · varies by model · ${shared(c)}`, delta: c.verdict === 'tie' ? `${x(rr.lo)}–${x(rr.hi)}` : c.verdict === 'win' ? `${x(rr.lo)}–${x(rr.hi)} less` : `${x(rr.lo)}–${x(rr.hi)} more` }
+        if (rr) return { name: nameOf(c), verdict: c.verdict, ta: 1, cmp: null, spanLo: rr.lo, spanHi: rr.hi, detail: `varies by model · ${shared(c)}`, delta: savingRange(rr.lo, rr.hi) }
         return { name: nameOf(c), verdict: c.verdict, ta: null, cmp: null, detail: 'no shared model', delta: '—' }
       }
       const ratio = c.other / c.ta
       const values = opts.values ? `${fmt(r.fig, c.ta)} vs ${fmt(r.fig, c.other)} · ` : ''
-      const detail = opts.perModelDetail && rr ? `${values}${x(rr.lo)}–${x(rr.hi)} · ${shared(c)}` : `${values}${shared(c)}`
-      const delta = c.verdict === 'tie' ? 'about equal'
-        : opts.pctLess ? (ratio >= 1 ? `${Math.round((1 - 1 / ratio) * 100)}% less` : `${Math.round((ratio - 1) * 100)}% more`)
-        : ratio >= 1 ? `${x(ratio)} less` : `${x(1 / ratio)} more`
+      const detail = opts.perModelDetail && rr ? `${values}${savingRange(rr.lo, rr.hi)} by model · ${shared(c)}` : `${values}${shared(c)}`
+      const delta = c.verdict === 'tie' ? 'about equal' : savingRange(ratio, ratio)
       return { name: nameOf(c), verdict: c.verdict, ta: opts.plotValues ? c.ta : 1, cmp: opts.plotValues ? c.other : ratio, detail, delta }
     })
     const wins = r.cells.filter(c => c.verdict === 'win' && c.ta != null && c.other != null).map(c => c.other! / c.ta!)
     if (!wins.length) return
     const peaks = r.cells.map(ratioRange).filter((v): v is NonNullable<typeof v> => !!v).map(v => v.hi)
     const axis = opts.plotValues ? axisOf(rows, 1, 0, v => `${v}%`) : axisOf(rows, 0.5, 1, v => `${v}×`)
-    out.push({ label, direction: 'lower is better', number: r.fig.number, figure: r.fig.slug, headline: headline(Math.min(...wins), Math.max(...wins)), sub: sub(peaks.length ? Math.max(...peaks) : null), rows, tally: tallyOf(rows), axis })
+    const lo = Math.round(saving(Math.min(...wins))), hi = Math.round(saving(Math.max(...wins)))
+    out.push({ label, direction: 'lower is better', number: r.fig.number, figure: r.fig.slug, headline: headline(lo, hi), sub: sub(peaks.length ? Math.round(saving(Math.max(...peaks))) : null), rows, tally: tallyOf(rows), axis })
   }
+  const span = (lo: number, hi: number) => (lo === hi ? `${lo}%` : `${lo}–${hi}%`)
 
   // card ORDER (owner 2026-09-14): lower cost (context tokens) · hard battery ·
   // consistency · reliability · lower cost (per correct) · accuracy — the
   // token story opens, the overall accuracy closes.
   const acc = row('accuracy'), hard = row('accuracy-hard'), rel = row('pass-rate'), con = row('consistency'), ctx = row('context-tokens'), cost = row('cost-per-correct')
-  if (ctx) ratioCard(ctx, 'Lower cost · context tokens', (lo, hi) => `${x(lo)}–${x(hi)} fewer context tokens`, peak => `on average at the same model${peak ? `, up to ${x(peak)} at individual models` : ''}. Uncached input plus cache reads, summed over every call of a run.`, { perModelDetail: true })
+  if (ctx) ratioCard(ctx, 'Lower cost · context tokens', (lo, hi) => `${span(lo, hi)} context token savings`, peak => `on average at the same model${peak ? `, up to ${peak}% at individual models` : ''}. Uncached input plus cache reads, summed over every call of a run.`, { perModelDetail: true })
   if (hard) pointsCard(hard, 'Hard battery', (lo, hi) => `${lo.toFixed(0)}–${hi.toFixed(0)} points more accurate on the hard battery`, 'the 20 questions written to defeat text search: 15 grep-hostile, 5 false-premise. On the base battery every arm is near the ceiling; this is where the tools separate.')
-  if (con) ratioCard(con, 'Consistency · lower variation', (lo, hi) => {
-    const a = Math.round((1 - 1 / lo) * 100), b = Math.round((1 - 1 / hi) * 100)
-    return `${a === b ? `${a}%` : `${Math.min(a, b)}–${Math.max(a, b)}%`} less run-to-run variation`
-  }, () => 'in accuracy. Same tool, same model, same questions, run again: how far the score moves. Coefficient of variation of run accuracy, lower is steadier.', { values: true, pctLess: true, plotValues: true })
+  if (con) ratioCard(con, 'Consistency · lower variation', (lo, hi) => `${span(lo, hi)} less run-to-run variation`, () => 'in accuracy. Same tool, same model, same questions, run again: how far the score moves. Coefficient of variation of run accuracy, lower is steadier.', { values: true, plotValues: true })
   if (rel) pointsCard(rel, 'Reliability', (lo, hi) => `${lo.toFixed(0)}–${hi.toFixed(0)} points more runs at 90%+ accuracy`, 'share of full-battery runs scoring at least nine in ten. Each arm was run repeatedly; this is how often a run lands in the top band.')
-  if (cost) ratioCard(cost, 'Lower cost · per correct answer', (lo, hi) => `${x(lo)}–${x(hi)} lower cost per correct answer`, () => 'against every comparator, at the models each of them ran. USD per correct answer; vendor-reported where available, otherwise estimated from published rate tables.', { values: true })
+  if (cost) ratioCard(cost, 'Lower cost · per correct answer', (lo, hi) => `${span(lo, hi)} lower cost per correct answer`, () => 'against every comparator, at the models each of them ran. USD per correct answer; vendor-reported where available, otherwise estimated from published rate tables.', { values: true })
   if (acc) pointsCard(acc, 'Accuracy · both batteries', (lo, hi) => `${lo.toFixed(0)}–${hi.toFixed(0)} points more accurate`, 'than every comparator, at the models each of them ran.')
   return out
 }
