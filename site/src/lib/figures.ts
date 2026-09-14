@@ -74,7 +74,43 @@ export const FIGURES: Figure[] = [
     ],
   },
   {
-    slug: 'pass-rate', number: 3, title: 'Reliability: runs scoring at least 90 percent', short: 'Reliability', kind: 'columns',
+    // FIGURE OF ITS OWN (owner 2026-09-14): the hard battery was a slice of Figure 2
+    // that three home cards pointed at under one number; every graph now has its
+    // own number, top to bottom of the navigation.
+    slug: 'accuracy-hard', number: 3, title: 'Accuracy on the hard battery', short: 'Hard battery', kind: 'dots',
+    measure: { key: 'pct', cell: 'mean', label: 'accuracy on the hard battery (% of questions correct)', unit: 'pct', better: 'high' },
+    defaults: { exams: ['ZeroShotExam', 'MultiTurnExam'], battery: 'memos-hard', columns: 'pooled' },
+    reference: 'bare',
+    caption: [
+      'The hard battery is the twenty questions written to defeat text search: fifteen whose answer no single grep can reach (multi-hop, absence proofs, dispatch, cross-stack), and five with a false premise the arm must recognise and refuse.',
+      'Same statistic and same reading as Figure 2, restricted to that battery: every dot is one run, the tick its pooled mean, the thin line its range; the battery control above lets you put the base battery back.',
+      'On the base battery every arm sits near the ceiling; here the tools separate, and TrueArchitect\'s cloud sits highest at every shared model.',
+    ],
+    explanation: [
+      'Definition and aggregation as in Figure 2, with the battery fixed to the hard battery (denominator 20). The base battery is excluded by default because its ceiling compresses every arm into the same band; the difference between an index and a search shows where the questions were designed to need one.',
+      'Reading it. Higher is better. The false-premise questions count a refusal as correct and an invented answer as wrong, so an arm that answers confidently from text matches is penalised exactly where a user would be misled.',
+    ],
+  },
+  {
+    // CONSISTENCY (owner 2026-09-14): the scorecard's run-to-run spread statistic,
+    // promoted from a card-only figure to a page of its own.
+    slug: 'consistency', number: 4, title: 'Run-to-run variation of accuracy', short: 'Consistency', kind: 'columns',
+    measure: { key: 'pct', cell: 'cv', label: 'run-to-run variation of accuracy (coefficient of variation, %)', unit: 'pct', better: 'low' },
+    defaults: { exams: ['ZeroShotExam', 'MultiTurnExam'], battery: 'both', columns: 'pooled' },
+    reference: 'bare',
+    caption: [
+      'Consistency asks how far the same tool at the same model moves when the same questions are run again: the coefficient of variation of run accuracy, in percent, within a battery × model × protocol cell.',
+      'Each column is that variation averaged with equal weight over the arm\'s cells (or over its roster in the pooled-models view); lower is steadier, and TrueArchitect and the bare harnesses are the dashed references.',
+      'TrueArchitect\'s columns are the lowest: the index does not only raise the mean of Figure 2, it narrows the spread a user experiences run to run.',
+    ],
+    explanation: [
+      'Definition. Within a cell (arm × battery × model × exam) with scored runs of accuracies a₁…aₙ, cv = 100 · sd(a) / mean(a), with the n−1 standard deviation; a cell with one run has no spread and contributes nothing. The statistic is dimensionless, so cells at different means compare directly.',
+      'Aggregation. Cells averaged with equal weight over the selected batteries, models and protocols. A cell whose mean is zero has no defined variation and is excluded.',
+      'Reading it. Lower is better. Two arms with the same mean accuracy and different variation are not the same instrument: the variation is the part of the result that depends on the run rather than on the tool.',
+    ],
+  },
+  {
+    slug: 'pass-rate', number: 5, title: 'Reliability: runs scoring at least 90 percent', short: 'Reliability', kind: 'columns',
     measure: { key: 'pct', cell: 'passrate90', label: 'share of runs at or above 90 % accuracy', unit: 'pct', better: 'high' },
     defaults: { exams: ['ZeroShotExam', 'MultiTurnExam'], battery: 'both', columns: 'pooled' },
     reference: 'bare',
@@ -90,7 +126,7 @@ export const FIGURES: Figure[] = [
     ],
   },
   {
-    slug: 'effect-size', number: 4, title: 'Effect size against bare Claude Code', short: 'Effect size', kind: 'columns',
+    slug: 'effect-size', number: 6, title: 'Effect size against bare Claude Code', short: 'Effect size', kind: 'columns',
     measure: { key: 'pct', cell: 'cohend', label: "Cohen's d vs bare Claude Code, accuracy", unit: 'd', better: 'high' },
     defaults: { exams: ['ZeroShotExam', 'MultiTurnExam'], battery: 'both', columns: 'pooled' },
     reference: 'none',
@@ -106,7 +142,7 @@ export const FIGURES: Figure[] = [
     ],
   },
   {
-    slug: 'outcomes', number: 5, title: 'Outcome composition per run', short: 'Outcomes', kind: 'stack',
+    slug: 'outcomes', number: 7, title: 'Outcome composition per run', short: 'Outcomes', kind: 'stack',
     measure: { key: 'pct', cell: 'mean', label: 'questions correct · incorrect · unanswered, per run', unit: 'pct', better: 'high' },
     defaults: { exams: ['ZeroShotExam', 'MultiTurnExam'], battery: 'both', columns: 'pooled' },
     reference: 'none',
@@ -123,7 +159,7 @@ export const FIGURES: Figure[] = [
     disclosures: ['Did-not-finish runs have no score and do not appear here; their count per arm is in the run records and in the Limitations page.'],
   },
   {
-    slug: 'tokens-per-correct', number: 6, title: 'Context tokens per correct answer', short: 'Tokens per correct', kind: 'columns',
+    slug: 'tokens-per-correct', number: 8, title: 'Context tokens per correct answer', short: 'Tokens per correct', kind: 'columns',
     measure: { key: 'ctx_per_correct', cell: 'mean', label: 'context tokens per correct answer', unit: 'tokens', better: 'low', vendorBound: true },
     defaults: { exams: ['ZeroShotExam', 'MultiTurnExam'], battery: 'both', columns: 'pooled' },
     reference: 'bare',
@@ -139,7 +175,7 @@ export const FIGURES: Figure[] = [
     ],
   },
   {
-    slug: 'tool-calls', number: 7, title: 'Tool calls per run', short: 'Tool calls', kind: 'columns',
+    slug: 'tool-calls', number: 9, title: 'Tool calls per run', short: 'Tool calls', kind: 'columns',
     measure: { key: 'tool_calls', cell: 'mean', label: 'tool calls per run', unit: 'count', better: 'low' },
     defaults: { exams: ['ZeroShotExam', 'MultiTurnExam'], battery: 'both', columns: 'pooled' },
     reference: 'bare',
@@ -151,11 +187,11 @@ export const FIGURES: Figure[] = [
     explanation: [
       'Definition. tool_calls(r) is the count of tool invocations recorded for the run across all sessions and threads; the run record breaks the count down by tool and by class (built-in, sub-agent, skill, an installed tool\'s MCP surface, a native harness\'s own tools, TrueArchitect file tools, and TrueArchitect index queries).',
       'Aggregation. Cell means averaged with equal weight over the selected batteries and models.',
-      'Reading it. Lower is better only in combination with Figures 2 and 3: a low count with low accuracy is an arm that gave up early. Read the three together.',
+      'Reading it. Lower is better only in combination with Figures 2 and 5: a low count with low accuracy is an arm that gave up early. Read the three together.',
     ],
   },
   {
-    slug: 'wall-time', number: 8, title: 'Wall time per run', short: 'Wall time', kind: 'columns',
+    slug: 'wall-time', number: 10, title: 'Wall time per run', short: 'Wall time', kind: 'columns',
     measure: { key: 'wall', cell: 'mean', label: 'active answering time per run', unit: 'ms', better: 'low' },
     defaults: { exams: ['ZeroShotExam', 'MultiTurnExam'], battery: 'both', columns: 'pooled' },
     reference: 'bare',
@@ -175,7 +211,7 @@ export const FIGURES: Figure[] = [
     ],
   },
   {
-    slug: 'model-tiers', number: 9, title: 'Accuracy by model', short: 'Accuracy by model', kind: 'columns',
+    slug: 'model-tiers', number: 11, title: 'Accuracy by model', short: 'Accuracy by model', kind: 'columns',
     measure: { key: 'pct', cell: 'mean', label: 'accuracy (% of questions correct)', unit: 'pct', better: 'high' },
     defaults: { exams: ['ZeroShotExam', 'MultiTurnExam'], battery: 'both', columns: 'per-model' },
     lockColumns: 'per-model',
@@ -191,7 +227,7 @@ export const FIGURES: Figure[] = [
     ],
   },
   {
-    slug: 'categories', number: 10, title: 'Pass rate by question category and difficulty', short: 'Categories', kind: 'heatmap',
+    slug: 'categories', number: 12, title: 'Pass rate by question category and difficulty', short: 'Categories', kind: 'heatmap',
     measure: { key: 'pct', cell: 'mean', label: 'pass rate (% of question attempts correct)', unit: 'pct', better: 'high' },
     // opens on the Anthropic roster: the models EVERY arm ran, so the pooled cells are like for like
     defaults: { exams: ['ZeroShotExam', 'MultiTurnExam'], battery: 'both', columns: 'pooled', model: 'anthropic' },
@@ -211,7 +247,7 @@ export const FIGURES: Figure[] = [
 
 FIGURES.push(
   {
-    slug: 'cost-per-correct', number: 11, title: 'Cost per correct answer', short: 'Cost per correct', kind: 'columns',
+    slug: 'cost-per-correct', number: 13, title: 'Cost per correct answer', short: 'Cost per correct', kind: 'columns',
     measure: { key: 'cost_per_correct', cell: 'mean', label: 'USD per correct answer', unit: 'usd', better: 'low' },
     defaults: { exams: ['ZeroShotExam', 'MultiTurnExam'], battery: 'both', columns: 'pooled' },
     reference: 'bare',
@@ -228,7 +264,7 @@ FIGURES.push(
     disclosures: ['Vendor-reported and estimated costs sit in the same column; the table beneath the figure carries the basis per row and the rate tables are published beside the run rows.'],
   },
   {
-    slug: 'cost-variance', number: 12, title: 'Cost per run', short: 'Cost per run', kind: 'dots',
+    slug: 'cost-variance', number: 14, title: 'Cost per run', short: 'Cost per run', kind: 'dots',
     measure: { key: 'cost', cell: 'mean', label: 'USD per run', unit: 'usd', better: 'low' },
     defaults: { exams: ['ZeroShotExam', 'MultiTurnExam'], battery: 'both', columns: 'pooled' },
     reference: 'bare',
@@ -238,13 +274,13 @@ FIGURES.push(
       'A tight, low cloud is an arm whose price is predictable; a tall cloud is one whose price depends on the run.',
     ],
     explanation: [
-      'Definition. cost(r) as in Figure 11, drawn per run rather than averaged.',
+      'Definition. cost(r) as in Figure 13, drawn per run rather than averaged.',
       'Aggregation. None for the dots; the mean tick is the equal-weight mean of battery × model × protocol cells.',
       'Reading it. Lower is better; read spread as well as position.',
     ],
   },
   {
-    slug: 'tool-result-tokens', number: 13, title: 'Tool result tokens per run', short: 'Tool result tokens', kind: 'dots',
+    slug: 'tool-result-tokens', number: 15, title: 'Tool result tokens per run', short: 'Tool result tokens', kind: 'dots',
     measure: { key: 'tool_result_tokens', cell: 'mean', label: 'tool result tokens per run (estimated)', unit: 'tokens', better: 'low', vendorBound: true },
     defaults: { exams: ['ZeroShotExam', 'MultiTurnExam'], battery: 'both', columns: 'pooled' },
     reference: 'bare',
@@ -256,9 +292,17 @@ FIGURES.push(
     explanation: [
       'Definition. tool_result_tokens(r) = Σ over the run\'s tool calls of the result\'s token estimate, taken from the capture where the harness recorded one and otherwise result bytes ÷ 4. For TrueArchitect index queries the estimate is the size of the result the model received.',
       'Aggregation. None for the dots; the mean tick is the equal-weight mean of battery × model × protocol cells. Raw token counts are never pooled across vendors.',
-      'Reading it. Lower is better. Read it beside Figure 7 (tool calls): fewer calls returning less text is the signature of a good index.',
+      'Reading it. Lower is better. Read it beside Figure 9 (tool calls): fewer calls returning less text is the signature of a good index.',
     ],
   },
 )
+
+// Figure numbers ARE the navigation order (owner 2026-09-14): every graph has
+// its own number, 1..N top to bottom. Insert a figure where it belongs and
+// renumber what follows (and the prose that cites it); this guard makes a
+// gap or a duplicate a build failure rather than a page that lies.
+FIGURES.forEach((f, i) => {
+  if (f.number !== i + 1) throw new Error(`figures.ts: ${f.slug} is number ${f.number} at position ${i + 1} — numbers must run 1..N in navigation order`)
+})
 
 export const figureBySlug = (slug: string) => FIGURES.find(f => f.slug === slug)

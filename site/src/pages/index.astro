@@ -32,7 +32,7 @@ const pos = (v: number, lo: number, hi: number) => Math.max(0, Math.min(100, ((v
 
   <div class="cards">
     {heads.map(h => (
-      <a class="card" href={`${base}/results/${h.figure}/`}>
+      <div class="card">
         <span class="card-head">
           <span class="card-label">{h.label} · {h.direction}</span>
           <span class="card-headline">{h.headline}</span>
@@ -70,9 +70,10 @@ const pos = (v: number, lo: number, hi: number) => Math.max(0, Math.min(100, ((v
         </span>
         <span class="card-foot">
           <span class="card-legend"><span><i class="dot ta"></i>TrueArchitect</span><span><i class="dot cmp"></i>comparator</span></span>
-          <span class="card-tally">{h.tally} · Figure {h.number} →</span>
+          <span class="card-tally">{h.tally}</span>
+          <a class="card-go" href={`${base}/results/${h.figure}/`}>Go to Figure {h.number} →</a>
         </span>
-      </a>
+      </div>
     ))}
   </div>
 

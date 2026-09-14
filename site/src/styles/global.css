@@ -13,7 +13,17 @@
   --stack-incorrect: #6b4a50;
   --stack-dnf: #2a2a2e;
   --card: #fbfaf7;           /* headline cards: paper, per the design handoff */
-  --ahead: #1f6e52;          /* TrueArchitect ahead (the handoff's green) */
+  /* TrueArchitect BLUE (owner 2026-09-14): the arm's data color (#3987e5, the dashed
+     reference line in every figure) carries the results page too — headline, TA dot,
+     the "+N points" / "N× less" deltas, the wins. --ta = the dot (theme-invariant, a
+     data color); --ta-text = the same hue at reading contrast on each ground. */
+  --ta: #3987e5;
+  --ta-text: #2468cf;
+  /* the ledger's blue — the same hue ~30% desaturated so the deltas and the dot
+     sit under the headline instead of competing with it */
+  --ta-soft: color-mix(in oklch, var(--ta-text) 70%, #6b7080);
+  --ta-dot: color-mix(in oklch, var(--ta) 70%, #8a8f9c);
+  --ahead: var(--ta-soft);   /* TrueArchitect ahead — was the handoff's green */
   --behind: #9a3b2f;         /* TrueArchitect behind */
   --nav-w: 248px;
   --serif: "Source Serif 4", Georgia, "Times New Roman", serif;
@@ -32,7 +42,11 @@
   --stack-incorrect: #4a3438;
   --stack-dnf: #222222;
   --card: #1c1e2c;
-  --ahead: #6ec79c;
+  --ta: #3987e5;
+  --ta-text: #7db4ff;
+  --ta-soft: color-mix(in oklch, var(--ta-text) 70%, #9397ab);
+  --ta-dot: color-mix(in oklch, var(--ta) 70%, #8a8f9c);
+  --ahead: var(--ta-soft);
   --behind: #e8907e;
 }
 * { box-sizing: border-box; }
@@ -129,11 +143,10 @@ details.data summary { cursor: pointer; font-size: 13px; font-weight: 600; margi
    TrueArchitect ahead, grey ≈ = within noise. (The handoff's faint figure
    numeral was dropped — owner: distracting.) */
 .cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; margin: 24px 0 10px; max-width: 1180px; }
-.card { position: relative; display: flex; flex-direction: column; gap: 16px; padding: 22px 24px 20px; background: var(--card); border-top: 3px solid var(--ink); color: var(--ink); overflow: hidden; }
-.card:hover { text-decoration: none; border-top-color: var(--ahead); }
+.card { position: relative; display: flex; flex-direction: column; gap: 16px; padding: 22px 24px 20px; background: var(--card); border-top: 3px solid var(--ta); color: var(--ink); overflow: hidden; }
 .card-head { position: relative; display: flex; flex-direction: column; gap: 8px; }
 .card-label { font-family: var(--mono); font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); }
-.card-headline { font-family: var(--serif); font-size: 32px; line-height: 1.08; letter-spacing: -0.01em; font-weight: 400; text-wrap: pretty; }
+.card-headline { font-family: var(--serif); font-size: 34px; line-height: 1.08; letter-spacing: -0.01em; font-weight: 500; color: var(--ta-text); text-wrap: pretty; }
 .card-sub { font-size: 14px; line-height: 1.45; color: var(--muted); text-wrap: pretty; }
 .card-ledger { position: relative; display: flex; flex-direction: column; border-top: 1px solid var(--ink); }
 .card-axis { display: flex; justify-content: space-between; font-family: var(--mono); font-size: 10px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); padding: 6px 0 2px; }
@@ -142,24 +155,28 @@ details.data summary { cursor: pointer; font-size: 13px; font-weight: 600; margi
 /* the gap strip: a thin track, the comparator (grey) and TrueArchitect (green) dots, the gap bar between */
 .card-strip { position: relative; display: block; height: 12px; margin-left: 28px; }
 .card-strip .track { position: absolute; left: 0; right: 0; top: 5px; height: 2px; background: var(--grid); }
-.card-strip .gap { position: absolute; top: 4px; height: 4px; background: color-mix(in srgb, var(--ahead) 35%, transparent); }
+.card-strip .gap { position: absolute; top: 4px; height: 4px; background: color-mix(in srgb, var(--ta-dot) 38%, transparent); }
 .card-strip .span { position: absolute; top: 3px; height: 6px; background: color-mix(in srgb, var(--muted) 25%, transparent); border-radius: 3px; }
 .card-strip .dot, .card-legend .dot { position: absolute; top: 1px; width: 10px; height: 10px; border-radius: 50%; transform: translateX(-50%); }
 .card-strip .dot.cmp { background: var(--baseline); }
-.card-strip .dot.ta { top: 0; width: 12px; height: 12px; background: var(--ahead); box-shadow: 0 0 0 2px var(--card); }
-.card-legend { display: flex; gap: 12px; }
+.card-strip .dot.ta { top: 0; width: 12px; height: 12px; background: var(--ta-dot); box-shadow: 0 0 0 2px var(--card); }
+.card-legend { display: flex; gap: 12px; justify-content: center; }
 .card-legend > span { display: inline-flex; align-items: center; gap: 5px; }
 .card-legend .dot { position: static; transform: none; width: 9px; height: 9px; display: inline-block; }
-.card-legend .dot.ta { background: var(--ahead); }
+.card-legend .dot.ta { background: var(--ta-dot); }
 .card-legend .dot.cmp { background: var(--baseline); width: 8px; height: 8px; }
 .card-mark { font-weight: 700; color: var(--muted); }
 .card-row.v-win .card-mark, .card-row.v-win .card-delta { color: var(--ahead); }
 .card-row.v-loss .card-mark, .card-row.v-loss .card-delta { color: var(--behind); }
 .card-name { display: flex; flex-direction: column; gap: 1px; min-width: 0; }
 .card-detail { font-size: 12px; color: var(--muted); }
-.card-delta { font-family: var(--mono); font-size: 15px; font-weight: 600; white-space: nowrap; color: var(--muted); }
-.card-foot { position: relative; display: flex; justify-content: space-between; font-size: 12px; color: var(--muted); }
+.card-delta { font-family: var(--mono); font-size: 16px; font-weight: 700; white-space: nowrap; color: var(--muted); }
+/* footer: legend / performance tally / the ONE link — stacked and centered (owner 2026-09-14);
+   the card itself is not a link, only the "Go to Figure" line is */
+.card-foot { position: relative; display: flex; flex-direction: column; align-items: center; gap: 6px; margin-top: auto; padding-top: 4px; font-size: 12px; color: var(--muted); text-align: center; }
 .card-tally { font-family: var(--mono); white-space: nowrap; }
+.card-go { font-family: var(--mono); font-size: 12.5px; font-weight: 600; color: var(--ta-text); border: 1px solid color-mix(in srgb, var(--ta) 40%, transparent); border-radius: 6px; padding: 5px 12px; margin-top: 2px; }
+.card-go:hover { text-decoration: none; background: color-mix(in srgb, var(--ta) 10%, transparent); border-color: var(--ta); }
 /* the scorecard's win/loss colours follow the cards */
 .scorecard td.v-win { border-left-color: var(--ahead); background: color-mix(in srgb, var(--ahead) 8%, transparent); }
 .scorecard td.v-win .mark { color: var(--ahead); }

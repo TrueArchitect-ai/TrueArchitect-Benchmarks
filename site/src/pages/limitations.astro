@@ -35,7 +35,7 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '')
   <p>One TrueArchitect instrument freeze per epoch. The comparison group is measured as shipped, prompt assets and all; Claude Code cannot be forced to use an installed tool, so what is measured for the indexing tools is organic adoption. That is the measurand, not a limitation of the measurement.</p>
 
   <h2>Execution asymmetries</h2>
-  <p>The TrueArchitect arm executed on the host through its gateway; the comparison group executed in containers on the same machine. Accuracy, tokens, turns and tool counts are location-independent; wall-clock time is not, and Figure 8 is published for completeness rather than as a claim. Runs executed in parallel lanes shared the host; per-lane contention is not modelled.</p>
+  <p>The TrueArchitect arm executed on the host through its gateway; the comparison group executed in containers on the same machine. Accuracy, tokens, turns and tool counts are location-independent; wall-clock time is not, and Figure 10 is published for completeness rather than as a claim. Runs executed in parallel lanes shared the host; per-lane contention is not modelled.</p>
   <p>Cursor Agent's model traffic transits Cursor's backend, and Codex runs inside its own harness loop; both are measured as their vendors ship them. Their token figures are the harness's own per-call usage with the derivation named in each run record.</p>
 
   <h2>Tokens and cost</h2>

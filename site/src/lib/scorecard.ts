@@ -36,26 +36,13 @@ export type Scorecard = {
 
 const SLICE = { exams: ['ZeroShotExam', 'MultiTurnExam'], battery: 'both' as const }
 
-// CONSISTENCY — the run-to-run spread of accuracy: the coefficient of variation
-// (sd ÷ mean, in %) of run accuracy within a protocol × battery × model cell,
-// averaged with equal weight over the cells. Lower = the same tool gives the
-// same answer quality run after run. It reads Figure 2's rows (every run is a
-// dot there), so the card links to Figure 2; the statistic itself is the
-// engine's own `cv` cell kind. Not a figure of its own (yet).
-const ACCURACY_FIG = FIGURES.find(f => f.slug === 'accuracy')!
-export const CONSISTENCY_FIG: Figure = {
-  ...ACCURACY_FIG,
-  slug: 'accuracy', short: 'Consistency', title: 'Run-to-run spread of accuracy',
-  measure: { key: 'pct', cell: 'cv', label: 'run-to-run variation of accuracy (coefficient of variation, %)', unit: 'pct', better: 'low' },
-}
-// HARD BATTERY — accuracy on memos-hard alone: the 20 questions written to
-// defeat text search (15 grep-hostile, 5 false-premise). Same figure, same
-// statistic, one battery instead of both. Where the tools separate.
-export const HARD_FIG: Figure = { ...ACCURACY_FIG, short: 'Hard battery', title: 'Accuracy on the hard battery', defaults: { ...ACCURACY_FIG.defaults, battery: 'memos-hard' } }
+// The hard battery (Figure 3) and consistency (Figure 4) are figures of their
+// own since 2026-09-14 — every scorecard row is a registry figure, and the
+// card links carry distinct numbers.
 const SCORECARD_FIGS = ['accuracy', 'accuracy-hard', 'pass-rate', 'consistency', 'context-tokens', 'tokens-per-correct', 'cost-per-correct', 'tool-calls', 'tool-result-tokens', 'wall-time']
-const figFor = (slug: string): Figure => (slug === 'consistency' ? CONSISTENCY_FIG : slug === 'accuracy-hard' ? HARD_FIG : FIGURES.find(f => f.slug === slug)!)
+const figFor = (slug: string): Figure => FIGURES.find(f => f.slug === slug)!
 // the slice a scorecard row pools over: both batteries, except the hard-battery row
-const sliceFor = (fig: Figure) => (fig === HARD_FIG ? { ...SLICE, battery: 'memos-hard' as const } : SLICE)
+const sliceFor = (fig: Figure) => (fig.slug === 'accuracy-hard' ? { ...SLICE, battery: 'memos-hard' as const } : SLICE)
 
 const TA = (id: string) => armInfo(id).role === 'trueArchitect'
 
@@ -225,16 +212,19 @@ export function headlines(sc: Scorecard): Card[] {
     out.push({ label, direction: 'lower is better', number: r.fig.number, figure: r.fig.slug, headline: headline(Math.min(...wins), Math.max(...wins)), sub: sub(peaks.length ? Math.max(...peaks) : null), rows, tally: tallyOf(rows), axis })
   }
 
-  const acc = row('accuracy', 'Accuracy'), hard = row('accuracy', 'Hard battery'), rel = row('pass-rate'), con = row('accuracy', 'Consistency'), ctx = row('context-tokens'), cost = row('cost-per-correct')
-  if (acc) pointsCard(acc, 'Accuracy', (lo, hi) => `${lo.toFixed(0)}–${hi.toFixed(0)} points more accurate`, 'than every comparator, at the models each of them ran.')
+  // card ORDER (owner 2026-09-14): lower cost (context tokens) · hard battery ·
+  // consistency · reliability · lower cost (per correct) · accuracy — the
+  // token story opens, the overall accuracy closes.
+  const acc = row('accuracy'), hard = row('accuracy-hard'), rel = row('pass-rate'), con = row('consistency'), ctx = row('context-tokens'), cost = row('cost-per-correct')
+  if (ctx) ratioCard(ctx, 'Lower cost · context tokens', (lo, hi) => `${x(lo)}–${x(hi)} fewer context tokens`, peak => `on average at the same model${peak ? `, up to ${x(peak)} at individual models` : ''}. Uncached input plus cache reads, summed over every call of a run.`, { perModelDetail: true })
   if (hard) pointsCard(hard, 'Hard battery', (lo, hi) => `${lo.toFixed(0)}–${hi.toFixed(0)} points more accurate on the hard battery`, 'the 20 questions written to defeat text search: 15 grep-hostile, 5 false-premise. On the base battery every arm is near the ceiling; this is where the tools separate.')
-  if (rel) pointsCard(rel, 'Reliability', (lo, hi) => `${lo.toFixed(0)}–${hi.toFixed(0)} points more runs at 90%+ accuracy`, 'share of full-battery runs scoring at least nine in ten. Each arm was run repeatedly; this is how often a run lands in the top band.')
-  if (con) ratioCard(con, 'Consistency', (lo, hi) => {
+  if (con) ratioCard(con, 'Consistency · lower variation', (lo, hi) => {
     const a = Math.round((1 - 1 / lo) * 100), b = Math.round((1 - 1 / hi) * 100)
     return `${a === b ? `${a}%` : `${Math.min(a, b)}–${Math.max(a, b)}%`} less run-to-run variation`
   }, () => 'in accuracy. Same tool, same model, same questions, run again: how far the score moves. Coefficient of variation of run accuracy, lower is steadier.', { values: true, pctLess: true, plotValues: true })
-  if (ctx) ratioCard(ctx, 'Context tokens', (lo, hi) => `${x(lo)}–${x(hi)} fewer context tokens`, peak => `on average at the same model${peak ? `, up to ${x(peak)} at individual models` : ''}. Uncached input plus cache reads, summed over every call of a run.`, { perModelDetail: true })
-  if (cost) ratioCard(cost, 'Cost per correct', (lo, hi) => `${x(lo)}–${x(hi)} lower cost per correct answer`, () => 'against every comparator, at the models each of them ran. USD per correct answer; vendor-reported where available, otherwise estimated from published rate tables.', { values: true })
+  if (rel) pointsCard(rel, 'Reliability', (lo, hi) => `${lo.toFixed(0)}–${hi.toFixed(0)} points more runs at 90%+ accuracy`, 'share of full-battery runs scoring at least nine in ten. Each arm was run repeatedly; this is how often a run lands in the top band.')
+  if (cost) ratioCard(cost, 'Lower cost · per correct answer', (lo, hi) => `${x(lo)}–${x(hi)} lower cost per correct answer`, () => 'against every comparator, at the models each of them ran. USD per correct answer; vendor-reported where available, otherwise estimated from published rate tables.', { values: true })
+  if (acc) pointsCard(acc, 'Accuracy · both batteries', (lo, hi) => `${lo.toFixed(0)}–${hi.toFixed(0)} points more accurate`, 'than every comparator, at the models each of them ran.')
   return out
 }
 
