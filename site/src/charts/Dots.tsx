@@ -18,12 +18,13 @@ export default function Dots({ fig, groups, refs, panelW }: { fig: Figure; group
   const narrow = colW < 40 && groups.some(g => g.columns.length > 1)
   const slotW = (i: number) => (i + 1 < xs.length ? (xs[i + 1].x0 + xs[i].x1) / 2 : width - padR) - (i > 0 ? (xs[i - 1].x1 + xs[i].x0) / 2 : padL)
   const tight = xs.some((_, i) => slotW(i) < TIGHT_SLOT)
-  // narrow columns carry a rotated value label above the whisker, so the top margin deepens
-  const H = tight ? 560 : narrow ? 580 : 540, padT = narrow ? 64 : 36, padB = tight ? 150 : narrow ? 118 : 96, plotH = H - padT - padB
+  // narrow columns carry rotated labels above and below the whisker (max + mean above, min below),
+  // so the top margin deepens and the plot keeps more headroom at both ends
+  const H = tight ? 580 : narrow ? 600 : 540, padT = narrow ? 64 : 36, padB = tight ? 150 : narrow ? 118 : 96, plotH = H - padT - padB
   const all = groups.flatMap(g => g.columns.flatMap(c => c.runs.map(r => (fig.measure.cell === 'mean' ? r.v : r.pct)!)))
   const lo = all.length ? Math.min(...all) : 0, hi = all.length ? Math.max(...all) : 1
   const span = Math.max(hi - lo, Math.abs(hi) * 0.05, 1e-9)
-  const vmin = lo - span * 0.08, vmax = hi + span * 0.12
+  const vmin = lo - span * (narrow ? 0.2 : 0.08), vmax = hi + span * (narrow ? 0.18 : 0.12)
   const y = (v: number) => padT + plotH - ((v - vmin) / (vmax - vmin)) * plotH
   const ticks = niceTicks(vmin, vmax, 6)
   const rankTotal = groups.filter(g => g.rank != null).length
@@ -57,7 +58,6 @@ export default function Dots({ fig, groups, refs, panelW }: { fig: Figure; group
               const mn = Math.min(...vs), mx = Math.max(...vs)
               return (
                 <g key={c.key}>
-                  <line x1={cx} x2={cx} y1={y(mx)} y2={y(mn)} stroke={c.color} strokeWidth={1.2} opacity={0.7} />
                   {c.runs.map((r, i) => {
                     const v = (fig.measure.cell === 'mean' ? r.v : r.pct)!
                     const jx = (jitter(i * 7 + c.key.length) - 0.5) * (colW - 12)
@@ -75,21 +75,35 @@ export default function Dots({ fig, groups, refs, panelW }: { fig: Figure; group
                   })}
                   {/* the mean bar: ink (black in light mode, white in dark) with a thin surface halo,
                       drawn after the dots so it always reads on top of them */}
-                  {c.value != null && <line x1={x + 4} x2={x + colW - 4} y1={y(c.value)} y2={y(c.value)} stroke={T.surface} strokeWidth={4.5} />}
-                  {c.value != null && <line x1={x + 4} x2={x + colW - 4} y1={y(c.value)} y2={y(c.value)} stroke={T.ink} strokeWidth={2.5} />}
-                  {/* labels: wide columns set the mean beside its bar with min/max at the whisker ends;
-                      narrow columns (per-model view) rotate the mean above the whisker and drop min/max —
-                      the whisker shows the range, and the tooltip + data table carry the numbers */}
+                  {/* the candlestick: the full min→max range in the arm's colour, drawn above the dots with caps at both ends */}
+                  <line x1={cx} x2={cx} y1={y(mx)} y2={y(mn)} stroke={c.color} strokeWidth={1.4} opacity={0.95} />
+                  <line x1={cx - 3} x2={cx + 3} y1={y(mx)} y2={y(mx)} stroke={c.color} strokeWidth={1.4} opacity={0.95} />
+                  <line x1={cx - 3} x2={cx + 3} y1={y(mn)} y2={y(mn)} stroke={c.color} strokeWidth={1.4} opacity={0.95} />
+                  {c.value != null && <line x1={x + 4} x2={x + colW - 4} y1={y(c.value)} y2={y(c.value)} stroke={T.surface} strokeWidth={3.4} />}
+                  {c.value != null && <line x1={x + 4} x2={x + colW - 4} y1={y(c.value)} y2={y(c.value)} stroke={T.ink} strokeWidth={1.6} />}
+                  {/* labels: wide columns set the mean beside its bar with min/max upright at the whisker ends;
+                      narrow columns (per-model view) rotate everything — max in the arm's colour just above
+                      the top dot, the mean in ink above that, min in the arm's colour hanging below the bottom dot.
+                      A rotated label's glyphs hang left of its baseline, so the baseline is nudged right by
+                      half a cap height to centre the text on the column. */}
                   {c.value != null && !narrow && (
                     <text x={x + colW + 3} y={y(c.value) + 3.5} fontSize={9.5} fontWeight={600} fill={T.ink} fontFamily={FONT_SANS}>{fmt(fig, c.value)}</text>
                   )}
-                  {c.value != null && narrow && colW >= 18 && (
-                    // a rotated label's glyphs hang left of its baseline: nudge the baseline right by half a cap height so the text centres on the column
-                    <text x={cx + 3.2} y={y(mx) - 7} textAnchor="start" fontSize={9} fontWeight={600} fill={T.ink} fontFamily={FONT_SANS}
-                      transform={`rotate(-90 ${cx + 3.2} ${y(mx) - 7})`}>{fmt(fig, c.value)}</text>
-                  )}
-                  {!narrow && <text x={cx} y={y(mn) + 12} textAnchor="middle" fontSize={8.5} fill={T.muted} fontFamily={FONT_SANS}>{fmt(fig, mn)}</text>}
-                  {!narrow && <text x={cx} y={y(mx) - 6} textAnchor="middle" fontSize={8.5} fill={T.muted} fontFamily={FONT_SANS}>{fmt(fig, mx)}</text>}
+                  {!narrow && <text x={cx} y={y(mn) + 12} textAnchor="middle" fontSize={8.5} fill={c.color} fontFamily={FONT_SANS}>{fmt(fig, mn)}</text>}
+                  {!narrow && <text x={cx} y={y(mx) - 6} textAnchor="middle" fontSize={8.5} fill={c.color} fontFamily={FONT_SANS}>{fmt(fig, mx)}</text>}
+                  {narrow && colW >= 18 && (() => {
+                    const bx = cx + 3.0
+                    return (
+                      <>
+                        {c.value != null && (
+                          <text x={bx} y={y(mx) - 8} textAnchor="start" fontSize={9} fontWeight={600} fill={T.ink} fontFamily={FONT_SANS}
+                            transform={`rotate(-90 ${bx} ${y(mx) - 8})`}>{fmt(fig, c.value)}</text>
+                        )}
+                        <text x={bx} y={y(mn) + 8} textAnchor="end" fontSize={8.5} fill={c.color} fontFamily={FONT_SANS}
+                          transform={`rotate(-90 ${bx} ${y(mn) + 8})`}>{fmt(fig, mn)}</text>
+                      </>
+                    )
+                  })()}
                   {s.g.columns.length > 1 && (colW >= 40 ? (
                     <text x={cx} y={floor + 13} textAnchor="middle" fontSize={8.5} fill={T.muted} fontFamily={FONT_SANS}>{shortModel(c.label)}</text>
                   ) : (
