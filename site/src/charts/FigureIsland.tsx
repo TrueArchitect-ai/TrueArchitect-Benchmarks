@@ -237,7 +237,7 @@ export default function FigureIsland({ fig, data, heat, compact, controls, table
                 const span = split ? { rowSpan: g.columns.length } : {}
                 return (
                 <tr key={g.arm.id + c.key} className={(first ? 'first' : '') + (firstAll ? ' first-all' : '') || undefined} style={{ ['--first' as any]: g.arm.color }}>
-                  {i === 0 && <td {...span}><span className="swatch" style={{ background: g.arm.color }} />{g.arm.short}</td>}
+                  {i === 0 && <td {...span}><span className="arm-name"><span className="swatch" style={{ background: g.arm.color }} />{g.arm.short}</span></td>}
                   {i === 0 && <td {...span} className="muted">{ROLE_LABEL[g.arm.role]}</td>}
                   <td>{c.label}{c.best ? ' ★' : ''}</td>
                   <td className="num">{c.value != null ? fmt(fig, c.value) : '—'}</td>

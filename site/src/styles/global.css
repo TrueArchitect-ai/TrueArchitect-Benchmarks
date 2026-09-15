@@ -71,6 +71,8 @@ th { color: var(--muted); font-weight: 600; font-size: 11px; letter-spacing: 0.0
 td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; }
 .muted { color: var(--muted); }
 .swatch { display: inline-block; width: 9px; height: 9px; border-radius: 2px; margin-right: 6px; vertical-align: 0; }
+/* swatch + arm name never break apart: an inline-block is an atomic inline, so a line may otherwise wrap right after it */
+.arm-name { white-space: nowrap; }
 
 /* the home title: the motto large, the comparison line as a subtitle a shade under it */
 .home-title { font-size: 38px; margin: 0 0 4px; }

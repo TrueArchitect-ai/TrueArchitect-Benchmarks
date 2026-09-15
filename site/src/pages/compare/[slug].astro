@@ -54,7 +54,7 @@ if (figs.some(f => f.kind === 'heatmap')) {
       <tbody>
         {arms.map(a => (
           <tr>
-            <td><span class="swatch" style={`background:${a.color}`} />{a.short}</td>
+            <td><span class="arm-name"><span class="swatch" style={`background:${a.color}`} />{a.short}</span></td>
             <td>{a.harness}</td>
             <td class={a.index === 'none' ? 'muted' : ''}>{a.index}</td>
             {models.map(m => { const n = count(a.id, m); return <td class={'num' + (n ? '' : ' muted')}>{n || '—'}</td> })}

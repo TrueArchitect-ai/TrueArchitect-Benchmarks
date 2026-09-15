@@ -49,7 +49,7 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '')
   <table>
     <thead><tr><th>arm</th><th class="num">runs</th><th class="num">did not finish</th><th>reasons</th></tr></thead>
     <tbody>
-      {byArm.map(r => <tr><td><span class="swatch" style={`background:${r.arm.color}`}></span>{r.arm.short}</td><td class="num">{r.runs}</td><td class="num">{r.dnf}</td><td class="muted">{r.reasons || '—'}</td></tr>)}
+      {byArm.map(r => <tr><td><span class="arm-name"><span class="swatch" style={`background:${r.arm.color}`}></span>{r.arm.short}</span></td><td class="num">{r.runs}</td><td class="num">{r.dnf}</td><td class="muted">{r.reasons || '—'}</td></tr>)}
     </tbody>
   </table>
   <p style="margin-top:10px">A partial exam is most often a single question that never completed in a per-question protocol; the run's <code>validity.detail</code> names it. By model and protocol:</p>
