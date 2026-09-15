@@ -38,7 +38,7 @@ export type Figure = {
 export const FIGURES: Figure[] = [
   {
     slug: 'context-tokens', number: 1, title: 'Context tokens per run', short: 'Context tokens', kind: 'columns',
-    measure: { key: 'ctx', cell: 'mean', label: 'context tokens per run (input + cache read)', unit: 'tokens', better: 'low', vendorBound: true },
+    measure: { key: 'ctx', cell: 'mean', label: 'context tokens per run (input + tool results + cache read)', unit: 'tokens', better: 'low', vendorBound: true },
     defaults: { exams: ['ZeroShotExam', 'MultiTurnExam'], battery: 'both', columns: 'pooled' },
     reference: 'bare',
     caption: [

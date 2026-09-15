@@ -220,7 +220,7 @@ export default function FigureIsland({ fig, data, heat, compact, controls, table
           </div>
           <table>
             <thead>
-              <tr><th>arm</th><th>role</th><th>column</th><th className="num">{fig.measure.label}</th><th className="num">runs</th><th className="num">cells</th><th className="num">min</th><th className="num">max</th><th className="num">sd</th><th>rank</th><th>runs in the repository</th></tr>
+              <tr><th>arm</th><th>role</th><th>column</th><th className="num measure-th">{(() => { const m = fig.measure.label.match(/^(.*?)\s*(\(.*\))$/); return m ? <>{m[1]}<br />{m[2]}</> : fig.measure.label })()}</th><th className="num">runs</th><th className="num">cells</th><th className="num">min</th><th className="num">max</th><th className="num">sd</th><th>rank</th><th>runs in the repository</th></tr>
             </thead>
             <tbody>
               {groups.map(g => g.columns.map((c, i) => (
