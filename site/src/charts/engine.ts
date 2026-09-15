@@ -200,7 +200,8 @@ export function fmt(fig: Figure, v: number): string {
     case 'ms': return v >= 3600000 ? (v / 3600000).toFixed(1) + ' h' : v >= 60000 ? (v / 60000).toFixed(1) + ' min' : (v / 1000).toFixed(1) + ' s'
     case 'count': return v.toFixed(1)
     case 'd': return v.toFixed(2)
-    case 'usd': return '$' + (v >= 100 ? v.toFixed(0) : v >= 10 ? v.toFixed(1) : v >= 1 ? v.toFixed(2) : v.toFixed(3))
+    // dollars: two decimals from $1 up; three below $1 so cost-per-correct values keep their resolution
+    case 'usd': return '$' + (v >= 1 ? v.toFixed(2) : v.toFixed(3))
   }
 }
 export function fmtAxis(fig: Figure, v: number): string {
@@ -210,7 +211,7 @@ export function fmtAxis(fig: Figure, v: number): string {
     case 'ms': return v >= 60000 ? (v / 60000).toFixed(0) + 'm' : (v / 1000).toFixed(0) + 's'
     case 'count': return v.toFixed(0)
     case 'd': return v.toFixed(1)
-    case 'usd': return '$' + (v >= 10 ? v.toFixed(0) : v >= 1 ? v.toFixed(1) : v.toFixed(2))
+    case 'usd': return '$' + (v >= 10 ? v.toFixed(0) : v.toFixed(2))
   }
 }
 
