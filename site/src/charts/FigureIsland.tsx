@@ -228,10 +228,15 @@ export default function FigureIsland({ fig, data, heat, compact, controls, table
               <tr><th>arm</th><th>role</th><th>column</th><th className="num measure-th">{(() => { const m = fig.measure.label.match(/^(.*?)\s*(\(.*\))$/); return m ? <>{m[1]}<br />{m[2]}</> : fig.measure.label })()}</th><th className="num">runs</th><th className="num">cells</th><th className="num">min</th><th className="num">max</th><th className="num">sd</th><th>{groups.some(g => g.columns.length > 1) ? <>rank<br />(at this model)</> : 'rank'}</th><th>runs in the repository</th></tr>
             </thead>
             <tbody>
-              {groups.map(g => g.columns.map((c, i) => (
-                <tr key={g.arm.id + c.key}>
-                  {i === 0 && <td rowSpan={g.columns.length}><span className="swatch" style={{ background: g.arm.color }} />{g.arm.short}</td>}
-                  {i === 0 && <td rowSpan={g.columns.length} className="muted">{ROLE_LABEL[g.arm.role]}</td>}
+              {groups.map(g => g.columns.map((c, i) => {
+                // first place: the per-model winner on a split row, the top-ranked arm on a pooled row
+                const split = g.columns.length > 1
+                const first = split ? c.rank === 1 : g.rank === 1
+                const span = split ? { rowSpan: g.columns.length } : {}
+                return (
+                <tr key={g.arm.id + c.key} className={first ? 'first' : undefined}>
+                  {i === 0 && <td {...span}><span className="swatch" style={{ background: g.arm.color }} />{g.arm.short}</td>}
+                  {i === 0 && <td {...span} className="muted">{ROLE_LABEL[g.arm.role]}</td>}
                   <td>{c.label}{c.best ? ' ★' : ''}</td>
                   <td className="num">{c.value != null ? fmt(fig, c.value) : '—'}</td>
                   <td className="num">{c.n}</td>
@@ -248,7 +253,8 @@ export default function FigureIsland({ fig, data, heat, compact, controls, table
                     )).reduce<React.ReactNode[]>((acc, el, j) => (j ? [...acc, ' · ', el] : [el]), [])}
                   </td>
                 </tr>
-              )))}
+                )
+              }))}
             </tbody>
           </table>
         </details>
@@ -259,9 +265,15 @@ export default function FigureIsland({ fig, data, heat, compact, controls, table
           <table>
             <thead><tr><th>arm</th><th>column</th><th className="num">pass rate</th><th className="num">attempts</th><th className="num">correct</th><th className="num">models</th></tr></thead>
             <tbody>
-              {heatNow.cells.filter(c => c.rate != null).map(c => (
-                <tr key={c.arm + c.col}><td>{c.arm}</td><td>{c.col}</td><td className="num">{c.rate!.toFixed(1)}%</td><td className="num">{c.n}</td><td className="num">{c.pass}</td><td className="num">{c.models}</td></tr>
-              ))}
+              {(() => {
+                const cells = heatNow.cells.filter(c => c.rate != null)
+                // first place per category column: the highest pass rate among the arms
+                const bestByCol = new Map<string, number>()
+                for (const c of cells) bestByCol.set(c.col, Math.max(bestByCol.get(c.col) ?? -1, c.rate!))
+                return cells.map(c => (
+                  <tr key={c.arm + c.col} className={c.rate === bestByCol.get(c.col) ? 'first' : undefined}><td>{c.arm}</td><td>{c.col}</td><td className="num">{c.rate!.toFixed(1)}%</td><td className="num">{c.n}</td><td className="num">{c.pass}</td><td className="num">{c.models}</td></tr>
+                ))
+              })()}
             </tbody>
           </table>
         </details>
