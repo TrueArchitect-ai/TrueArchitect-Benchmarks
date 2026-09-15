@@ -18,7 +18,8 @@ export default function Dots({ fig, groups, refs, panelW }: { fig: Figure; group
   const narrow = colW < 40 && groups.some(g => g.columns.length > 1)
   const slotW = (i: number) => (i + 1 < xs.length ? (xs[i + 1].x0 + xs[i].x1) / 2 : width - padR) - (i > 0 ? (xs[i - 1].x1 + xs[i].x0) / 2 : padL)
   const tight = xs.some((_, i) => slotW(i) < TIGHT_SLOT)
-  const H = tight ? 560 : narrow ? 580 : 540, padT = 36, padB = tight ? 150 : narrow ? 118 : 96, plotH = H - padT - padB
+  // narrow columns carry a rotated value label above the whisker, so the top margin deepens
+  const H = tight ? 560 : narrow ? 580 : 540, padT = narrow ? 64 : 36, padB = tight ? 150 : narrow ? 118 : 96, plotH = H - padT - padB
   const all = groups.flatMap(g => g.columns.flatMap(c => c.runs.map(r => (fig.measure.cell === 'mean' ? r.v : r.pct)!)))
   const lo = all.length ? Math.min(...all) : 0, hi = all.length ? Math.max(...all) : 1
   const span = Math.max(hi - lo, Math.abs(hi) * 0.05, 1e-9)
@@ -73,11 +74,18 @@ export default function Dots({ fig, groups, refs, panelW }: { fig: Figure; group
                     )
                   })}
                   {c.value != null && <line x1={x + 4} x2={x + colW - 4} y1={y(c.value)} y2={y(c.value)} stroke={c.color} strokeWidth={2.5} />}
-                  {c.value != null && (
+                  {/* labels: wide columns set the mean beside its bar with min/max at the whisker ends;
+                      narrow columns (per-model view) rotate the mean above the whisker and drop min/max —
+                      the whisker shows the range, and the tooltip + data table carry the numbers */}
+                  {c.value != null && !narrow && (
                     <text x={x + colW + 3} y={y(c.value) + 3.5} fontSize={9.5} fontWeight={600} fill={T.ink} fontFamily={FONT_SANS}>{fmt(fig, c.value)}</text>
                   )}
-                  <text x={cx} y={y(mn) + 12} textAnchor="middle" fontSize={8.5} fill={T.muted} fontFamily={FONT_SANS}>{fmt(fig, mn)}</text>
-                  <text x={cx} y={y(mx) - 6} textAnchor="middle" fontSize={8.5} fill={T.muted} fontFamily={FONT_SANS}>{fmt(fig, mx)}</text>
+                  {c.value != null && narrow && colW >= 18 && (
+                    <text x={cx} y={y(mx) - 7} textAnchor="start" fontSize={9} fontWeight={600} fill={T.ink} fontFamily={FONT_SANS}
+                      transform={`rotate(-90 ${cx} ${y(mx) - 7})`}>{fmt(fig, c.value)}</text>
+                  )}
+                  {!narrow && <text x={cx} y={y(mn) + 12} textAnchor="middle" fontSize={8.5} fill={T.muted} fontFamily={FONT_SANS}>{fmt(fig, mn)}</text>}
+                  {!narrow && <text x={cx} y={y(mx) - 6} textAnchor="middle" fontSize={8.5} fill={T.muted} fontFamily={FONT_SANS}>{fmt(fig, mx)}</text>}
                   {s.g.columns.length > 1 && (colW >= 40 ? (
                     <text x={cx} y={floor + 13} textAnchor="middle" fontSize={8.5} fill={T.muted} fontFamily={FONT_SANS}>{shortModel(c.label)}</text>
                   ) : (
