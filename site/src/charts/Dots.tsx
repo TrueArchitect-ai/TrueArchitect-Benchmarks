@@ -73,7 +73,10 @@ export default function Dots({ fig, groups, refs, panelW }: { fig: Figure; group
                         }} />
                     )
                   })}
-                  {c.value != null && <line x1={x + 4} x2={x + colW - 4} y1={y(c.value)} y2={y(c.value)} stroke={c.color} strokeWidth={2.5} />}
+                  {/* the mean bar: ink (black in light mode, white in dark) with a thin surface halo,
+                      drawn after the dots so it always reads on top of them */}
+                  {c.value != null && <line x1={x + 4} x2={x + colW - 4} y1={y(c.value)} y2={y(c.value)} stroke={T.surface} strokeWidth={4.5} />}
+                  {c.value != null && <line x1={x + 4} x2={x + colW - 4} y1={y(c.value)} y2={y(c.value)} stroke={T.ink} strokeWidth={2.5} />}
                   {/* labels: wide columns set the mean beside its bar with min/max at the whisker ends;
                       narrow columns (per-model view) rotate the mean above the whisker and drop min/max —
                       the whisker shows the range, and the tooltip + data table carry the numbers */}
