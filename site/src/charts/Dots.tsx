@@ -84,8 +84,9 @@ export default function Dots({ fig, groups, refs, panelW }: { fig: Figure; group
                     <text x={x + colW + 3} y={y(c.value) + 3.5} fontSize={9.5} fontWeight={600} fill={T.ink} fontFamily={FONT_SANS}>{fmt(fig, c.value)}</text>
                   )}
                   {c.value != null && narrow && colW >= 18 && (
-                    <text x={cx} y={y(mx) - 7} textAnchor="start" fontSize={9} fontWeight={600} fill={T.ink} fontFamily={FONT_SANS}
-                      transform={`rotate(-90 ${cx} ${y(mx) - 7})`}>{fmt(fig, c.value)}</text>
+                    // a rotated label's glyphs hang left of its baseline: nudge the baseline right by half a cap height so the text centres on the column
+                    <text x={cx + 3.2} y={y(mx) - 7} textAnchor="start" fontSize={9} fontWeight={600} fill={T.ink} fontFamily={FONT_SANS}
+                      transform={`rotate(-90 ${cx + 3.2} ${y(mx) - 7})`}>{fmt(fig, c.value)}</text>
                   )}
                   {!narrow && <text x={cx} y={y(mn) + 12} textAnchor="middle" fontSize={8.5} fill={T.muted} fontFamily={FONT_SANS}>{fmt(fig, mn)}</text>}
                   {!narrow && <text x={cx} y={y(mx) - 6} textAnchor="middle" fontSize={8.5} fill={T.muted} fontFamily={FONT_SANS}>{fmt(fig, mx)}</text>}

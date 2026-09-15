@@ -160,8 +160,9 @@ export default function Columns({ fig, groups, refs, panelW }: { fig: Figure; gr
                       {c.best ? '★ ' : ''}{fmt(fig, v)}
                     </text>
                   ) : colW >= 18 ? (
-                    <text x={x + colW / 2} y={top - 5} textAnchor="start" fontSize={9} fontWeight={600} fill={T.ink} fontFamily={FONT_SANS}
-                      transform={`rotate(-90 ${x + colW / 2} ${top - 5})`}>{c.best ? '★' : ''}{fmt(fig, v)}</text>
+                    // a rotated label's glyphs hang left of its baseline: nudge the baseline right by half a cap height so the text centres on the column
+                    <text x={x + colW / 2 + 3.2} y={top - 5} textAnchor="start" fontSize={9} fontWeight={600} fill={T.ink} fontFamily={FONT_SANS}
+                      transform={`rotate(-90 ${x + colW / 2 + 3.2} ${top - 5})`}>{c.best ? '★' : ''}{fmt(fig, v)}</text>
                   ) : null}
                   {(s.g.columns.length > 1 || c.models.length > 1) && (colW >= 40 ? (
                     <text x={x + colW / 2} y={zero + 13} textAnchor="middle" fontSize={8.5} fill={T.muted} fontFamily={FONT_SANS}>{shortModel(c.label)}</text>
