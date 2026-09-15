@@ -26,13 +26,19 @@ export const ARM_COLORS: Record<string, string> = {
 
 export type Role = 'trueArchitect' | 'bare' | 'indexer'
 
-export type ArmInfo = { id: string; name: string; role: Role; color: string; short: string }
+export type ArmInfo = { id: string; name: string; role: Role; color: string; short: string; harness: string; index: string }
+// what each arm is made of: the HARNESS the model runs in, and the CODEBASE INDEX it carries (if any).
+// The indexing tools are not harnesses — each is installed on Claude Code, which stays the harness.
+const HARNESS: Record<string, string> = {
+  cold: 'Claude Code', codex: 'Codex CLI', cursor: 'Cursor Agent (SDK)', auggie: 'Auggie', 'prime-agent': 'prime-agent',
+}
+export const NO_INDEX = 'none'
 
 // TA instance arms are named ta-ask-fz-NNN in the tree; they all resolve to the
 // concept color. A future arm not listed here gets a neutral grey and its id as
 // its name — the site never invents a description.
 export function armInfo(id: string): ArmInfo {
-  if (id.startsWith('ta-ask')) return { id, name: 'TrueArchitect', role: 'trueArchitect', color: ARM_COLORS['ta-ask'], short: 'TrueArchitect' }
+  if (id.startsWith('ta-ask')) return { id, name: 'TrueArchitect', role: 'trueArchitect', color: ARM_COLORS['ta-ask'], short: 'TrueArchitect', harness: 'TrueArchitect', index: 'TrueArchitect codebase index' }
   const named: Record<string, [string, Role, string]> = {
     cold: ['Claude Code (bare)', 'bare', 'CC Bare'],
     codex: ['Codex (bare)', 'bare', 'Codex Bare'],
@@ -46,8 +52,8 @@ export function armInfo(id: string): ArmInfo {
     serena: ['Serena', 'indexer', 'Serena'],
   }
   const n = named[id]
-  if (n) return { id, name: n[0], role: n[1], color: ARM_COLORS[id] ?? '#8a8f9c', short: n[2] }
-  return { id, name: id, role: 'indexer', color: '#8a8f9c', short: id }
+  if (n) return { id, name: n[0], role: n[1], color: ARM_COLORS[id] ?? '#8a8f9c', short: n[2], harness: n[1] === 'bare' ? HARNESS[id] ?? n[0] : 'Claude Code', index: n[1] === 'bare' ? NO_INDEX : n[0] }
+  return { id, name: id, role: 'indexer', color: '#8a8f9c', short: id, harness: 'Claude Code', index: id }
 }
 
 // Presentation order: TrueArchitect · the bare band (each ecosystem's null

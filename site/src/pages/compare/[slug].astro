@@ -20,6 +20,10 @@ const arms = [...new Set(runs.map(r => r.arm))].sort(armOrder).map(armInfo)
 const models = [...new Set(runs.filter(r => r.validity_ok && r.score != null).map(r => r.model))].sort(modelOrder)
 const figs = cmp.figures.map(s => FIGURES.find(f => f.slug === s)!)
 const base = import.meta.env.BASE_URL.replace(/\/$/, '')
+// the roster table: valid scored runs per arm × model in this comparison
+const scored = runs.filter(r => r.validity_ok && r.score != null)
+const count = (arm: string, model: string) => scored.filter(r => r.arm === arm && r.model === model).length
+const armTotal = (arm: string) => scored.filter(r => r.arm === arm).length
 // the category grid over THIS comparison's arms and models only
 let heat: ReturnType<typeof packHeat>[] | undefined
 if (figs.some(f => f.kind === 'heatmap')) {
@@ -37,12 +41,32 @@ if (figs.some(f => f.kind === 'heatmap')) {
     <div class="kicker">Comparison · {manifest.epoch.id}</div>
     <h1>{cmp.title}</h1>
     {cmp.intro.map(p => <p class="lede">{p}</p>)}
-    <p class="muted" style="font-size:13px">
-      Arms: {arms.map(a => a.short).join(' · ')}. Models: {models.map(modelLabel).join(' · ')}.
-      {runs.filter(r => r.validity_ok && r.score != null).length} valid scored runs. Figures open with one column per arm (pooled models); the
-      Columns control switches every figure to one column per model, for like-for-like reads at a fixed model, and the choice is remembered site-wide.
-      The defaults pool the ZeroShot and MultiTurn protocols over both batteries (each protocol × battery × model cell one vote).
-      The arm and model set is fixed to this comparison.
+    <table class="roster">
+      <thead>
+        <tr>
+          <th>arm</th>
+          <th>harness</th>
+          <th>codebase index</th>
+          {models.map(m => <th class="num">{modelLabel(m)}</th>)}
+          <th class="num">runs</th>
+        </tr>
+      </thead>
+      <tbody>
+        {arms.map(a => (
+          <tr>
+            <td><span class="swatch" style={`background:${a.color}`} />{a.short}</td>
+            <td>{a.harness}</td>
+            <td class={a.index === 'none' ? 'muted' : ''}>{a.index}</td>
+            {models.map(m => { const n = count(a.id, m); return <td class={'num' + (n ? '' : ' muted')}>{n || '—'}</td> })}
+            <td class="num">{armTotal(a.id)}</td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
+    <p class="muted roster-note">
+      Cells are valid scored runs at that model; {scored.length} in all. The indexing tools are not harnesses: each is installed on Claude Code, which stays the harness.
+      Figures open with one column per arm (pooled models, each protocol × battery × model cell one vote); the Columns control switches every figure to one column per model
+      for like-for-like reads at a fixed model, and the choice is remembered site-wide. The arm and model set is fixed to this comparison.
       {cmp.note && <span> {cmp.note}</span>}
     </p>
   </div>

@@ -251,7 +251,7 @@ export function buildScorecard(runs: RunRow[]): Scorecard {
   const taId = armIds.find(TA)!
   const bare = armIds.filter(id => armInfo(id).role === 'bare').map(armInfo).sort((a, b) => a.id === 'cold' ? -1 : b.id === 'cold' ? 1 : a.short.localeCompare(b.short))
   const indexers = armIds.filter(id => armInfo(id).role === 'indexer').map(armInfo)
-  const bestIndexer: ArmInfo = { id: 'best-indexer', name: 'Best indexing tool', role: 'indexer', color: '#8a8f9c', short: 'Best indexing tool' }
+  const bestIndexer: ArmInfo = { id: 'best-indexer', name: 'Best indexing tool', role: 'indexer', color: '#8a8f9c', short: 'Best indexing tool', harness: 'Claude Code', index: 'best indexing tool' }
   const comparators = [...bare, bestIndexer]
   const rows: ScoreRow[] = []
   const tally: Scorecard['tally'] = {}
