@@ -2,7 +2,7 @@
 import Base from '../layouts/Base.astro'
 import FigureIsland from '../charts/FigureIsland'
 import { FIGURES } from '../lib/figures'
-import { loadRuns, loadManifest, latestEpoch } from '../lib/data'
+import { loadRuns, loadManifest, latestEpoch, epochName } from '../lib/data'
 import { rowsFor, packRows } from '../lib/measures'
 import { buildGroups, fmt } from '../charts/engine'
 import { armInfo, REPO_URL } from '../lib/roster'
@@ -110,7 +110,7 @@ const tree = `${REPO_URL}/tree/main`, blob = `${REPO_URL}/blob/main`
   </div>
 
   <div class="key">
-    <h3>Key results — ZeroShot and MultiTurn protocols, both batteries ({manifest.epoch.id})</h3>
+    <h3>Key results — ZeroShot and MultiTurn protocols, both batteries ({epochName(manifest.epoch.id)})</h3>
     <ol>
       {ratioMin != null && ratioMax != null && (
         <li>

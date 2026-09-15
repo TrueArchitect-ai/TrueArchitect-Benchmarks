@@ -4,7 +4,7 @@
 // site and the Metaphori blog (owner 2026-09-14: this site is the evidence,
 // the essay is one click away); what stays here is disclosure.
 import Base from '../layouts/Base.astro'
-import { loadRuns, loadManifest, latestEpoch } from '../lib/data'
+import { loadRuns, loadManifest, latestEpoch, epochName } from '../lib/data'
 const epoch = latestEpoch()
 const manifest = loadManifest(epoch)
 const runs = loadRuns(epoch)
@@ -20,7 +20,7 @@ const models = [...new Set(runs.map(r => r.model))].length
     <p class="lede">
       This site is the public proof package behind TrueArchitect's benchmark numbers. Every page except this one is
       generated from a single export of the benchmark's own store: {runs.length.toLocaleString()} runs across
-      {arms} arms and {models} models in {manifest.epoch.id}, {valid.length.toLocaleString()} of them valid and scored,
+      {arms} arms and {models} models in {epochName(manifest.epoch.id)}, {valid.length.toLocaleString()} of them valid and scored,
       with every question, answer sheet, judged verdict and transcript published beside the figures. Every number on the
       site links to the run that produced it.
     </p>

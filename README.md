@@ -17,7 +17,7 @@ the popular alternatives: Claude Code alone, Claude Code with each of the codeba
 people actually install, and the vendors' own native agents. This package lets anyone check that claim
 question by question, answer by answer, verdict by verdict.
 
-## E004 at a glance
+## Epoch-4 at a glance
 
 Epoch 004 — line-4 · instrument: Indexer v1.4.7 — ArchMap v0.11.4 — Dev v0.4.16
 
@@ -31,7 +31,7 @@ Epoch 004 — line-4 · instrument: Indexer v1.4.7 — ArchMap v0.11.4 — Dev v
 | exam × battery pairs | 6 |
 | files in the tree | 207095 |
 | scorer era | tabench-1.1 |
-| export tool | `tabench export public` 0.1.25 |
+| export tool | `tabench export public` 0.1.26 |
 
 ## What is being compared
 
@@ -69,7 +69,7 @@ its own prompt assets, skills and hooks — because those are part of what a use
 - **`graphify`** — Claude Code + graphify (Graphify-Labs), installed as shipped: a skill-driven code graph, built before each session and queried through the tool's skill. Models: claude-fable-5, claude-haiku-4-5, claude-opus-4-6, claude-opus-4-8, claude-opus-5, claude-sonnet-5.
 - **`serena`** — Claude Code + Serena (Oraios) as an MCP server: language-server-backed semantic tools (gopls for Go, the TypeScript language server for the web tree). Models: claude-fable-5, claude-haiku-4-5, claude-opus-4-6, claude-opus-4-8, claude-opus-5, claude-sonnet-5.
 
-### Coverage in E004
+### Coverage in Epoch-4
 
 Runs per arm × exam × battery; `valid/total` where some did not finish.
 
@@ -234,7 +234,7 @@ A run that did not finish — a question that never completed, a dead tool execu
 in place of an answer, a context overflow — is published with `validity.ok = false`, its reason, and
 **no score**. It never enters a mean, a leaderboard row or a per-question count: a failure is a fact
 about the run, never a zero. Quarantined runs (an operator ruling, recorded with a reason) are not
-published at all. In E004, 212 runs are published as did-not-finish.
+published at all. In Epoch-4, 212 runs are published as did-not-finish.
 
 ## Scoring
 
@@ -348,6 +348,6 @@ operational logs), is `redaction/POLICY.md`; `redaction/summary.json` carries th
 
 ## Epochs
 
-An epoch is one TrueArchitect instrument freeze measured against the comparison group. `E004` is the
+An epoch is one TrueArchitect instrument freeze measured against the comparison group. Epoch-4 (`epochs/E004/`) is the
 first published epoch. Later epochs add `epochs/E00N/` and their own TrueArchitect runs under `runs/`;
 the comparison-group runs are shared. Every export is a commit in this repository.

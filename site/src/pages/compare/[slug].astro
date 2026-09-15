@@ -3,7 +3,7 @@ import Base from '../../layouts/Base.astro'
 import FigureIsland from '../../charts/FigureIsland'
 import { COMPARISONS } from '../../lib/comparisons'
 import { FIGURES } from '../../lib/figures'
-import { loadRuns, loadManifest, loadPerQuestion, loadQuestions, latestEpoch } from '../../lib/data'
+import { loadRuns, loadManifest, loadPerQuestion, loadQuestions, latestEpoch, epochName } from '../../lib/data'
 import { packRows } from '../../lib/measures'
 import { buildHeat, packHeat, HEAT_ROSTERS } from '../../lib/heat'
 import { armInfo, armOrder, modelLabel, modelOrder, vendorOf, EXAMS } from '../../lib/roster'
@@ -38,7 +38,7 @@ if (figs.some(f => f.kind === 'heatmap')) {
 ---
 <Base title={cmp.title} description={cmp.intro[0]}>
   <div class="prose">
-    <div class="kicker">Comparison · {manifest.epoch.id}</div>
+    <div class="kicker">Comparison · {epochName(manifest.epoch.id)}</div>
     <h1>{cmp.title}</h1>
     {cmp.intro.map(p => <p class="lede">{p}</p>)}
     <table class="roster">

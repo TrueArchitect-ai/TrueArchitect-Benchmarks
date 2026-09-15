@@ -1,6 +1,6 @@
 ---
 import Base from '../layouts/Base.astro'
-import { loadManifest, latestEpoch } from '../lib/data'
+import { loadManifest, latestEpoch, epochName } from '../lib/data'
 import { REPO_URL } from '../lib/roster'
 const epoch = latestEpoch()
 const m = loadManifest(epoch)
@@ -35,7 +35,7 @@ const tree = `${REPO_URL}/tree/main`
   <h2>Export record</h2>
   <table>
     <tbody>
-      <tr><th>epoch</th><td>{m.epoch.id} — {m.epoch.label}</td></tr>
+      <tr><th>epoch</th><td>{epochName(m.epoch.id)} (<code>epochs/{m.epoch.id}/</code>) — {m.epoch.label}</td></tr>
       <tr><th>export tool</th><td>{m.export_tool.name} {m.export_tool.version} (schema {m.export_tool.schema})</td></tr>
       <tr><th>scorer era</th><td>{m.scorer_eras.join(', ')}</td></tr>
       <tr><th>runs in scope</th><td>{m.scope.runs}</td></tr>

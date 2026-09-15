@@ -24,6 +24,9 @@ export function latestEpoch(): string {
   return dirs[dirs.length - 1]
 }
 
+/** The epoch's display name: "E004" (the folder + manifest id) reads as "Epoch-4" everywhere on the site. */
+export const epochName = (id: string) => `Epoch-${parseInt(id.replace(/\D/g, ''), 10)}`
+
 export function loadManifest(epoch = latestEpoch()): Manifest {
   return JSON.parse(readFileSync(path.join(ROOT, 'epochs', epoch, 'manifest.json'), 'utf8'))
 }

@@ -44,7 +44,7 @@
   "export_tool": {
     "name": "tabench export public",
     "schema": "public-run/1",
-    "version": "0.1.25"
+    "version": "0.1.26"
   },
   "freeze_map": {
     "fz-009": "declared"
@@ -103,7 +103,7 @@
       "minted_at": "2026-08-04T00:25:35Z"
     }
   },
-  "generated_at": "2026-09-11T14:18:22Z",
+  "generated_at": "2026-09-15T19:59:25Z",
   "repo_map": {
     "memos": "usememos-memos"
   },

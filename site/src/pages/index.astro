@@ -4,7 +4,7 @@
 // cell linking to the figure it summarises. The macro of the site:
 // Results → Overview → Procedure → Comparisons → Figures.
 import Base from '../layouts/Base.astro'
-import { loadRuns, loadManifest, latestEpoch } from '../lib/data'
+import { loadRuns, loadManifest, latestEpoch, epochName } from '../lib/data'
 import { buildScorecard, headlines, type Verdict } from '../lib/scorecard'
 import { COMPARISONS } from '../lib/comparisons'
 const epoch = latestEpoch()
@@ -26,7 +26,7 @@ const kQuestions = `${Math.floor(questionsJudged / 1000)}K`
 ---
 <Base title="Benchmark Results" description="How TrueArchitect did against every comparator on every measure, like for like at shared models, in one table.">
   <div class="prose">
-    <div class="kicker">Benchmark results · {manifest.epoch.id} · public proof package</div>
+    <div class="kicker">Benchmark results · {epochName(manifest.epoch.id)} · public proof package</div>
     <h1 class="home-title">Better Context, Better Results</h1>
     <p class="home-subtitle">How TrueArchitect Compares to Industry Leaders</p>
     <dl class="home-facts">
