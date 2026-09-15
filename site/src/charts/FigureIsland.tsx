@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import type { Figure, BatteryChoice, ColumnsMode } from '../lib/figures'
-import { EXAMS, EXAM_LABEL, BATTERY_LABEL, modelLabel, modelOrder, vendorOf, runUrl, ROLE_LABEL } from '../lib/roster'
+import { EXAMS, EXAM_LABEL, BATTERY_LABEL, modelLabel, modelOrder, vendorOf, runUrl, ROLE_LABEL, armInfo } from '../lib/roster'
 import { buildGroups, referenceLines, fmt, ordinal, type Selection, type Group } from './engine'
 import { unpackRows, type Packed } from '../lib/measures'
 import Columns from './Columns'
@@ -232,9 +232,11 @@ export default function FigureIsland({ fig, data, heat, compact, controls, table
                 // first place: the per-model winner on a split row, the top-ranked arm on a pooled row
                 const split = g.columns.length > 1
                 const first = split ? c.rank === 1 : g.rank === 1
+                // the arm + role cells span the group: they join the tint only when the arm is first at every model
+                const firstAll = split ? g.columns.every(k => k.rank === 1) : first
                 const span = split ? { rowSpan: g.columns.length } : {}
                 return (
-                <tr key={g.arm.id + c.key} className={first ? 'first' : undefined}>
+                <tr key={g.arm.id + c.key} className={(first ? 'first' : '') + (firstAll ? ' first-all' : '') || undefined} style={{ ['--first' as any]: g.arm.color }}>
                   {i === 0 && <td {...span}><span className="swatch" style={{ background: g.arm.color }} />{g.arm.short}</td>}
                   {i === 0 && <td {...span} className="muted">{ROLE_LABEL[g.arm.role]}</td>}
                   <td>{c.label}{c.best ? ' ★' : ''}</td>
@@ -271,7 +273,7 @@ export default function FigureIsland({ fig, data, heat, compact, controls, table
                 const bestByCol = new Map<string, number>()
                 for (const c of cells) bestByCol.set(c.col, Math.max(bestByCol.get(c.col) ?? -1, c.rate!))
                 return cells.map(c => (
-                  <tr key={c.arm + c.col} className={c.rate === bestByCol.get(c.col) ? 'first' : undefined}><td>{c.arm}</td><td>{c.col}</td><td className="num">{c.rate!.toFixed(1)}%</td><td className="num">{c.n}</td><td className="num">{c.pass}</td><td className="num">{c.models}</td></tr>
+                  <tr key={c.arm + c.col} className={c.rate === bestByCol.get(c.col) ? 'first' : undefined} style={{ ['--first' as any]: armInfo(c.arm).color }}><td>{c.arm}</td><td>{c.col}</td><td className="num">{c.rate!.toFixed(1)}%</td><td className="num">{c.n}</td><td className="num">{c.pass}</td><td className="num">{c.models}</td></tr>
                 ))
               })()}
             </tbody>

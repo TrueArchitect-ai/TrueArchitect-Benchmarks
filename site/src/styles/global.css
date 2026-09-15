@@ -172,9 +172,11 @@ td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; }
 .explain .disc { border-left: 3px solid var(--grid); padding-left: 12px; color: var(--muted); font-size: 13.5px; }
 details.data { margin-top: 14px; }
 details.data summary { cursor: pointer; font-size: 13px; font-weight: 600; margin-bottom: 6px; }
-/* first place in a data table: a faint neutral tint on the winning row; cells spanning several
-   rows (arm + role on a split group) stay untinted so the tint reads as one row, not the block */
-details.data tr.first > td:not([rowspan]) { background: color-mix(in srgb, var(--ink) 6%, transparent); }
+/* first place in a data table: a faint tint of the arm's own colour (--first, set per row) on the
+   winning row; the arm + role cells that span a split group join in only when the arm is first at
+   every model in the group (tr.first-all), so a partial winner never tints the whole block */
+details.data tr.first > td:not([rowspan]),
+details.data tr.first-all > td[rowspan] { background: color-mix(in srgb, var(--first) 9%, transparent); }
 .table-actions { margin: 4px 0 8px; display: flex; gap: 8px; }
 .table-actions button { font: inherit; font-size: 11.5px; color: var(--muted); background: none; border: 1px solid var(--grid); border-radius: 5px; padding: 2px 8px; cursor: pointer; }
 
