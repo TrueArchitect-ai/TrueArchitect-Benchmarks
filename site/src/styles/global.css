@@ -87,6 +87,16 @@ td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; }
 /* shell */
 .shell { display: grid; grid-template-columns: var(--nav-w) 1fr; min-height: 100vh; }
 .nav { position: sticky; top: 0; height: 100vh; overflow: auto; border-right: 1px solid var(--grid); padding: 22px 18px; background: var(--surface); }
+/* nav scrollbar, uniform across browsers: a thin gutter is always reserved (no layout shift), the
+   thumb is transparent at rest and tinted only while the nav is scrolling (.scrolling is set by a
+   scroll listener and cleared 900ms after the last scroll). Standard properties for Firefox and
+   Chrome 121+ (which then ignore the -webkit- rules); the -webkit- rules cover Safari. */
+.nav { scrollbar-width: thin; scrollbar-color: transparent transparent; transition: scrollbar-color 0.3s; }
+.nav.scrolling { scrollbar-color: color-mix(in srgb, var(--faint) 55%, transparent) transparent; }
+.nav::-webkit-scrollbar { width: 8px; }
+.nav::-webkit-scrollbar-track { background: transparent; }
+.nav::-webkit-scrollbar-thumb { background: transparent; border-radius: 4px; }
+.nav.scrolling::-webkit-scrollbar-thumb { background: color-mix(in srgb, var(--faint) 55%, transparent); }
 /* the wordmark, in the product's Anta (truearchitect.ai): the name in ink, the
    kicker in the TrueArchitect blue at the product site's letter-spacing */
 .nav a.brand { display: flex; flex-direction: column; gap: 3px; padding: 0; margin: 0 0 6px; color: var(--ink); background: none; }

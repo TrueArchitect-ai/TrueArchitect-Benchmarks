@@ -129,6 +129,17 @@ const is = (p: string) => (p === '/' ? here === '/' : here.startsWith(p))
         btn.addEventListener('click', function () { set(!nav.classList.contains('open')) })
         nav.addEventListener('click', function (e) { if (e.target.closest && e.target.closest('a')) set(false) })
       })()
+      // nav scrollbar: the thumb is transparent until the nav scrolls, then fades out again
+      ;(function () {
+        var nav = document.getElementById('site-nav')
+        if (!nav) return
+        var timer = 0
+        nav.addEventListener('scroll', function () {
+          nav.classList.add('scrolling')
+          clearTimeout(timer)
+          timer = setTimeout(function () { nav.classList.remove('scrolling') }, 900)
+        }, { passive: true })
+      })()
       // subnav scroll-spy: the section nearest the top of the viewport is the current one
       ;(function () {
         var sub = document.querySelector('[data-subnav]')
