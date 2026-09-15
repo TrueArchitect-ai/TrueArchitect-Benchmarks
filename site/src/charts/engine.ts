@@ -26,6 +26,8 @@ export type Column = {
   models: string[]        // the models pooled into this column
   runs: Row[]             // the rows behind it (for dots / stacks / links)
   best?: boolean          // per-model winner (raw-token figures)
+  rank?: number           // rank among every arm's column at this same model (single-model columns only)
+  rankTotal?: number      // how many arms carry a column at this model
 }
 
 export type Group = {
@@ -131,6 +133,18 @@ export function buildGroups(fig: Figure, rows: Row[], sel: Selection, dark: bool
   // ranks over groups that carry a licensed pooled value
   const ranked = groups.filter(g => g.pooled != null).sort((a, b) => fig.measure.better === 'high' ? b.pooled! - a.pooled! : a.pooled! - b.pooled!)
   ranked.forEach((g, i) => (g.rank = i + 1))
+  // per-model ranks: every single-model column ranks against the same model across arms
+  const byModel = new Map<string, Column[]>()
+  for (const g of groups) for (const c of g.columns) {
+    if (c.models.length !== 1 || c.value == null) continue
+    const list = byModel.get(c.models[0]) ?? []
+    list.push(c)
+    byModel.set(c.models[0], list)
+  }
+  for (const list of byModel.values()) {
+    list.sort((a, b) => fig.measure.better === 'high' ? b.value! - a.value! : a.value! - b.value!)
+    list.forEach((c, i) => { c.rank = i + 1; c.rankTotal = list.length })
+  }
   // per-model winners on vendor-bound measures (the honest rank for tokens)
   if (fig.measure.vendorBound) {
     const best = new Map<string, { g: Group; c: Column }>()

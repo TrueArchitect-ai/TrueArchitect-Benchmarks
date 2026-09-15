@@ -74,11 +74,16 @@ function Seg<T extends string>({ name, value, options, onChange }: { name: strin
 }
 
 function csvOf(fig: Figure, groups: Group[]): string {
-  const head = ['arm', 'role', 'columns_label', 'models', 'value', 'unit', 'n_runs', 'cells', 'min', 'max', 'sd', 'rank']
+  const head = ['arm', 'role', 'columns_label', 'models', 'value', 'unit', 'n_runs', 'cells', 'min', 'max', 'sd', 'rank', 'rank_of', 'rank_scope']
   const lines = [head.join(',')]
+  const rankTotal = groups.filter(g => g.rank != null).length
   for (const g of groups) for (const c of g.columns) {
+    // a split group ranks each column against the same model across arms; an unsplit group carries the arm's pooled rank
+    const split = g.columns.length > 1
+    const rank = split ? c.rank : g.rank
+    const of = split ? c.rankTotal : rankTotal
     lines.push([g.arm.short, g.arm.role, c.label, c.models.join(' '), c.value?.toFixed(4) ?? '', fig.measure.unit, c.n, c.cells,
-      c.min?.toFixed(4) ?? '', c.max?.toFixed(4) ?? '', c.sd?.toFixed(4) ?? '', g.rank ?? ''].map(v => `"${String(v).replace(/"/g, '""')}"`).join(','))
+      c.min?.toFixed(4) ?? '', c.max?.toFixed(4) ?? '', c.sd?.toFixed(4) ?? '', rank ?? '', rank != null ? of : '', split ? 'at this model' : 'pooled models'].map(v => `"${String(v).replace(/"/g, '""')}"`).join(','))
   }
   return lines.join('\n') + '\n'
 }
@@ -220,7 +225,7 @@ export default function FigureIsland({ fig, data, heat, compact, controls, table
           </div>
           <table>
             <thead>
-              <tr><th>arm</th><th>role</th><th>column</th><th className="num measure-th">{(() => { const m = fig.measure.label.match(/^(.*?)\s*(\(.*\))$/); return m ? <>{m[1]}<br />{m[2]}</> : fig.measure.label })()}</th><th className="num">runs</th><th className="num">cells</th><th className="num">min</th><th className="num">max</th><th className="num">sd</th><th>rank</th><th>runs in the repository</th></tr>
+              <tr><th>arm</th><th>role</th><th>column</th><th className="num measure-th">{(() => { const m = fig.measure.label.match(/^(.*?)\s*(\(.*\))$/); return m ? <>{m[1]}<br />{m[2]}</> : fig.measure.label })()}</th><th className="num">runs</th><th className="num">cells</th><th className="num">min</th><th className="num">max</th><th className="num">sd</th><th>{groups.some(g => g.columns.length > 1) ? <>rank<br />(at this model)</> : 'rank'}</th><th>runs in the repository</th></tr>
             </thead>
             <tbody>
               {groups.map(g => g.columns.map((c, i) => (
@@ -234,7 +239,9 @@ export default function FigureIsland({ fig, data, heat, compact, controls, table
                   <td className="num">{c.min != null ? fmt(fig, c.min) : '—'}</td>
                   <td className="num">{c.max != null ? fmt(fig, c.max) : '—'}</td>
                   <td className="num">{c.sd != null ? fmt(fig, c.sd) : '—'}</td>
-                  {i === 0 && <td rowSpan={g.columns.length}>{g.rank != null ? `${ordinal(g.rank)} of ${rankTotal}` : '—'}</td>}
+                  {g.columns.length > 1
+                    ? <td>{c.rank != null ? `${ordinal(c.rank)} of ${c.rankTotal}` : '—'}</td>
+                    : <td>{g.rank != null ? `${ordinal(g.rank)} of ${rankTotal}` : '—'}</td>}
                   <td>
                     {c.models.map(m => (
                       <a key={m} href={runUrl(`runs/${g.arm.id}/${m}`)} target="_blank" rel="noopener">{modelLabel(m)}</a>
