@@ -20,6 +20,8 @@ export const MEASURES: Record<MeasureKey, PerRun> = {
   cost: costUSD,
   cost_per_correct: perCorrect(costUSD),
   tool_result_tokens: toolResultTokens,
+  // Figure 16 is computed from adoption.json, not from run rows; the key exists so the registry type-checks
+  adoption: () => null,
 }
 
 export function measureOf(key: MeasureKey): PerRun {

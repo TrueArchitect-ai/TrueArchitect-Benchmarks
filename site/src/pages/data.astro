@@ -11,7 +11,7 @@ const tree = `${REPO_URL}/tree/main`
   <div class="prose">
   <div class="kicker">Data &amp; reproducibility</div>
   <h1>Where every number comes from</h1>
-  <p class="lede">The site is a lens over the repository. It is built from three files of the proof package and nothing else; the transcripts it links to are the repository's own files.</p>
+  <p class="lede">The site is a lens over the repository. It is built from four summary files of the proof package and nothing else; the transcripts it links to are the repository's own files.</p>
 
   <h2>The files the site reads</h2>
   <table>
@@ -20,6 +20,7 @@ const tree = `${REPO_URL}/tree/main`
       <tr><td><a href={`${raw}/epochs/${epoch}/summary/runs.json`} target="_blank" rel="noopener"><code>epochs/{epoch}/summary/runs.json</code></a></td><td>one flat row per run: identity, validity, score and fail counts, the four token columns and their source, duration, LLM and tool call counts by class, index-query count, cost basis, path. Every figure is a function of this file.</td></tr>
       <tr><td><a href={`${raw}/epochs/${epoch}/summary/rate-tables.json`} target="_blank" rel="noopener"><code>epochs/{epoch}/summary/rate-tables.json</code></a></td><td>the USD-per-million-token tables behind every estimated cost, with the formula and the arm dispatch rule.</td></tr>
       <tr><td><a href={`${raw}/epochs/${epoch}/summary/per-question.csv`} target="_blank" rel="noopener"><code>epochs/{epoch}/summary/per-question.csv</code></a></td><td>pass counts per arm × model × protocol × battery × question — Figure 12.</td></tr>
+      <tr><td><a href={`${raw}/epochs/${epoch}/summary/adoption.json`} target="_blank" rel="noopener"><code>epochs/{epoch}/summary/adoption.json</code></a></td><td>per arm × model × protocol × battery: how many question runs called the arm's codebase index, the index calls, the setup calls excluded (listed per arm), and the same per conversation — Figure 16.</td></tr>
       <tr><td><a href={`${raw}/epochs/${epoch}/manifest.json`} target="_blank" rel="noopener"><code>epochs/{epoch}/manifest.json</code></a></td><td>every run path with the SHA-256 of its record; the instrument freeze; container image digests; the scope predicate; the scorer era.</td></tr>
       <tr><td><a href={`${tree}/repositories`} target="_blank" rel="noopener"><code>repositories/…/batteries/*/questions.json</code></a></td><td>the questions with difficulty and categories (the grading key sits beside them).</td></tr>
     </tbody>

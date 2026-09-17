@@ -7,7 +7,10 @@ import Columns from './Columns'
 import Dots from './Dots'
 import Stack from './Stack'
 import Heatmap from './Heatmap'
+import Lines from './Lines'
 import { unpackHeat, HEAT_ROSTERS, type PackedHeat } from '../lib/heat'
+import { adoptionPoints, type AdoptionPoint } from '../lib/adoption'
+import type { AdoptionRow } from '../lib/types'
 
 function useTheme(): boolean {
   const [dark, setDark] = useState(false)
@@ -88,8 +91,15 @@ function csvOf(fig: Figure, groups: Group[]): string {
   return lines.join('\n') + '\n'
 }
 
-export default function FigureIsland({ fig, data, heat, compact, controls, table }: {
-  fig: Figure; data: Packed[]; heat?: PackedHeat[]
+function adoptionCsv(pts: AdoptionPoint[]): string {
+  const head = ['arm', 'model', 'share_pct', 'questions', 'questions_with_index', 'index_calls', 'setup_calls_excluded', 'questions_without_tools', 'conversations', 'conversations_with_index', 'cells']
+  const lines = [head.join(',')]
+  for (const p of pts) lines.push([p.arm, p.model, p.share?.toFixed(2) ?? '', p.questions, p.withIndex, p.indexCalls, p.setupCalls, p.withoutTools, p.conversations, p.conversationsWithIndex, p.cells].join(','))
+  return lines.join('\n') + '\n'
+}
+
+export default function FigureIsland({ fig, data, heat, adoption, compact, controls, table }: {
+  fig: Figure; data: Packed[]; heat?: PackedHeat[]; adoption?: AdoptionRow[]
   compact?: boolean        // summary use: no controls, no table
   controls?: boolean       // explicit overrides
   table?: boolean
@@ -112,8 +122,10 @@ export default function FigureIsland({ fig, data, heat, compact, controls, table
   const rosters = useMemo(() => (fig.kind === 'heatmap' ? HEAT_ROSTERS.filter(v => (heat ?? []).some(h => h.model === v)) : []), [heat, fig.kind])
   const ROSTER_LABEL: Record<string, string> = { anthropic: 'Anthropic models', openai: 'OpenAI models' }
   const modelChoiceLabel = (m: string) => (m === 'all' ? 'all models' : ROSTER_LABEL[m] ?? modelLabel(m))
-  const groups = useMemo(() => (fig.kind === 'heatmap' ? [] : buildGroups(fig, rows, sel, dark)), [fig, rows, local, columns, dark])
+  const groups = useMemo(() => (fig.kind === 'heatmap' || fig.kind === 'lines' ? [] : buildGroups(fig, rows, sel, dark)), [fig, rows, local, columns, dark])
   const refs = useMemo(() => referenceLines(fig, groups), [fig, groups])
+  // the adoption lines: per arm × model over the selected protocol × battery cells
+  const points = useMemo(() => (fig.kind === 'lines' ? adoptionPoints(adoption ?? [], sel.exams, sel.battery) : []), [fig.kind, adoption, local])
   // the heatmap is per protocol: it follows the first selected protocol
   const heatPacked = heat?.find(h => h.exam === sel.exams[0] && h.battery === (sel.battery === 'both' ? 'both' : sel.battery) && h.model === sel.model) ?? heat?.[0]
   const heatNow = useMemo(() => (heatPacked ? unpackHeat(heatPacked) : undefined), [heatPacked])
@@ -156,7 +168,7 @@ export default function FigureIsland({ fig, data, heat, compact, controls, table
           ) : (
             <div className="seg" role="group" aria-label="protocols">
               <span className="seg-name">protocols</span>
-              {EXAMS.map(e => (
+              {EXAMS.filter(e => fig.kind !== 'lines' || e !== 'HumanExam').map(e => (
                 <button key={e} type="button" role="checkbox" aria-checked={sel.exams.includes(e)}
                   className={'seg-btn' + (sel.exams.includes(e) ? ' on' : '')} onClick={() => toggleExam(e)}>{EXAM_LABEL[e]}</button>
               ))}
@@ -165,9 +177,17 @@ export default function FigureIsland({ fig, data, heat, compact, controls, table
           <Seg<BatteryChoice> name="battery" value={sel.battery}
             options={[{ v: 'memos-hard', label: 'hard (20 q)' }, { v: 'memos', label: 'base (30 q)' }, { v: 'both', label: 'both' }]}
             onChange={battery => setSel(s => ({ ...s, battery }))} />
-          <Seg name="model" value={sel.model}
-            options={[{ v: 'all', label: 'all' }, ...rosters.map(v => ({ v, label: ROSTER_LABEL[v] })), ...models.map(m => ({ v: m, label: modelLabel(m) }))]}
-            onChange={model => setSel(s => ({ ...s, model }))} />
+          {fig.kind !== 'lines' && (
+            <Seg name="model" value={sel.model}
+              options={[{ v: 'all', label: 'all' }, ...rosters.map(v => ({ v, label: ROSTER_LABEL[v] })), ...models.map(m => ({ v: m, label: modelLabel(m) }))]}
+              onChange={model => setSel(s => ({ ...s, model }))} />
+          )}
+          {fig.kind === 'lines' && (
+            <p className="seg-help">
+              Every model is on the horizontal axis. Protocols pool with equal weight per protocol × battery cell; pick one protocol to read it alone.
+              <b> MultiTurn</b> is one conversation per battery, so its per-question share is lower by construction; the table carries the per-conversation figure.
+            </p>
+          )}
           {fig.kind === 'heatmap' && (
             <p className="seg-help">
               {sel.model === 'all'
@@ -199,16 +219,17 @@ export default function FigureIsland({ fig, data, heat, compact, controls, table
               )}
             </>
           )}
-          {fig.lockColumns && fig.kind !== 'heatmap' && fig.kind !== 'stack' && (
+          {fig.lockColumns && fig.kind !== 'heatmap' && fig.kind !== 'stack' && fig.kind !== 'lines' && (
             <p className="seg-help">This figure is always {fig.lockColumns === 'per-model' ? 'one column per model' : 'one column per arm'}; the site-wide columns choice does not apply to it.</p>
           )}
         </div>
       )}
       <div className="chart-head">
         <span className="chart-title">{fig.title}</span>
-        <span className="chart-better">{fig.measure.better === 'high' ? 'higher is better' : 'lower is better'}</span>
+        <span className="chart-better">{fig.kind === 'lines' ? 'share of question runs · not a score' : fig.measure.better === 'high' ? 'higher is better' : 'lower is better'}</span>
         <span className="chart-slice">{slice}</span>
       </div>
+      {fig.kind === 'lines' && <Lines points={points} panelW={panelW} />}
       {fig.kind === 'columns' && <Columns fig={fig} groups={groups} refs={refs} panelW={panelW} />}
       {fig.kind === 'dots' && <Dots fig={fig} groups={groups} refs={refs} panelW={panelW} />}
       {fig.kind === 'stack' && <Stack fig={fig} groups={groups} panelW={panelW} />}
@@ -216,7 +237,46 @@ export default function FigureIsland({ fig, data, heat, compact, controls, table
       {pooledBlocked && fig.kind !== 'heatmap' && (
         <p className="chart-note">Raw token counts are never pooled across vendors (tokenizers differ), so arms whose selected models span vendors are shown one column per model; ★ marks the best value at each model.</p>
       )}
-      {showTable && fig.kind !== 'heatmap' && (
+      {showTable && fig.kind === 'lines' && (
+        <details className="data" open>
+          <summary>Data behind this figure <span className="muted">— {slice}</span></summary>
+          <div className="table-actions">
+            <button type="button" onClick={() => download(`figure-${fig.number}-${fig.slug}-${sel.exams.join('+')}-${sel.battery}.csv`, 'text/csv', adoptionCsv(points))}>download CSV</button>
+            <button type="button" onClick={downloadSVG}>download SVG</button>
+          </div>
+          <table>
+            <thead>
+              <tr><th>arm</th><th>role</th><th>model</th><th className="num">share of question runs<br />calling the index</th><th className="num">question runs</th><th className="num">with an index call</th><th className="num">index calls</th><th className="num">setup calls<br />(excluded)</th><th className="num">no tool calls</th><th className="num">conversations</th><th className="num">conversations<br />with an index call</th><th>runs in the repository</th></tr>
+            </thead>
+            <tbody>
+              {(() => {
+                const arms = [...new Set(points.map(p => p.arm))]
+                return arms.flatMap(arm => {
+                  const ps = points.filter(p => p.arm === arm)
+                  const info = armInfo(arm)
+                  return ps.map((p, i) => (
+                    <tr key={arm + p.model} style={{ ['--first' as any]: info.color }}>
+                      {i === 0 && <td rowSpan={ps.length}><span className="arm-name"><span className="swatch" style={{ background: info.color }} />{info.short}</span></td>}
+                      {i === 0 && <td rowSpan={ps.length} className="muted">{ROLE_LABEL[info.role]}</td>}
+                      <td>{modelLabel(p.model)}</td>
+                      <td className="num">{p.share != null ? p.share.toFixed(0) + '%' : '—'}</td>
+                      <td className="num">{p.questions}</td>
+                      <td className="num">{p.withIndex}</td>
+                      <td className="num">{p.indexCalls}</td>
+                      <td className="num">{p.setupCalls || '—'}</td>
+                      <td className="num">{p.withoutTools || '—'}</td>
+                      <td className="num">{p.conversations}</td>
+                      <td className="num">{p.conversationsWithIndex}</td>
+                      <td><a href={runUrl(`runs/${arm}/${p.model}`)} target="_blank" rel="noopener">{modelLabel(p.model)}</a></td>
+                    </tr>
+                  ))
+                })
+              })()}
+            </tbody>
+          </table>
+        </details>
+      )}
+      {showTable && fig.kind !== 'heatmap' && fig.kind !== 'lines' && (
         <details className="data" open>
           <summary>Data behind this figure <span className="muted">— {slice}</span></summary>
           <div className="table-actions">

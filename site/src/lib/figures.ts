@@ -5,7 +5,7 @@
 // the client island and the navigation.
 import type { CellKind } from './stats'
 
-export type MeasureKey = 'ctx' | 'ctx_per_correct' | 'pct' | 'tool_calls' | 'wall' | 'llm_calls' | 'out_tokens' | 'cost' | 'cost_per_correct' | 'tool_result_tokens'
+export type MeasureKey = 'ctx' | 'ctx_per_correct' | 'pct' | 'tool_calls' | 'wall' | 'llm_calls' | 'out_tokens' | 'cost' | 'cost_per_correct' | 'tool_result_tokens' | 'adoption'
 // per-model: one column per model for every arm · pooled: one column per arm
 // (a vendor-bound measure over a multi-vendor roster still splits — see engine).
 export type ColumnsMode = 'per-model' | 'pooled'
@@ -16,7 +16,7 @@ export type Figure = {
   number: number
   title: string       // the figure title, e.g. "Context tokens per run"
   short: string       // nav label
-  kind: 'columns' | 'dots' | 'stack' | 'heatmap'
+  kind: 'columns' | 'dots' | 'stack' | 'heatmap' | 'lines'
   measure: {
     key: MeasureKey     // which per-run value the rows carry (pct for spread statistics)
     cell: CellKind      // the statistic inside a cell
@@ -293,6 +293,34 @@ FIGURES.push(
       'Definition. tool_result_tokens(r) = Σ over the run\'s tool calls of the result\'s token estimate, taken from the capture where the harness recorded one and otherwise result bytes ÷ 4. For TrueArchitect index queries the estimate is the size of the result the model received.',
       'Aggregation. None for the dots; the mean tick is the equal-weight mean of battery × model × protocol cells. Raw token counts are never pooled across vendors.',
       'Reading it. Lower is better. Read it beside Figure 9 (tool calls): fewer calls returning less text is the signature of a good index.',
+    ],
+  },
+  {
+    // INDEX ADOPTION (owner 2026-09-17): how often the harness actually reached for
+    // the index it was given — organic, never prompted. Neutral by design: the
+    // figure is a description of behaviour, not a ranking.
+    slug: 'index-adoption', number: 16, title: 'Organic index adoption by model', short: 'Index adoption', kind: 'lines',
+    measure: { key: 'adoption', cell: 'mean', label: 'share of question runs that called the arm\'s codebase index (%)', unit: 'pct', better: 'high' },
+    defaults: { exams: ['ZeroShotExam', 'MultiTurnExam'], battery: 'both', columns: 'per-model' },
+    lockColumns: 'per-model',
+    reference: 'none',
+    caption: [
+      'Every arm here was given a codebase index and left to decide whether to use it: the prompt named no tool, each indexing tool was installed as shipped with its own instructions in place, and every tool was directly visible to the model. This figure is how often the harness actually called the index it had, per model.',
+      'Each line is one arm across the models it ran, from the fastest to the frontier model; a point is the share of that arm\'s question runs at that model in which at least one tool call went to the arm\'s index, with the tool\'s setup calls excluded. Hover a point for the counts; the table beneath carries every number.',
+      'Read it as a description of behaviour rather than a ranking: it says how much of each arm\'s result was produced with its index in the loop, and how that changed as the model got stronger.',
+    ],
+    explanation: [
+      'Definition. A question run is one question answered by one arm at one model in one repetition (a ZeroShot session, or one turn of a MultiTurn conversation). It counts as using the index when at least one of its main-thread tool calls is an index call: for TrueArchitect, a query to its codebase index; for an indexing tool served over MCP, a call to that tool\'s own tool surface; for Graphify, which ships as a skill rather than an MCP server, an invocation of that skill. Calls that prepare a tool rather than ask it a question — project activation, instruction fetches, index build or status checks, schema reads — are excluded from the count and listed per arm in the summary file under setup_tools_excluded, so a reader can put them back.',
+      'Aggregation. For an arm at one model, the share is computed within each protocol × battery cell and the cells are averaged with equal weight, the same pooling law as every other figure, so the longer battery and the larger protocol never outvote the others. The table beneath the figure reports the summed counts as well as the share.',
+      'Setup. The per-question prompt is published in the repository and names no tool. Each indexing tool was installed by its own installer into the container\'s home directory, which is where those installers write their MCP registration, instructions, hooks or skill; GitNexus and CodeGraph also built their index before the first question, as their documentation directs, and GitNexus wrote its own context files into the working copy. Claude Code\'s deferred tool loading was switched off for every arm, so the full MCP tool surface was visible to the model without a search step. TrueArchitect ran through its own gateway with its index available from the first call. Nothing on either side prompted the model toward or away from any tool.',
+      'Reading it. The vertical axis is the share of question runs that used the index; it is not a score. A low value means the harness answered mostly by reading and searching the source with the index unused; a high value means the index was in the loop for most answers. The figure should be read with Figures 1, 2 and 8: an arm\'s accuracy and token results were produced with its index used this often.',
+    ],
+    disclosures: [
+      'Main thread only: MCP tools are not offered to sub-agent threads, so a sub-agent\'s reads and searches do not enter this figure. HumanExam is whole-battery and has no per-question tool attribution; it is not shown.',
+      'MultiTurn is reported per question; one conversation carries a whole battery, so a conversation that consulted the index once early is counted at the questions where it did so. The table reports the per-conversation figure beside it (conversations with at least one index call).',
+      'Graphify ships as a skill: its graph was built before the session and the skill invocation is the index call; reads of the graph files by other means are not distinguishable from ordinary file reads and are not counted.',
+      'CodebaseMemory indexes on demand: its index was not built before the session, so its index_repository and index_status calls are setup calls, excluded here and listed in the summary file. Serena has no prebuilt index by design; its project activation and instruction calls are setup calls likewise.',
+      'The share says how often the index was called, not whether its answer was used: a run that queried the index and then read the source is counted the same as one that answered from the query. The tool sequences themselves are in each run\'s transcript.',
     ],
   },
 )

@@ -2,7 +2,7 @@
 import Base from '../../layouts/Base.astro'
 import FigureIsland from '../../charts/FigureIsland'
 import { FIGURES } from '../../lib/figures'
-import { loadRuns, loadManifest, loadPerQuestion, loadQuestions, latestEpoch, epochName } from '../../lib/data'
+import { loadRuns, loadManifest, loadPerQuestion, loadQuestions, loadAdoption, latestEpoch, epochName } from '../../lib/data'
 import { packRows } from '../../lib/measures'
 import { buildHeat, packHeat, HEAT_ROSTERS } from '../../lib/heat'
 import { EXAMS } from '../../lib/roster'
@@ -15,7 +15,8 @@ const fig = FIGURES.find(f => f.slug === slug)!
 const epoch = latestEpoch()
 const manifest = loadManifest(epoch)
 const runs = loadRuns(epoch)
-const data = fig.kind === 'heatmap' ? [] : packRows(runs, fig.measure.key)
+const data = fig.kind === 'heatmap' || fig.kind === 'lines' ? [] : packRows(runs, fig.measure.key)
+const adoption = fig.kind === 'lines' ? loadAdoption(epoch).rows : undefined
 let heat = undefined
 if (fig.kind === 'heatmap') {
   const pq = loadPerQuestion(epoch)
@@ -37,7 +38,7 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '')
     <p class="lede">{fig.caption[0]}</p>
   </div>
 
-  <FigureIsland client:load fig={fig} data={data} heat={heat} />
+  <FigureIsland client:load fig={fig} data={data} heat={heat} adoption={adoption} />
 
   <div class="prose">
   <p class="caption"><b>Figure {fig.number}.</b> {fig.caption[0]} {fig.caption[1]} {fig.caption[2]}</p>
@@ -53,7 +54,7 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '')
     )}
     <h3>Provenance</h3>
     <p>
-      Computed at build time from <code>epochs/{epoch}/summary/runs.json</code> of the proof package
+      Computed at build time from <code>epochs/{epoch}/summary/{fig.kind === 'lines' ? 'adoption.json' : 'runs.json'}</code> of the proof package
       (export tool {manifest.export_tool.name} {manifest.export_tool.version}, scorer era {manifest.scorer_eras.join(', ')}).
       Each row of the table above links to the run directories in the repository, where <code>run.json</code>,
       the answers, the verdicts and the transcript of every run can be read.

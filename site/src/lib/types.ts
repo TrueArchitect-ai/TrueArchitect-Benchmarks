@@ -50,6 +50,17 @@ export type PerQuestion = {
   pass: number; n: number; pass_rate: number
 }
 
+// epochs/E00N/summary/adoption.json — how often each harness consulted its
+// codebase index, at question grain (Figure 16).
+export type AdoptionRow = {
+  arm: string; model: string; exam: string; battery: string
+  questions: number; questions_with_index: number; questions_without_tools: number
+  index_calls: number; setup_calls: number
+  conversations: number; conversations_with_index: number
+}
+export type AdoptionArm = { arm: string; index_kind: 'archmap' | 'mcp' | 'skill' | 'none'; index_tools: Record<string, number>; setup_tools_excluded: Record<string, number> }
+export type AdoptionDoc = { definition: Record<string, string>; arms: AdoptionArm[]; rows: AdoptionRow[] }
+
 export type Manifest = {
   epoch: { id: string; no: number; label: string; notes: string }
   export_tool: { name: string; version: string; schema: string }

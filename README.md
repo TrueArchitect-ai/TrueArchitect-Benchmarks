@@ -152,7 +152,8 @@ protocol, and `history_replay_delta` keeps the MultiTurn replay cost recoverable
 │           ├── leaderboard.csv            per arm × model × exam × battery over valid scored runs (DERIVED)
 │           ├── per-question.csv           pass counts per question (DERIVED)
 │           ├── runs.json                  one flat row per run — the bundle the companion site's figures are computed from (DERIVED)
-│           └── rate-tables.json           the USD-per-million-token tables behind every estimated cost (DERIVED)
+│           ├── rate-tables.json           the USD-per-million-token tables behind every estimated cost (DERIVED)
+│           └── adoption.json              how often each harness consulted its codebase index, per question (DERIVED)
 ├── docker-containers/                     the images the comparison group ran in
 │   ├── README.md                          image digests per arm + one example docker run line per arm
 │   ├── build_images.sh                    builds every image on a machine
@@ -293,6 +294,12 @@ index queries).
   figure when the harness reported one (`cost_basis: vendor_reported`), otherwise the estimate from
   the named table over the four token columns (`cost_basis: estimated:<table version>`); a model
   with no rate row has `cost_usd: null` and never enters a cost mean.
+- `adoption.json` — per arm × model × exam × battery, at question grain: how many question runs
+  made at least one call to the arm's codebase index (`questions_with_index` of `questions`), the
+  index calls summed, the setup calls excluded from that count (project activation, index build or
+  status, instructions — listed per arm under `setup_tools_excluded`), and the same at conversation
+  grain for MultiTurn. Every arm's prompt was tool-neutral and every tool was installed as shipped
+  with its own instructions in place, so this is organic adoption: the companion site's Figure 16.
 
 The summaries are conveniences. The runs are the evidence.
 

@@ -49,7 +49,8 @@ export const COMPARISONS: Comparison[] = [
     ],
     arms: id => armInfo(id).role !== 'bare' || id === 'cold',
     models: m => vendorOf(m) === 'anthropic',
-    figures: COMPARISON_FIGURES,
+    // + Figure 16: how often each harness reached for the index it was given
+    figures: [...COMPARISON_FIGURES, 'index-adoption'],
   },
   {
     slug: 'harnesses', title: 'TrueArchitect vs Harnesses', short: 'TrueArchitect vs Harnesses',

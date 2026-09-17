@@ -3,7 +3,7 @@
 // else. Every number on the site is a function of those files.
 import { readFileSync, readdirSync, existsSync } from 'node:fs'
 import path from 'node:path'
-import type { RunRow, Manifest, Question, PerQuestion } from './types'
+import type { RunRow, Manifest, Question, PerQuestion, AdoptionDoc } from './types'
 
 // The repository root = the nearest ancestor of the working directory that
 // holds epochs/ (the build runs with cwd = site/, locally and in Actions;
@@ -47,6 +47,12 @@ export function loadPerQuestion(epoch = latestEpoch()): PerQuestion[] {
     cols.forEach((c, i) => (o[c] = f[i]))
     return { arm: o.arm, model: o.model, exam: o.exam, battery: o.battery, qid: o.qid, pass: +o.pass, n: +o.n, pass_rate: +o.pass_rate }
   })
+}
+
+export function loadAdoption(epoch = latestEpoch()): AdoptionDoc {
+  const p = path.join(ROOT, 'epochs', epoch, 'summary', 'adoption.json')
+  if (!existsSync(p)) throw new Error(`${p} missing — re-run the export (it writes adoption.json beside runs.json)`)
+  return JSON.parse(readFileSync(p, 'utf8'))
 }
 
 export function loadQuestions(repoPublic: string, battery: string): Question[] {
