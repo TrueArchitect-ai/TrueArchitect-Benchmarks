@@ -70,6 +70,7 @@ const ogImage = new URL(`${base}/og.png`, Astro.site).href
         <div class="brand-sub">{epochName(manifest.epoch.id)} · the public proof package</div>
         <a class={is('/') ? 'on' : ''} href={`${base}/`}>Benchmark Results</a>
         <a class={is('/procedure') ? 'on' : ''} href={`${base}/procedure/`}>Benchmark Procedure</a>
+        <EarlyAccessCTA variant="nav" page={pageSlug} />
         <h4>Comparisons</h4>
         {COMPARISONS.map(c => (
           <>
@@ -93,7 +94,6 @@ const ogImage = new URL(`${base}/og.png`, Astro.site).href
         <a class={is('/data') ? 'on' : ''} href={`${base}/data/`}>Data &amp; reproducibility</a>
         <a class={is('/about') ? 'on' : ''} href={`${base}/about/`}>About this site</a>
         <a href="https://github.com/TrueArchitect-ai/TrueArchitect-Benchmarks" target="_blank" rel="noopener">Repository ↗</a>
-        <EarlyAccessCTA variant="nav" page={pageSlug} />
         <div class="nav-foot">
           Every number links to the run that produced it.
           <div class="nav-brands">
