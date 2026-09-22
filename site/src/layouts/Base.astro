@@ -3,11 +3,17 @@ import '../styles/global.css'
 import { FIGURES } from '../lib/figures'
 import { COMPARISONS } from '../lib/comparisons'
 import { loadManifest, epochName } from '../lib/data'
-const { title, description = 'The public proof package behind the TrueArchitect benchmark numbers: every question, answer, verdict, transcript and figure, reproducible from one export.' } = Astro.props
+import { ANALYTICS } from '../lib/analytics'
+import EarlyAccessCTA from '../components/EarlyAccessCTA.astro'
+const { title, description = 'The public proof package behind the TrueArchitect benchmark numbers: every question, answer, verdict, transcript and figure, reproducible from one export.', footerCta = true } = Astro.props
 const manifest = loadManifest()
 const base = import.meta.env.BASE_URL.replace(/\/$/, '')
 const here = Astro.url.pathname.replace(base, '').replace(/\/$/, '') || '/'
 const is = (p: string) => (p === '/' ? here === '/' : here.startsWith(p))
+// page slug for analytics props + the CTA src: "home", "compare/indexers", "results/accuracy", "about" …
+const pageSlug = here === '/' ? 'home' : here.replace(/^\//, '')
+const canonical = new URL(Astro.url.pathname, Astro.site).href
+const ogImage = new URL(`${base}/og.png`, Astro.site).href
 ---
 <!doctype html>
 <html lang="en">
@@ -16,7 +22,23 @@ const is = (p: string) => (p === '/' ? here === '/' : here.startsWith(p))
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>{title} — TrueArchitect Benchmarks</title>
     <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="TrueArchitect Benchmarks" />
+    <meta property="og:title" content={`${title} — TrueArchitect Benchmarks`} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={ogImage} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={`${title} — TrueArchitect Benchmarks`} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={ogImage} />
     <link rel="icon" href={`${base}/favicon.svg`} type="image/svg+xml" />
+    {ANALYTICS.enabled && (
+      <script defer src={ANALYTICS.scriptUrl} data-website-id={ANALYTICS.websiteId} data-auto-track="true" data-exclude-search="true"></script>
+    )}
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Anta&family=Inter:wght@400;500;600&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&display=swap" rel="stylesheet" />
@@ -71,6 +93,7 @@ const is = (p: string) => (p === '/' ? here === '/' : here.startsWith(p))
         <a class={is('/data') ? 'on' : ''} href={`${base}/data/`}>Data &amp; reproducibility</a>
         <a class={is('/about') ? 'on' : ''} href={`${base}/about/`}>About this site</a>
         <a href="https://github.com/TrueArchitect-ai/TrueArchitect-Benchmarks" target="_blank" rel="noopener">Repository ↗</a>
+        <EarlyAccessCTA variant="nav" page={pageSlug} />
         <div class="nav-foot">
           Every number links to the run that produced it.
           <div class="nav-brands">
@@ -83,8 +106,9 @@ const is = (p: string) => (p === '/' ? here === '/' : here.startsWith(p))
           </div>
         </div>
       </nav>
-      <main class="main">
+      <main class="main" data-page={pageSlug}>
         <slot />
+        {footerCta && <EarlyAccessCTA variant="footer" page={pageSlug} />}
       </main>
     </div>
     <button class="theme-fab" type="button" id="theme-toggle" aria-label="Theme: system, light or dark" title="Theme: system (follows the OS)">
@@ -139,6 +163,50 @@ const is = (p: string) => (p === '/' ? here === '/' : here.startsWith(p))
           clearTimeout(timer)
           timer = setTimeout(function () { nav.classList.remove('scrolling') }, 900)
         }, { passive: true })
+      })()
+      // referrer capture + events. `?ref=hn` on landing is kept for the session and appended,
+      // with the page slug, to every early-access link, so a sign-up on truearchitect.ai is
+      // attributed to where the reader came from. Events go to the counter when it is loaded
+      // (production builds only) and are no-ops otherwise. Props are enums and slugs — never
+      // free text, never an address.
+      ;(function () {
+        var page = (document.querySelector('main[data-page]') || {}).dataset
+        page = page ? page.page : 'unknown'
+        var ref = ''
+        try {
+          var q = new URLSearchParams(location.search).get('ref')
+          if (q) { ref = q.toLowerCase().replace(/[^a-z0-9_-]/g, '').slice(0, 24); sessionStorage.setItem('ta-ref', ref) }
+          else ref = sessionStorage.getItem('ta-ref') || ''
+        } catch (e) {}
+        function track(name, props) {
+          try { if (window.umami && typeof window.umami.track === 'function') window.umami.track(name, props) } catch (e) {}
+        }
+        // every early-access link carries the ref it should be attributed to
+        document.querySelectorAll('a[data-cta]').forEach(function (a) {
+          try { var u = new URL(a.href); u.searchParams.set('ref', ref || 'bench'); a.href = u.toString() } catch (e) {}
+        })
+        // landing: once per session, so the source of the visit is a queryable event even
+        // when the browser strips the Referer header
+        try {
+          if (!sessionStorage.getItem('ta-landed')) { sessionStorage.setItem('ta-landed', '1'); track('landing', { ref: ref || 'direct', page_slug: page }) }
+        } catch (e) {}
+        if (page.indexOf('compare/') === 0) track('compare_view', { comparison: page.slice(8) })
+        // clicks: CTA · run directory · download · other outbound (delegated; islands render late)
+        document.addEventListener('click', function (e) {
+          var a = e.target && e.target.closest ? e.target.closest('a[href]') : null
+          if (!a) {
+            var b = e.target && e.target.closest ? e.target.closest('button') : null
+            if (b && /download (CSV|SVG)/.test(b.textContent || '')) track('download', { kind: /CSV/.test(b.textContent) ? 'csv' : 'svg', page_slug: page })
+            return
+          }
+          if (a.dataset.cta) { track('cta_click', { cta_id: a.dataset.cta, page_slug: page }); return }
+          var u
+          try { u = new URL(a.href) } catch (err) { return }
+          if (u.host === location.host) return
+          var m = u.pathname.match(/\/tree\/main\/runs\/([^/]+)\/([^/]+)(?:\/([^/]+)\/([^/]+))?/)
+          if (m) { track('run_open', { tool: m[1], model: m[2], battery: m[4] || 'all', page_slug: page }); return }
+          track('outbound', { href_domain: u.host, page_slug: page })
+        }, true)
       })()
       // subnav scroll-spy: the section nearest the top of the viewport is the current one
       ;(function () {

@@ -45,6 +45,8 @@ jobs:
         env:
           SITE_URL: ${{ steps.pages.outputs.origin }}
           SITE_BASE: ${{ steps.pages.outputs.base_path || '/' }}
+          # the analytics snippet is emitted only here — never in local or preview builds
+          SITE_ENV: production
       - uses: actions/upload-pages-artifact@v3
         with:
           path: site/dist

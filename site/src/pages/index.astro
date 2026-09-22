@@ -7,6 +7,7 @@ import Base from '../layouts/Base.astro'
 import { loadRuns, loadManifest, latestEpoch, epochName } from '../lib/data'
 import { buildScorecard, headlines, type Verdict } from '../lib/scorecard'
 import { COMPARISONS } from '../lib/comparisons'
+import EarlyAccessCTA from '../components/EarlyAccessCTA.astro'
 const epoch = latestEpoch()
 const manifest = loadManifest(epoch)
 const runs = loadRuns(epoch)
@@ -166,6 +167,8 @@ const kQuestions = `${Math.floor(questionsJudged / 1000)}K`
       hover a cell for the per-model numbers. "Best indexing tool" is the strongest of the five on that row, named in the cell.
       {sc.slice}.
     </p>
+
+    <EarlyAccessCTA variant="inline" page="home" />
 
     <h2>Next level down</h2>
     <p>The four comparison pages hold the figures for one group of arms each, with the same controls as the figure pages:</p>

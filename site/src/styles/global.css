@@ -119,6 +119,19 @@ td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; }
 .nav .subnav a.sub.on { color: var(--ink); background: var(--surface-2); font-weight: 600; }
 .cmp-figure h2 { scroll-margin-top: 16px; }
 .nav-foot { margin-top: 24px; font-size: 11.5px; color: var(--muted); }
+/* early-access handoff — one destination (truearchitect.ai/early-access), three placements */
+.nav a.cta-nav { margin-top: 10px; color: var(--ta-text, var(--accent)); font-weight: 600; }
+.cta { --cta-bg: color-mix(in srgb, var(--ta) 7%, var(--surface)); }
+.cta-inline { max-width: 1180px; margin: 28px 0 8px; padding: 22px 26px; background: var(--cta-bg); border-left: 3px solid var(--ta); border-radius: 0 8px 8px 0; }
+.cta-kicker { font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ta-text, var(--accent)); font-weight: 700; margin-bottom: 6px; }
+.cta-head { font-family: var(--serif); font-size: 21px; font-weight: 600; line-height: 1.25; margin: 0 0 6px; }
+.cta-body { font-size: 14.5px; color: var(--muted); max-width: 70ch; margin: 0 0 14px; }
+.cta-btn { display: inline-block; padding: 8px 16px; border-radius: 6px; background: var(--ta); color: #fff; font-weight: 600; font-size: 14px; text-decoration: none; }
+.cta-btn:hover { text-decoration: none; filter: brightness(1.08); }
+.cta-footer { display: flex; align-items: center; justify-content: space-between; gap: 24px; flex-wrap: wrap; max-width: 1180px; margin: 56px 0 0; padding: 20px 26px; background: var(--cta-bg); border-top: 1px solid var(--grid); border-radius: 8px; }
+.cta-footer .cta-head { font-size: 17px; margin: 0 0 3px; display: block; }
+.cta-footer .cta-body { margin: 0; display: block; font-size: 13.5px; }
+@media (max-width: 600px) { .cta-footer { padding: 18px; } .cta-inline { padding: 18px; } }
 /* the way to the product and the company: two brand links under the nav */
 .nav-brands { display: flex; flex-direction: column; gap: 4px; margin-top: 12px; padding-top: 12px; border-top: 1px solid var(--grid); }
 .nav .nav-brands a { display: inline-flex; align-items: center; gap: 6px; padding: 3px 8px; margin: 0 -8px; font-size: 13px; color: var(--ink); }

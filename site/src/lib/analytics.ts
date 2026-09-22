@@ -1,0 +1,19 @@
+// Analytics + early-access handoff — the one place the site names them.
+//
+// Counter: self-hosted Umami at insight.truearchitect.ai (cookieless, no IP stored;
+// the script and beacon are named generically so list-based blockers do not match).
+// Emitted ONLY when the build runs with SITE_ENV=production (the Pages deploy job);
+// local builds and any preview emit nothing. The website id is not a secret — it is
+// visible in every page that carries the snippet — so it lives here, not in CI.
+//
+// Handoff: every early-access CTA on this site links OUT to truearchitect.ai, which
+// owns the form and the list. The site never collects anything itself.
+export const ANALYTICS = {
+  enabled: process.env.SITE_ENV === 'production',
+  scriptUrl: 'https://insight.truearchitect.ai/bench.js',
+  websiteId: 'da631299-80f9-4b80-a400-5f328ac26514',
+}
+
+export const EARLY_ACCESS_URL = 'https://truearchitect.ai/early-access'
+// referrer tags the founder sends out (?ref=…); anything else is recorded as-is, lowercase
+export const KNOWN_REFS = ['ev', 'hn', 'x', 'li', 'email', 'deck', 'gh', 'reddit', 'blog', 'direct'] as const
