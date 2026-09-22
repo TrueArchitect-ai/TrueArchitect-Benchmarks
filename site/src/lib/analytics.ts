@@ -8,9 +8,12 @@
 //
 // Handoff: every early-access CTA on this site links OUT to truearchitect.ai, which
 // owns the form and the list. The site never collects anything itself.
+// Heatmaps: the same server's recorder captures click positions and scroll depth for a
+// sample of visits (aggregated only; replay is OFF on the dashboard, nothing is played back).
 export const ANALYTICS = {
   enabled: process.env.SITE_ENV === 'production',
   scriptUrl: 'https://insight.truearchitect.ai/bench.js',
+  recorderUrl: 'https://insight.truearchitect.ai/recorder.js',
   websiteId: 'da631299-80f9-4b80-a400-5f328ac26514',
 }
 

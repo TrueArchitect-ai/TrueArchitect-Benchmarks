@@ -69,7 +69,7 @@ function Seg<T extends string>({ name, value, options, onChange }: { name: strin
     <div className="seg" role="radiogroup" aria-label={name}>
       <span className="seg-name">{name}</span>
       {options.map(o => (
-        <button key={o.v} type="button" role="radio" aria-checked={o.v === value} disabled={o.disabled}
+        <button key={o.v} type="button" role="radio" aria-checked={o.v === value} disabled={o.disabled} data-value={o.v}
           className={'seg-btn' + (o.v === value ? ' on' : '')} onClick={() => onChange(o.v)}>{o.label}</button>
       ))}
     </div>
@@ -160,7 +160,7 @@ export default function FigureIsland({ fig, data, heat, adoption, compact, contr
   const slice = `${examsLabel} · ${sel.battery === 'both' ? 'both batteries' : BATTERY_LABEL[sel.battery]}${sel.model !== 'all' ? ' · ' + modelChoiceLabel(sel.model) : ''}`
 
   return (
-    <div className="figure" ref={ref}>
+    <div className="figure" ref={ref} data-figure={fig.slug}>
       {showControls && (
         <div className="controls">
           {fig.kind === 'heatmap' ? (
@@ -169,7 +169,7 @@ export default function FigureIsland({ fig, data, heat, adoption, compact, contr
             <div className="seg" role="group" aria-label="protocols">
               <span className="seg-name">protocols</span>
               {EXAMS.filter(e => fig.kind !== 'lines' || e !== 'HumanExam').map(e => (
-                <button key={e} type="button" role="checkbox" aria-checked={sel.exams.includes(e)}
+                <button key={e} type="button" role="checkbox" aria-checked={sel.exams.includes(e)} data-value={e}
                   className={'seg-btn' + (sel.exams.includes(e) ? ' on' : '')} onClick={() => toggleExam(e)}>{EXAM_LABEL[e]}</button>
               ))}
             </div>

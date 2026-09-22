@@ -54,7 +54,7 @@ const kQuestions = `${Math.floor(questionsJudged / 1000)}K`
           <span class="card-label"><span class="card-cat">{h.category}</span> · {h.label} · {h.direction}</span>
           <span class="card-headline">{h.headline}</span>
         </span>
-        <details class="card-details">
+        <details class="card-details" data-card={h.label.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '')}>
           <summary><span class="rule"></span><span class="lbl">Details<svg class="caret" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6" /></svg></span><span class="rule"></span></summary>
           <span class="card-sub">{h.sub}</span>
         <span class="card-ledger">
@@ -109,6 +109,9 @@ const kQuestions = `${Math.floor(questionsJudged / 1000)}K`
           syncing = true
           all.forEach(function (o) { if (o !== d) o.open = d.open })
           syncing = false
+          // the one event the "people don't read" design needs: did anyone open the ledger
+          // (fires once per open, naming the card that was clicked; closes are not events)
+          if (d.open) { try { if (window.umami && typeof window.umami.track === 'function') window.umami.track('details_open', { card: d.dataset.card, page_slug: 'home' }) } catch (e) {} }
         })
       })
     })()

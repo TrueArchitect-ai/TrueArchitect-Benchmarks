@@ -37,7 +37,10 @@ const ogImage = new URL(`${base}/og.png`, Astro.site).href
     <meta name="twitter:image" content={ogImage} />
     <link rel="icon" href={`${base}/favicon.svg`} type="image/svg+xml" />
     {ANALYTICS.enabled && (
-      <script defer src={ANALYTICS.scriptUrl} data-website-id={ANALYTICS.websiteId} data-auto-track="true" data-exclude-search="true"></script>
+      <>
+        <script defer src={ANALYTICS.scriptUrl} data-website-id={ANALYTICS.websiteId} data-auto-track="true" data-exclude-search="true"></script>
+        <script defer src={ANALYTICS.recorderUrl} data-website-id={ANALYTICS.websiteId}></script>
+      </>
     )}
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -191,15 +194,26 @@ const ogImage = new URL(`${base}/og.png`, Astro.site).href
           if (!sessionStorage.getItem('ta-landed')) { sessionStorage.setItem('ta-landed', '1'); track('landing', { ref: ref || 'direct', page_slug: page }) }
         } catch (e) {}
         if (page.indexOf('compare/') === 0) track('compare_view', { comparison: page.slice(8) })
-        // clicks: CTA · run directory · download · other outbound (delegated; islands render late)
+        // clicks: CTA · figure subnav jump · run directory · download · figure control · other
+        // outbound (delegated; islands render late). Nav links are NOT events: every one is a
+        // page load, so the pageview path already records them.
         document.addEventListener('click', function (e) {
           var a = e.target && e.target.closest ? e.target.closest('a[href]') : null
           if (!a) {
             var b = e.target && e.target.closest ? e.target.closest('button') : null
-            if (b && /download (CSV|SVG)/.test(b.textContent || '')) track('download', { kind: /CSV/.test(b.textContent) ? 'csv' : 'svg', page_slug: page })
+            if (!b) return
+            if (/download (CSV|SVG)/.test(b.textContent || '')) { track('download', { kind: /CSV/.test(b.textContent) ? 'csv' : 'svg', page_slug: page }); return }
+            // a figure control: which control, which value, on which figure — the one product
+            // question pageviews cannot answer (does anyone leave the default view?)
+            if (b.classList.contains('seg-btn') && b.dataset.value) {
+              var seg = b.closest('.seg'), figEl = b.closest('[data-figure]')
+              track('figure_control', { control: (seg && seg.getAttribute('aria-label')) || 'unknown', value: b.dataset.value, figure: (figEl && figEl.dataset.figure) || 'unknown', page_slug: page })
+            }
             return
           }
           if (a.dataset.cta) { track('cta_click', { cta_id: a.dataset.cta, page_slug: page }); return }
+          // a jump to a figure from a comparison page's subnav (a hash change, not a page load)
+          if (a.dataset.target && a.closest('[data-subnav]')) { track('figure_jump', { figure: a.dataset.target, page_slug: page }); return }
           var u
           try { u = new URL(a.href) } catch (err) { return }
           if (u.host === location.host) return
