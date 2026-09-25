@@ -17,6 +17,7 @@ export const ANALYTICS = {
   websiteId: 'da631299-80f9-4b80-a400-5f328ac26514',
 }
 
-export const EARLY_ACCESS_URL = 'https://truearchitect.ai/early-access'
+// www is the primary host (the bare domain 301s to it) — link there directly, no hop
+export const EARLY_ACCESS_URL = 'https://www.truearchitect.ai/early-access'
 // referrer tags the founder sends out (?ref=…); anything else is recorded as-is, lowercase
 export const KNOWN_REFS = ['ev', 'hn', 'x', 'li', 'email', 'deck', 'gh', 'reddit', 'blog', 'direct'] as const
